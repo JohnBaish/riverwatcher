@@ -52,11 +52,19 @@ Scope (decided by John):
 
 - River levels only: no tidal, groundwater or rainfall.
 - No flow at this stage (October 30th): come back later to whether it's worth
-  having and what it would look like. Note that levels at locks and weirs barely
-  move, so flow may matter there (data tests, finding 10).
+  having and what it would look like.
 - Flood warnings in the first version, if easy (they look it: finding 11).
 
 ## Log
+
+### 2026-10-30 — correction: lock levels do move (branch `claude/hopeful-cerf-uld21e`)
+
+John asked whether Caversham's downstream gauge would move more. Checked across
+October: the upstream gauge (the one chosen) rose from about 0.16 m to 0.29 m as the
+Thames's flow rose, from higher than 17% to higher than 88% of daily highs for the
+time of year; the downstream gauge moved less (about 1.99 m to 2.05 m) and has no
+archive history. My earlier "barely moves" compared figures from dates that didn't
+overlap. `design/data-tests-2026-10-30.md` finding 10 corrected.
 
 ### 2026-10-30 — data tests; repo started (branch `claude/hopeful-cerf-uld21e`)
 

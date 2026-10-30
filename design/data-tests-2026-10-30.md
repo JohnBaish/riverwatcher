@@ -58,12 +58,20 @@ The figures are real, but the EA marks its recent data "Unchecked" (provisional)
 9. **Flow.** Only about 80 river gauges send flow live; about 860 have daily
    flow in the archive, usually two days behind; about 240 stations measure flow
    but no level. (Not used: see answer 3.)
-10. **A real comparison.** Reading's daily average flow on October 28th 2026 was
-    9.4 m³/s, higher than 37% of days in the same fortnight from 1992 to 2025,
-    after roughly tripling since mid-October. Caversham Lock's highest level on
-    October 10th was 0.182 m, against a middle of 0.183 m for that fortnight in
-    other years. **Levels at locks and weirs barely move**, because they're held
-    steady: a design point, now that flow is out.
+10. **A real comparison** (corrected the same day; see below). Reading's daily
+    average flow on October 28th 2026 was 9.4 m³/s, higher than 37% of days in the
+    same fortnight from 1992 to 2025, after roughly tripling since mid-October.
+    Caversham Lock's upstream level rose with it, from a daily highest of about
+    0.16 m (October 19th) to 0.29 m (October 23rd): higher than 17% and then 88% of
+    daily highs in the same fortnight from 1995 to 2025. Its downstream gauge (the
+    head of the reach below, held by Sonning) moved less, from about 1.99 m to
+    2.05 m at most, and the archive holds no history for it.
+    **Correction:** the first version said levels at locks "barely move", comparing
+    Caversham's October 10th figure (the latest daily figure in the archive) with a
+    flow rise that came after October 19th. The two dates didn't overlap. Looked at
+    across the whole month, the upstream gauge moves clearly and compares well with
+    its own history. Locks still damp the level, so how far this holds elsewhere
+    isn't known yet.
 11. **Flood warnings.** `/id/floods` lists every warning and alert in force for
     England (four at 10.20am UTC, two of them "no longer in force"), each with a
     severity, a description and a flood area (which has a position). Small enough
