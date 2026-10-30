@@ -64,6 +64,16 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-10-30 — research: gauges at locks and weirs (branch `claude/hopeful-cerf-uld21e`)
+
+John asked for as much as reasonable on how lock gauges behave, before choosing a design.
+`design/locks-research-2026-10-30.md`: what the EA and others publish, and the data. In
+short: at the four Thames locks near Reading the level barely moves until flows are in the
+top 10%, and its time-of-year word agrees with Reading's flow on 32% to 42% of days
+(about 80% at most free-flowing gauges); deliberate lowerings show up as "very low"; the
+downstream gauge moved more at 22 of 38 Thames locks this month but has no archive history.
+Options A to E for John, with a recommendation (B, A's line, and C). Docs only.
+
 ### 2026-10-30 — design options A, B and C (branch `claude/hopeful-cerf-uld21e`)
 
 **What:** one mock-up page in Hindcaster's look (its tokens, dark values, cards, strip,
