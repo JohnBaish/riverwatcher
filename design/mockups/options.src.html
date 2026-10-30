@@ -1,0 +1,514 @@
+<title>Riverwatcher design options</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Figtree:wght@400;600;700&display=swap">
+<style>
+/* Layout: Hindcaster's page (one column, 1100px, cards on the cream ground), with the three
+   ways of showing the gauges below the summary. Tokens are Hindcaster's (organic.css and its
+   dark values, global.css); the five judgement colours are new (validated, light and dark). */
+:root {
+  --color-bg: #f5ead8; --color-surface: #ebddc5; --color-text: #201e1d; --color-accent: #c67139;
+  --color-divider: color-mix(in srgb, #201e1d 16%, transparent);
+  --color-neutral-100: #f9f4ed; --color-neutral-200: #eee7db; --color-neutral-300: #dcd3c4; --color-neutral-400: #c0b6a5;
+  --color-neutral-700: #645c50; --color-neutral-800: #474238;
+  --color-accent-100: #fff2eb; --color-accent-600: #b2622d; --color-accent-700: #8c491a; --color-accent-800: #643312;
+  --font-heading: "Caprasimo", Georgia, serif; --font-body: "Figtree", system-ui, sans-serif;
+  --space-1: 4.4px; --space-2: 8.8px; --space-3: 13.2px; --space-4: 17.6px; --space-6: 26.4px; --space-8: 35.2px;
+  --radius-md: 16px; --radius-lg: 28px;
+  --shadow-sm: 0 1px 2px color-mix(in srgb, #2e2b25 14%, transparent);
+  /* Judgement: low water terracotta, high water blue, normal a neutral grey (always with its word). */
+  --j-vlow: #8c491a; --j-low: #d1824c; --j-normal: #c0b6a5; --j-high: #6d98c2; --j-vhigh: #2c5885;
+  --j-ink-strong: #fff8ee; --j-ink-soft: #201e1d;
+  --band-outer: color-mix(in srgb, #474238 10%, transparent); --band-inner: color-mix(in srgb, #474238 20%, transparent);
+  --alert-bg: #fff2eb; --alert-edge: #c67139;
+  --mock-bg: #2e2b25; --mock-fg: #f5ead8;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  color-scheme: dark;
+  --color-bg: #2a2723; --color-surface: #37332e; --color-text: #e8dfcf; --color-accent: #dd8a56;
+  --color-divider: color-mix(in srgb, #e8dfcf 16%, transparent);
+  --color-neutral-100: #423d36; --color-neutral-200: #4a443c; --color-neutral-300: #5a544b; --color-neutral-400: #6a6358;
+  --color-neutral-700: #b0a593; --color-neutral-800: #e3d9c7;
+  --color-accent-100: #4a2a14; --color-accent-600: #e8935d; --color-accent-700: #f2a573; --color-accent-800: #ffc6a5;
+  --shadow-sm: 0 0 0 1px color-mix(in srgb, #e8dfcf 6%, transparent), 0 1px 2px #0006;
+  --j-vlow: #eaa070; --j-low: #9c5a30; --j-normal: #6a6358; --j-high: #46739e; --j-vhigh: #93bde3;
+  --j-ink-strong: #201e1d; --j-ink-soft: #f5ead8;
+  --band-outer: color-mix(in srgb, #e8dfcf 8%, transparent); --band-inner: color-mix(in srgb, #e8dfcf 17%, transparent);
+  --alert-bg: #4a2a14; --alert-edge: #dd8a56;
+  --mock-bg: #14120f; --mock-fg: #e8dfcf;
+} }
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-bg: #2a2723; --color-surface: #37332e; --color-text: #e8dfcf; --color-accent: #dd8a56;
+  --color-divider: color-mix(in srgb, #e8dfcf 16%, transparent);
+  --color-neutral-100: #423d36; --color-neutral-200: #4a443c; --color-neutral-300: #5a544b; --color-neutral-400: #6a6358;
+  --color-neutral-700: #b0a593; --color-neutral-800: #e3d9c7;
+  --color-accent-100: #4a2a14; --color-accent-600: #e8935d; --color-accent-700: #f2a573; --color-accent-800: #ffc6a5;
+  --shadow-sm: 0 0 0 1px color-mix(in srgb, #e8dfcf 6%, transparent), 0 1px 2px #0006;
+  --j-vlow: #eaa070; --j-low: #9c5a30; --j-normal: #6a6358; --j-high: #46739e; --j-vhigh: #93bde3;
+  --j-ink-strong: #201e1d; --j-ink-soft: #f5ead8;
+  --band-outer: color-mix(in srgb, #e8dfcf 8%, transparent); --band-inner: color-mix(in srgb, #e8dfcf 17%, transparent);
+  --alert-bg: #4a2a14; --alert-edge: #dd8a56;
+  --mock-bg: #14120f; --mock-fg: #e8dfcf;
+}
+
+/* — Hindcaster's base (organic.css and global.css, trimmed to what this page uses) — */
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--color-bg); color: var(--color-text); font-family: var(--font-body); font-size: 15px; line-height: 1.55; }
+h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 400; line-height: 1.12; letter-spacing: -0.015em; margin: 0 0 var(--space-2); text-wrap: balance; }
+h2 { font-size: 32px; } h3 { font-size: 20px; } h4 { font-size: 18px; }
+p { margin: 0 0 var(--space-3); }
+a { color: var(--color-accent-700); text-underline-offset: 3px; }
+:focus { outline: none; } :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.mono { font-variant-numeric: tabular-nums; }
+.muted { color: var(--color-neutral-700); }
+.note { font-size: 12.5px; color: var(--color-neutral-700); margin-top: 2px; }
+.card { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-3); border-radius: calc(var(--radius-lg) * 1.15); background: var(--color-surface); }
+.card-kicker { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-700); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; text-decoration: none; font-family: var(--font-heading); font-size: 14px; line-height: 1.2; color: var(--color-text); background: transparent; border: 1px solid var(--color-divider); padding: var(--space-2) calc(var(--space-3) * 1.2); border-radius: 999px; }
+.btn:hover { background: color-mix(in srgb, var(--color-text) 7%, transparent); }
+.tag { display: inline-flex; align-items: center; font-size: 11px; letter-spacing: 0.02em; padding: 3px 10px; border-radius: 999px; }
+.tag-neutral { background: var(--color-neutral-100); color: var(--color-neutral-800); }
+.nav { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding-block: var(--space-3); background: var(--color-surface); }
+.nav-brand { font-family: var(--font-heading); font-size: 18px; }
+.nav-right { display: flex; align-items: center; gap: var(--space-3); min-width: 0; }
+.gutter { padding-left: max(var(--space-6), env(safe-area-inset-left, 0px)); padding-right: max(var(--space-6), env(safe-area-inset-right, 0px)); }
+.col { max-width: 1100px; margin: 0 auto; }
+.screen { padding-bottom: var(--space-6); }
+.strip { flex-direction: row; align-items: center; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; padding: var(--space-3) var(--space-6); margin: var(--space-6) 0 0; }
+.strip h2 { margin: 0; font-size: 22px; text-transform: uppercase; letter-spacing: 0.02em; }
+.page-head { padding: var(--space-6) 0 var(--space-4); }
+.page-head h2 { margin: 2px 0 0; }
+.section-head { display: flex; align-items: baseline; gap: var(--space-2); flex-wrap: wrap; margin: 0 0 var(--space-2); }
+.section-head h3 { margin: 0; }
+.roundup { padding: var(--space-6); margin-bottom: var(--space-6); }
+.roundup p { margin: 0; font-size: 17px; line-height: 1.5; }
+.source { margin-bottom: var(--space-8); }
+.data-credit { margin: var(--space-2) 0 0; font-size: 12.5px; color: var(--color-neutral-700); }
+.table { border-collapse: collapse; font-size: 14px; width: 100%; }
+.table th { text-align: left; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-neutral-700); font-weight: 600; padding: var(--space-2); border-bottom: 1px solid var(--color-divider); }
+.table td { padding: var(--space-2); border-bottom: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent); vertical-align: top; }
+details summary { cursor: pointer; font-weight: 600; margin-bottom: var(--space-3); }
+.footer-notice { margin-top: 64px; padding-top: var(--space-3); border-top: 1px solid var(--color-divider); font-size: 12px; line-height: 1.6; color: var(--color-neutral-700); text-align: center; }
+.about { padding: var(--space-6); margin-top: var(--space-6); }
+.about p { font-size: 14px; margin: 0 0 var(--space-2); }
+.theme-switch { display: inline-flex; align-items: center; gap: 8px; background: none; border: 0; padding: 4px 0; cursor: pointer; color: var(--color-neutral-700); font: inherit; }
+.theme-switch-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; }
+.theme-switch-track { position: relative; width: 46px; height: 26px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 18%, transparent); }
+.theme-switch-knob { position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: var(--color-bg); box-shadow: 0 1px 3px #0004; transition: transform 0.2s; }
+.theme-switch[aria-checked="true"] .theme-switch-track { background: var(--color-accent); }
+.theme-switch[aria-checked="true"] .theme-switch-knob { transform: translateX(20px); }
+
+/* — the mock-up's own bar (not part of the design) — */
+.mock { background: var(--mock-bg); color: var(--mock-fg); font-size: 13px; padding-block: 8px; }
+.mock .col { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+.mock b { font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; font-size: 11px; }
+.mock-group { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+.mock a { color: var(--mock-fg); text-decoration: none; padding: 4px 10px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--mock-fg) 30%, transparent); }
+.mock a[aria-current="true"] { background: var(--mock-fg); color: var(--mock-bg); }
+
+/* — Riverwatcher — */
+.jchip { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; padding: 3px 11px; border-radius: 999px; white-space: nowrap; }
+.jchip.very-low { background: var(--j-vlow); color: var(--j-ink-strong); }
+.jchip.low { background: var(--j-low); color: var(--j-ink-soft); }
+.jchip.normal { background: var(--j-normal); color: var(--j-ink-soft); }
+.jchip.high { background: var(--j-high); color: var(--j-ink-soft); }
+.jchip.very-high { background: var(--j-vhigh); color: var(--j-ink-strong); }
+.jchip.range { background: transparent; color: var(--color-text); border: 1.5px dashed var(--color-neutral-700); font-weight: 600; }
+.headline { font-size: 19px; line-height: 1.35; margin: 0; }
+.headline .when { font-weight: 400; }
+.figure { font-size: 15px; margin: 2px 0 0; }
+.figure b { font-size: 20px; }
+.gname { margin: 0; font-size: 19px; }
+.gsub { font-size: 13px; color: var(--color-neutral-700); }
+.cmp { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; font-size: 14px; }
+.cmp li { padding-top: 6px; border-top: 1px solid var(--color-divider); }
+.cmp .k { display: block; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-neutral-700); font-weight: 600; }
+.periods { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+.periods button { font: inherit; font-size: 13px; color: var(--color-text); background: transparent; border: 1px solid var(--color-divider); padding: 5px 11px; border-radius: 999px; cursor: pointer; }
+.periods button[aria-pressed="true"] { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-bg); }
+.periods-row { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; margin: 0 0 var(--space-3); }
+.chart { width: 100%; height: auto; display: block; touch-action: pan-y; }
+.chart .grid { stroke: var(--color-divider); stroke-width: 1; }
+.chart .axis-t { font-size: 11px; fill: var(--color-neutral-700); font-family: var(--font-body); }
+.chart .b-out { fill: var(--band-outer); } .chart .b-in { fill: var(--band-inner); }
+.chart .typ { stroke: var(--color-neutral-700); stroke-dasharray: 4 3; stroke-width: 1.2; fill: none; }
+.chart .line { fill: none; stroke: var(--color-text); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.chart .end { fill: var(--color-accent); stroke: var(--color-surface); stroke-width: 2; }
+.chart .cross { stroke: var(--color-neutral-700); stroke-width: 1; }
+.chart .hdot { fill: var(--color-text); stroke: var(--color-surface); stroke-width: 2; }
+.chart-wrap { position: relative; }
+.tip { position: absolute; pointer-events: none; background: var(--color-text); color: var(--color-bg); font-size: 12px; padding: 4px 8px; border-radius: 8px; white-space: nowrap; transform: translate(-50%, -110%); }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--color-neutral-700); margin-top: 4px; }
+.legend i { display: inline-block; width: 18px; height: 10px; border-radius: 3px; vertical-align: -1px; margin-right: 5px; }
+.legend .li-line { height: 2px; background: var(--color-text); vertical-align: 3px; }
+.legend .li-in { background: var(--band-inner); } .legend .li-out { background: var(--band-outer); }
+.legend .li-typ { height: 0; border-top: 1.5px dashed var(--color-neutral-700); vertical-align: 3px; border-radius: 0; }
+.zero-note { font-size: 12.5px; color: var(--color-neutral-700); margin: 6px 0 0; }
+.warnings { display: grid; gap: var(--space-3); margin-bottom: var(--space-6); }
+.alert { background: var(--alert-bg); border: 1.5px solid var(--alert-edge); padding: var(--space-4) var(--space-6); }
+.alert .sev { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-accent-800); }
+.alert h4 { margin: 2px 0 4px; }
+.alert p { margin: 0; font-size: 14px; }
+.not-service { font-size: 13px; color: var(--color-neutral-700); margin: 0; }
+
+/* Option A: a card for each gauge, figures beside its chart. */
+.a-list { display: flex; flex-direction: column; gap: var(--space-4); }
+.a-card { padding: var(--space-6); box-shadow: var(--shadow-sm); display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-6); }
+.a-card > div { min-width: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+
+/* Option B: one table, then the chosen gauge in detail. */
+.b-table tbody tr { cursor: pointer; }
+.b-table tbody tr:hover { background: color-mix(in srgb, var(--color-text) 4%, transparent); }
+.b-table tbody tr[aria-selected="true"] { background: color-mix(in srgb, var(--color-accent) 12%, transparent); }
+.b-table td:first-child { border-left: 3px solid transparent; }
+.b-table tbody tr[aria-selected="true"] td:first-child { border-left-color: var(--color-accent); }
+.spark { width: 120px; height: 32px; display: block; }
+.spark path { fill: none; stroke: var(--color-text); stroke-width: 1.5; }
+.spark .b { fill: var(--band-inner); stroke: none; }
+.b-detail { padding: var(--space-6); margin-top: var(--space-4); display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); gap: var(--space-6); }
+.b-detail > div { min-width: 0; }
+.b-rows { display: flex; flex-direction: column; }
+.b-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; padding: 12px 10px; border-top: 1px solid var(--color-divider); cursor: pointer; background: none; border-left: 3px solid transparent; border-right: 0; border-bottom: 0; text-align: left; font: inherit; color: inherit; width: 100%; }
+.b-row[aria-selected="true"] { background: color-mix(in srgb, var(--color-accent) 12%, transparent); border-left-color: var(--color-accent); }
+
+/* Option C: where each gauge sits for the time of year, on one shared scale. */
+.c-board { padding: var(--space-6); }
+.c-row { display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); gap: var(--space-2) var(--space-4); align-items: center; padding: 10px 0; border-top: 1px solid var(--color-divider); }
+.c-row:first-of-type { border-top: 0; }
+.c-scale { width: 100%; height: 44px; display: block; overflow: visible; }
+.c-scale .z { stroke: var(--color-surface); stroke-width: 2; }
+.c-scale .mk { fill: var(--color-text); stroke: var(--color-surface); stroke-width: 2.5; }
+.c-scale .mt { font-size: 12px; font-weight: 700; fill: var(--color-text); font-family: var(--font-body); }
+.c-scale .zt { font-size: 10px; fill: var(--color-neutral-700); font-family: var(--font-body); letter-spacing: 0.04em; }
+.c-zones { fill: var(--j-normal); }
+.c-details { margin-top: var(--space-4); }
+.c-details details { padding: var(--space-4) var(--space-6); margin-bottom: var(--space-3); }
+.c-details summary { margin: 0; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; list-style: none; min-height: 32px; }
+.c-details summary::-webkit-details-marker { display: none; }
+.c-details summary::after { content: "Show chart ▾"; margin-left: auto; font-weight: 400; font-size: 13px; color: var(--color-accent-700); }
+.c-details details[open] summary::after { content: "Hide ▴"; }
+.c-inner { display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); gap: var(--space-6); margin-top: var(--space-3); }
+.c-inner > div { min-width: 0; }
+
+/* The area view. */
+.area-ends { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-4); }
+.area-ends .card { padding: var(--space-4) var(--space-6); }
+.end-item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; padding: 8px 0; border-top: 1px solid var(--color-divider); }
+.end-item:first-of-type { border-top: 0; }
+.all-list .item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; padding: 9px 0; border-top: 1px solid var(--color-divider); }
+
+@media (max-width: 720px) {
+  .gutter { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .strip { padding: var(--space-4); } .strip h2 { font-size: 18px; }
+  .page-head h2 { font-size: 26px; }
+  .roundup, .about, .c-board, .b-detail, .alert { padding: var(--space-4); }
+  .roundup p { font-size: 16px; }
+  .a-card { grid-template-columns: 1fr; padding: var(--space-4); gap: var(--space-3); }
+  .b-detail, .c-inner, .area-ends { grid-template-columns: 1fr; }
+  .c-row { grid-template-columns: 1fr; padding: 12px 0; }
+  .c-details details { padding: var(--space-3) var(--space-4); }
+  .periods button { min-height: 44px; padding: 0 14px; }
+  .theme-switch { min-height: 44px; } .theme-switch-label { display: none; }
+  details summary { padding: 6px 0; }
+  .mock a { padding: 9px 12px; }
+}
+@media (prefers-reduced-motion: reduce) { .theme-switch-knob { transition: none; } }
+</style>
+
+<div class="mock gutter" data-noprint>
+  <div class="col">
+    <b>Mock-up</b>
+    <span class="mock-group" id="mock-opts"></span>
+    <span class="mock-group" id="mock-places"></span>
+    <span id="mock-note"></span>
+  </div>
+</div>
+<nav class="nav gutter">
+  <span class="nav-brand">Riverwatcher</span>
+  <div class="nav-right">
+    <span class="tag tag-neutral" id="updated"></span>
+    <button class="theme-switch" id="theme" type="button" role="switch" aria-checked="false" aria-label="Dark mode">
+      <span class="theme-switch-label">Dark</span><span class="theme-switch-track"><span class="theme-switch-knob"></span></span>
+    </button>
+  </div>
+</nav>
+<main class="gutter"><div class="col screen" id="app"></div></main>
+
+<script>
+const MOCK = /*MOCK*/null;
+const G = MOCK.gauges;
+const NOW = new Date(MOCK.made);
+const WEEKS = [2, 4, 6, 10, 26, 52];
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+const store = { get(k) { try { return localStorage.getItem(k) } catch { return null } }, set(k, v) { try { localStorage.setItem(k, v) } catch {} } };
+
+// ---- wording (HOUSE-STYLE §15: "10.30am", month first, "less than") ----
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const ord = (n) => n + (n % 100 >= 11 && n % 100 <= 13 ? 'th' : ['th','st','nd','rd'][n % 10] || 'th');
+const ukParts = (d) => Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/London', year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', weekday: 'long', hourCycle: 'h23' }).formatToParts(d).map((p) => [p.type, p.value]));
+function clock(d) {
+  const p = ukParts(d); const h = +p.hour, m = +p.minute;
+  if (m === 0 && h === 12) return 'midday';
+  if (m === 0 && h === 0) return 'midnight';
+  const h12 = h % 12 || 12, ap = h < 12 ? 'am' : 'pm';
+  return m ? `${h12}.${String(m).padStart(2, '0')}${ap}` : `${h12}${ap}`;
+}
+const longDate = (d) => { const p = ukParts(d); return `${p.weekday} ${MONTHS[p.month - 1]} ${ord(+p.day)}`; };
+const dateYear = (iso) => { const [y, m, d] = iso.split('-').map(Number); return `${MONTHS[m - 1]} ${ord(d)} ${y}`; };
+const shortDate = (d) => { const p = ukParts(d); return `${MONTHS[p.month - 1].slice(0, 3)} ${+p.day}`; };
+const p0 = ukParts(NOW);
+const timeOfYear = `${+p0.day <= 10 ? 'early' : +p0.day <= 20 ? 'mid' : 'late'} ${MONTHS[p0.month - 1]}`;
+const metres = (v) => `${v.toFixed(2)} m`;
+const milesText = (m) => (m < 1 ? 'less than 1 mile' : `${Math.round(m)} mile${Math.round(m) === 1 ? '' : 's'}`);
+const WORDS = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+const num = (n) => (n >= 1 && n <= 9 ? WORDS[n - 1] : String(n));
+const Num = (n) => { const s = num(n); return s[0].toUpperCase() + s.slice(1); };
+function change(g) {
+  const c = g.live.change24; if (c == null) return '';
+  const cm = Math.round(c * 100);
+  const dir = cm > 0 ? `up ${cm} cm` : cm < 0 ? `down ${-cm} cm` : 'no change';
+  return Math.abs(c) < 0.02 ? `Steady: ${dir} in the last 24 hours` : `${dir[0].toUpperCase() + dir.slice(1)} in the last 24 hours`;
+}
+const riverOf = (g) => g.river || '';
+const cls = (w) => w.replace(' ', '-');
+function judgement(g) {
+  if (!g.live) return { word: null, cls: 'range', text: 'No reading in the last 24 hours' };
+  if (g.history) return { word: g.history.word, cls: cls(g.history.word), text: `${g.history.word[0].toUpperCase() + g.history.word.slice(1)} for ${timeOfYear}` };
+  if (g.typical) {
+    const v = g.live.mean24, [lo, hi] = g.typical;
+    const t = v < lo ? 'Below its usual range' : v > hi ? 'Above its usual range' : 'Within its usual range';
+    return { word: null, cls: 'range', text: t };
+  }
+  return { word: null, cls: 'range', text: 'No long record to compare' };
+}
+const chip = (g) => { const j = judgement(g); return `<span class="jchip ${j.cls}">${esc(j.text)}</span>`; };
+function comparisons(g) {
+  const h = g.history; if (!h) return g.typical
+    ? [['Usual range', `The Environment Agency gives ${metres(g.typical[0])} to ${metres(g.typical[1])} as this gauge's usual range. It has no long record in the archive to compare with past years.`]]
+    : [];
+  const out = [];
+  const from = h.from.slice(0, 4);
+  out.push(['This time of year', h.pct >= 50
+    ? `Higher than on ${Math.min(99, h.pct)}% of ${timeOfYear} days since ${from}.`
+    : `Lower than on ${Math.min(99, 100 - h.pct)}% of ${timeOfYear} days since ${from}.`]);
+  if (h.since) out.push(['Since', h.since.year ? `The ${h.since.way} for the time of year since ${h.since.year}.` : `The ${h.since.way} for the time of year since records began in ${from}.`]);
+  if (h.lastYear) out.push(['A year ago', `${metres(h.lastYear.mid)}, ${h.lastYear.word} for the time of year.`]);
+  out.push(['Highest on record', `${metres(h.record.value)}, on ${dateYear(h.record.date)}.`]);
+  return out;
+}
+const cmpList = (g) => `<ul class="cmp">${comparisons(g).map(([k, v]) => `<li><span class="k">${esc(k)}</span>${esc(v)}</li>`).join('')}</ul>`;
+const figureLine = (g) => g.live ? `<p class="figure"><b class="mono">${metres(g.live.value)}</b> at ${clock(new Date(g.live.time))}. ${esc(change(g))}.</p>` : '';
+const zeroNote = '<p class="zero-note">Height above the gauge\'s own zero, not the depth of the river.</p>';
+
+// ---- the round-up (postcode view) ----
+function roundup(code, gs) {
+  const judged = gs.filter((g) => g.history && g.live);
+  if (!judged.length) return `Rivers near ${code} have no long records to compare.`;
+  const count = {}; for (const g of judged) count[g.history.word] = (count[g.history.word] || 0) + 1;
+  const [top, n] = Object.entries(count).sort((a, b) => b[1] - a[1])[0];
+  const named = (g) => `the ${g.river ? g.river.replace(/^River /, '') : g.name}${g.river ? ' at ' + g.name : ''}`;
+  if (n === judged.length) return `${judged.length === gs.length ? 'All the' : 'The'} rivers near ${code} are ${top} for ${timeOfYear}.`;
+  const others = judged.filter((g) => g.history.word !== top).sort((a, b) => Math.abs(b.history.pct - 50) - Math.abs(a.history.pct - 50));
+  const parts = others.map((g, i) => `${named(g)} ${i === 0 ? 'is ' : ''}${g.history.word}`);
+  const list = parts.length === 1 ? parts[0] : parts.slice(0, -1).join(', ') + ' and ' + parts[parts.length - 1];
+  return `Rivers near ${code} are mostly ${top} for ${timeOfYear}, but ${list}.`.replace(' but the', ' but the');
+}
+
+// ---- charts ----
+const DOY = (d) => { const p = ukParts(d); const t = Date.UTC(2025, p.month - 1, p.month == 2 && p.day == 29 ? 28 : +p.day); return Math.round((t - Date.UTC(2025, 0, 1)) / 86400e3); };
+function series(g, weeks) {
+  if (!g.year) return [];
+  const start = new Date(g.year.start).getTime(); const from = NOW.getTime() - weeks * 7 * 86400e3;
+  const pts = [];
+  g.year.values.forEach((v, i) => { const t = start + i * 3600e3; if (v != null && t >= from) pts.push([t, v]); });
+  if (weeks <= 6) return pts;
+  const days = new Map(); // daily averages for longer periods
+  for (const [t, v] of pts) { const p = ukParts(new Date(t)); const k = `${p.year}-${p.month}-${p.day}`; const a = days.get(k) || [0, 0, t]; a[0] += v; a[1]++; days.set(k, a); }
+  return [...days.values()].map(([s, n, t]) => [t, s / n]);
+}
+function niceTicks(lo, hi, n) {
+  const span = hi - lo || 0.1, step0 = span / n, mag = Math.pow(10, Math.floor(Math.log10(step0)));
+  const step = [1, 2, 2.5, 5, 10].map((m) => m * mag).find((s) => s >= step0);
+  const out = []; for (let v = Math.ceil(lo / step) * step; v <= hi + 1e-9; v += step) out.push(+v.toFixed(6));
+  return out;
+}
+const CHARTS = new Map(); let chartId = 0;
+function chartSvg(g, weeks, W = isPhone() ? 360 : 640, H = isPhone() ? 220 : 230) {
+  const pts = series(g, weeks);
+  if (!pts.length) return '<p class="muted">No readings to chart.</p>';
+  const t0 = NOW.getTime() - weeks * 7 * 86400e3, t1 = NOW.getTime();
+  const day = 86400e3, bands = g.history ? g.history.bands : null;
+  const bandDays = [];
+  if (bands) for (let t = t0; t <= t1 + day; t += day) { const b = bands[DOY(new Date(t))]; if (b) bandDays.push([t, b]); }
+  let lo = Math.min(...pts.map((p) => p[1])), hi = Math.max(...pts.map((p) => p[1]));
+  for (const [, b] of bandDays) { lo = Math.min(lo, b[0]); hi = Math.max(hi, b[4]); }
+  if (!bands && g.typical) { lo = Math.min(lo, g.typical[0]); hi = Math.max(hi, g.typical[1]); }
+  const pad = (hi - lo) * 0.08 || 0.05; lo -= pad; hi += pad;
+  const L = 46, R = 10, T = 10, B = 26;
+  const x = (t) => L + ((t - t0) / (t1 - t0)) * (W - L - R), y = (v) => T + (1 - (v - lo) / (hi - lo)) * (H - T - B);
+  const ticks = niceTicks(lo, hi, 4);
+  let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(g.name)}: level over the last ${weeks === 52 ? 'year' : weeks + ' weeks'}">`;
+  for (const v of ticks) s += `<line class="grid" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text class="axis-t" x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${v.toFixed(2)}</text>`;
+  if (bandDays.length) {
+    const area = (a, b) => 'M' + bandDays.map(([t, q]) => `${x(t).toFixed(1)},${y(q[a]).toFixed(1)}`).join('L') + 'L' + bandDays.slice().reverse().map(([t, q]) => `${x(t).toFixed(1)},${y(q[b]).toFixed(1)}`).join('L') + 'Z';
+    s += `<path class="b-out" d="${area(0, 4)}"/><path class="b-in" d="${area(1, 3)}"/>`;
+  } else if (g.typical) {
+    for (const v of g.typical) s += `<line class="typ" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/>`;
+  }
+  // date ticks
+  const nTicks = W < 400 ? 3 : 5;
+  for (let i = 0; i <= nTicks; i++) { const t = t0 + ((t1 - t0) * i) / nTicks; s += `<text class="axis-t" x="${x(t)}" y="${H - 6}" text-anchor="${i === 0 ? 'start' : i === nTicks ? 'end' : 'middle'}">${shortDate(new Date(t))}</text>`; }
+  s += `<path class="line" d="M${pts.map(([t, v]) => `${x(t).toFixed(1)},${y(v).toFixed(1)}`).join('L')}"/>`;
+  const [lt, lv] = pts[pts.length - 1];
+  s += `<circle class="end" cx="${x(lt)}" cy="${y(lv)}" r="5"/>`;
+  const id = 'c' + (++chartId);
+  CHARTS.set(id, { pts, x, y, W, weeks, L, R, T, B, H });
+  s += `<line class="cross" id="${id}-x" y1="${T}" y2="${H - B}" visibility="hidden"/><circle class="hdot" id="${id}-d" r="4" visibility="hidden"/>`;
+  s += `<rect data-chart="${id}" x="${L}" y="0" width="${W - L - R}" height="${H}" fill="transparent"/></svg>`;
+  return `<div class="chart-wrap">${s}<div class="tip" id="${id}-t" hidden></div></div>`;
+}
+const legend = (g) => g.history
+  ? `<div class="legend"><span><i class="li-line"></i>Level</span><span><i class="li-in"></i>Usual for the time of year (the middle half of past years)</span><span><i class="li-out"></i>Most years (eight in 10)</span></div>`
+  : g.typical ? `<div class="legend"><span><i class="li-line"></i>Level</span><span><i class="li-typ"></i>The EA's usual range</span></div>` : '';
+function hover(e) {
+  const r = e.target.closest('[data-chart]'); if (!r) return;
+  const c = CHARTS.get(r.dataset.chart); const svg = r.ownerSVGElement; const box = svg.getBoundingClientRect();
+  const px = ((e.clientX - box.left) / box.width) * c.W;
+  let best = c.pts[0]; for (const p of c.pts) if (Math.abs(c.x(p[0]) - px) < Math.abs(c.x(best[0]) - px)) best = p;
+  const id = r.dataset.chart, X = c.x(best[0]), Y = c.y(best[1]);
+  const cx = document.getElementById(id + '-x'), d = document.getElementById(id + '-d'), tip = document.getElementById(id + '-t');
+  cx.setAttribute('x1', X); cx.setAttribute('x2', X); cx.setAttribute('visibility', 'visible');
+  d.setAttribute('cx', X); d.setAttribute('cy', Y); d.setAttribute('visibility', 'visible');
+  const when = c.weeks <= 6 ? `${shortDate(new Date(best[0]))}, ${clock(new Date(best[0]))}` : shortDate(new Date(best[0]));
+  tip.textContent = `${when}: ${metres(best[1])}${c.weeks > 6 ? ' (day’s average)' : ''}`; tip.hidden = false;
+  tip.style.left = `${(X / c.W) * box.width}px`; tip.style.top = `${(Y / c.H) * box.height}px`;
+}
+function unhover(e) {
+  const r = e.target.closest('[data-chart]'); if (!r) return; const id = r.dataset.chart;
+  for (const s of ['-x', '-d']) document.getElementById(id + s).setAttribute('visibility', 'hidden');
+  document.getElementById(id + '-t').hidden = true;
+}
+document.addEventListener('pointermove', hover); document.addEventListener('pointerout', unhover);
+
+let weeks = +(store.get('rw-mock-weeks') || 2); if (!WEEKS.includes(weeks)) weeks = 2;
+const periods = () => `<div class="periods-row"><span class="muted" style="font-size:13px">Show the last</span><span class="periods" role="group" aria-label="Period shown">${WEEKS.map((w) => `<button type="button" data-weeks="${w}" aria-pressed="${w === weeks}">${w === 52 ? 'year' : w + ' weeks'}</button>`).join('')}</span></div>`;
+
+// ---- pieces shared by every option ----
+const isPhone = () => window.matchMedia('(max-width: 720px)').matches;
+function warningsBlock(p) {
+  if (!p.warnings || !p.warnings.length) return '';
+  return `<section class="warnings">${p.warnings.map((w) => `<div class="card alert" role="note"><span class="sev">${esc(w.severity)}</span><h4>${esc(w.area)}</h4><p>Issued at ${clock(new Date(w.changed + 'Z'))} today. <a href="https://check-for-flooding.service.gov.uk/target-area/${esc(w.id)}" target="_blank" rel="noopener noreferrer">Read it on GOV.UK</a></p></div>`).join('')}
+    <p class="not-service">Riverwatcher isn't a flood warning service. For warnings, see GOV.UK's Check for flooding or call Floodline on <span style="white-space:nowrap">0345 988 1188</span>.</p></section>`;
+}
+const head = (title) => `<div class="card strip"><h2>${esc(title)}</h2><a class="btn" href="#${opt}-choose">Change</a></div>
+  <div class="page-head"><div class="card-kicker">River levels nearby, with historical comparisons</div><h2>${longDate(NOW)}</h2></div>`;
+const gaugeTitle = (g, miles) => `<h4 class="gname">${esc(g.name)}</h4><div class="gsub">${esc([riverOf(g), miles != null ? milesText(miles) : null].filter(Boolean).join(' · '))}</div>`;
+const headline = (g) => `<p class="headline">${chip(g)}</p>`;
+
+// ---- option A ----
+function optionA(p, gs) {
+  return `<section class="source"><div class="section-head"><h3>The nearest gauges</h3></div>${periods()}<div class="a-list">${gs.map(({ g, miles }) => `
+    <article class="card a-card"><div>${gaugeTitle(g, miles)}${headline(g)}${figureLine(g)}${cmpList(g)}</div>
+    <div>${chartSvg(g, weeks)}${legend(g)}${zeroNote}</div></article>`).join('')}</div></section>`;
+}
+// ---- option B ----
+let selected = 0;
+function spark(g) {
+  const pts = series(g, 2); if (!pts.length) return '';
+  const W = 120, H = 32, t0 = NOW - 14 * 864e5, t1 = +NOW;
+  let lo = Math.min(...pts.map((q) => q[1])), hi = Math.max(...pts.map((q) => q[1]));
+  const bands = g.history && g.history.bands; const b = bands ? bands[DOY(NOW)] : null;
+  if (b) { lo = Math.min(lo, b[1]); hi = Math.max(hi, b[3]); }
+  const pad = (hi - lo) * 0.1 || 0.02; lo -= pad; hi += pad;
+  const x = (t) => ((t - t0) / (t1 - t0)) * W, y = (v) => 2 + (1 - (v - lo) / (hi - lo)) * (H - 4);
+  return `<svg class="spark" viewBox="0 0 ${W} ${H}" aria-hidden="true">${b ? `<rect class="b" x="0" width="${W}" y="${y(b[3])}" height="${y(b[1]) - y(b[3])}"/>` : ''}<path d="M${pts.map(([t, v]) => `${x(t).toFixed(1)},${y(v).toFixed(1)}`).join('L')}"/></svg>`;
+}
+function bDetail(g, miles) {
+  return `<div class="card b-detail" id="b-detail"><div>${gaugeTitle(g, miles)}<div style="margin:8px 0">${headline(g)}${figureLine(g)}</div>${periods()}${chartSvg(g, weeks)}${legend(g)}${zeroNote}</div><div>${cmpList(g)}</div></div>`;
+}
+function optionB(p, gs) {
+  const s = gs[selected] || gs[0];
+  const list = isPhone()
+    ? `<div class="card" style="padding:4px 0"><div class="b-rows">${gs.map(({ g, miles }, i) => `<button type="button" class="b-row" data-sel="${i}" aria-selected="${i === selected}"><span>${gaugeTitle(g, miles)}<span style="display:block;margin-top:6px">${chip(g)}</span></span><span class="mono" style="text-align:right"><b>${g.live ? metres(g.live.value) : '–'}</b><span class="note" style="display:block">${g.live ? (Math.abs(g.live.change24) < 0.02 ? 'Steady' : (g.live.change24 > 0 ? 'Up ' : 'Down ') + Math.abs(Math.round(g.live.change24 * 100)) + ' cm') : ''}</span></span></button>`).join('')}</div></div>`
+    : `<div class="card" style="padding:var(--space-2) var(--space-4)"><table class="table b-table"><thead><tr><th>Gauge</th><th>For the time of year</th><th>Latest</th><th>Last 24 hours</th><th>A year ago</th><th>Two weeks</th></tr></thead><tbody>${gs.map(({ g, miles }, i) => `<tr data-sel="${i}" aria-selected="${i === selected}" tabindex="0"><td>${gaugeTitle(g, miles)}</td><td>${chip(g)}</td><td class="mono"><b>${g.live ? metres(g.live.value) : '–'}</b><div class="note">${g.live ? clock(new Date(g.live.time)) : ''}</div></td><td>${g.live ? esc(change(g).replace(' in the last 24 hours', '')) : ''}</td><td>${g.history && g.history.lastYear ? `${metres(g.history.lastYear.mid)}<div class="note">${g.history.lastYear.word}</div>` : '<span class="muted">–</span>'}</td><td>${spark(g)}</td></tr>`).join('')}</tbody></table></div>`;
+  return `<section class="source"><div class="section-head"><h3>The nearest gauges</h3><span class="note">${isPhone() ? 'Tap' : 'Choose'} one to see it in detail.</span></div>${list}${bDetail(s.g, s.miles)}</section>`;
+}
+// ---- option C ----
+const ZONES = [[0, 10, 'very-low'], [10, 25, 'low'], [25, 75, 'normal'], [75, 90, 'high'], [90, 100, 'very-high']];
+function scale(g, labels) {
+  const W = 600, H = labels ? 44 : 30, y0 = labels ? 4 : 4, h = 14;
+  let s = `<svg class="c-scale" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="height:${H}px">`;
+  for (const [a, b, c] of ZONES) s += `<rect class="z" x="${(a / 100) * W}" y="${y0}" width="${((b - a) / 100) * W}" height="${h}" rx="4" style="fill:var(--j-${c === 'very-low' ? 'vlow' : c === 'very-high' ? 'vhigh' : c})" opacity="0.55"/>`;
+  if (g.history && g.live) { const px = Math.max(1, Math.min(99, g.history.pct)) / 100 * W; s += `<rect class="mk" x="${px - 3}" y="${y0 - 3}" width="6" height="${h + 6}" rx="3"/>`; }
+  s += '</svg>';
+  return s;
+}
+function optionC(p, gs) {
+  const rows = gs.map(({ g, miles }) => `<div class="c-row"><div>${gaugeTitle(g, miles)}</div><div>${g.history && g.live
+    ? `${scale(g)}<div style="display:flex;justify-content:space-between;gap:8px;font-size:13px;margin-top:2px"><span>${chip(g)}</span><span class="mono"><b>${metres(g.live.value)}</b> · ${esc(Math.abs(g.live.change24) < 0.02 ? 'steady' : (g.live.change24 > 0 ? 'up ' : 'down ') + Math.abs(Math.round(g.live.change24 * 100)) + ' cm in 24 hours')}</span></div>`
+    : `<div>${chip(g)} <span class="mono">${g.live ? metres(g.live.value) : ''}</span></div>`}</div></div>`).join('');
+  const key = `<div class="legend" style="justify-content:space-between;margin:0 0 4px"><span>Lowest for ${timeOfYear}</span><span>Normal</span><span>Highest</span></div>`;
+  const details = gs.map(({ g, miles }, i) => `<details class="card"${i === 0 ? ' open' : ''}><summary><span class="gname" style="font-family:var(--font-heading)">${esc(g.name)}</span>${chip(g)}</summary><div class="c-inner"><div>${figureLine(g)}${periods()}${chartSvg(g, weeks)}${legend(g)}${zeroNote}</div><div>${cmpList(g)}</div></div></details>`).join('');
+  return `<section class="source"><div class="section-head"><h3>How each gauge compares with ${timeOfYear} in past years</h3></div><div class="card c-board">${key}${rows}</div>
+    <div class="c-details"><div class="section-head" style="margin-top:var(--space-6)"><h3>Each gauge in detail</h3></div>${details}</div></section>`;
+}
+
+// ---- the area view ----
+function areaView() {
+  const name = MOCK.county.name;
+  const gs = MOCK.county.gauges.map((r) => G[r]).filter((g) => g && g.live);
+  const judged = gs.filter((g) => g.history).sort((a, b) => b.history.pct - a.history.pct);
+  const hiN = judged.filter((g) => g.history.pct > 75).length, loN = judged.filter((g) => g.history.pct < 25).length;
+  const count = {}; for (const g of judged) count[g.history.word] = (count[g.history.word] || 0) + 1;
+  const top = Object.entries(count).sort((a, b) => b[1] - a[1])[0][0];
+  const sum = `${top === 'normal' ? 'Most rivers' : 'Rivers'} in ${name} are ${top === 'normal' ? '' : 'mostly '}${top} for ${timeOfYear}. ${Num(hiN)} of the ${judged.length} gauges with long records are high or very high, and ${num(loN)} are low or very low.`;
+  const item = (g) => `<div class="end-item"><span><b>${esc(g.name)}</b><div class="gsub">${esc(riverOf(g))}</div></span><span style="text-align:right">${chip(g)}<div class="note mono">${metres(g.live.value)}</div></span></div>`;
+  const ends = `<div class="area-ends"><div class="card"><div class="card-kicker">Highest for the time of year</div>${judged.slice(0, 3).map(item).join('')}</div><div class="card"><div class="card-kicker">Lowest for the time of year</div>${judged.slice(-3).reverse().map(item).join('')}</div></div>`;
+  const rest = gs.filter((g) => !g.history);
+  const all = `<details class="card" style="padding:var(--space-4) var(--space-6)"><summary>All ${gs.length} gauges in ${name}, highest for the time of year first</summary><div class="all-list">${[...judged, ...rest].map((g) => `<div class="item"><span><b>${esc(g.name)}</b><div class="gsub">${esc(riverOf(g))}</div></span><span style="text-align:right">${chip(g)}<div class="note mono">${metres(g.live.value)} · ${esc(Math.abs(g.live.change24 ?? 0) < 0.02 ? 'steady' : (g.live.change24 > 0 ? 'up ' : 'down ') + Math.abs(Math.round(g.live.change24 * 100)) + ' cm')}</div></span></div>`).join('')}</div></details>`;
+  return `${head(name)}<div class="section-head"><h3>Summary</h3></div><div class="card roundup"><p>${esc(sum)}</p></div>
+    <section class="source"><div class="section-head"><h3>The most unusual gauges</h3></div><p class="note" style="margin:0 0 8px">Gauges are compared by how their level stands against their own past years: each gauge has its own zero, so the heights themselves can't be compared.</p>${ends}${all}<p class="data-credit">${esc(MOCK.credit)}</p></section>`;
+}
+
+// ---- the page ----
+let opt = 'a', place = 'rg4';
+function render() {
+  chartId = 0; CHARTS.clear();
+  const app = document.getElementById('app');
+  document.getElementById('updated').textContent = `Updated ${clock(NOW)}`;
+  const optName = { a: 'A: a card for each gauge', b: 'B: one table, one chart', c: 'C: one shared scale' };
+  document.getElementById('mock-opts').innerHTML = Object.entries(optName).map(([k, v]) => `<a href="#${k}-${place}" aria-current="${k === opt}">${v}</a>`).join('');
+  document.getElementById('mock-places').innerHTML = [['rg4', 'RG4'], ['ca12', 'CA12 (flood alert)'], ['berkshire', 'Berkshire']].map(([k, v]) => `<a href="#${opt}-${k}" aria-current="${k === place}">${v}</a>`).join('');
+  document.getElementById('mock-note').textContent = `Real Environment Agency readings, ${longDate(NOW)}, ${clock(NOW)} (provisional)`;
+  let body;
+  if (place === 'berkshire') body = areaView();
+  else {
+    const p = MOCK.places[place.toUpperCase()];
+    const gs = p.gauges.map((x) => ({ g: G[x.ref], miles: x.miles }));
+    const main = opt === 'a' ? optionA(p, gs) : opt === 'b' ? optionB(p, gs) : optionC(p, gs);
+    body = `${head(`Near ${p.code} (${p.place})`)}${warningsBlock(p)}<div class="section-head"><h3>Summary</h3></div><div class="card roundup"><p>${esc(roundup(p.code, gs.map((x) => x.g)))}</p></div>${main.replace('</section>', `<p class="data-credit">${esc(MOCK.credit)}</p></section>`)}`;
+  }
+  app.innerHTML = body + `<div class="card about"><h3>About these figures</h3><p class="muted">To be drafted once a design is chosen (John, October 30th): each gauge's own zero, "for the time of year", provisional figures, and where the history comes from.</p></div>
+    <footer class="footer-notice">This uses Environment Agency flood and river level data from the real-time data API (Beta). Contains public sector information licensed under the Open Government Licence v3.0. Contains OS data © Crown Copyright and database rights 2026. Contains Royal Mail data © Royal Mail copyright and database right 2026. Contains National Statistics data © Crown copyright and database right 2026.<br><br>Riverwatcher is a free-to-use personal project by John Baish. More free tools at <a href="https://www.baish.net/" target="_blank" rel="noopener noreferrer">www.baish.net</a>. Contact: workshop@baish.net. We don't record anything you do here, apart from anonymous visit statistics (no cookies, no personal data) showing us how the site is used.</footer>`;
+}
+function route() {
+  const m = /^#?([abc])-(rg4|ca12|berkshire|choose)$/.exec(location.hash);
+  if (m) { opt = m[1]; place = m[2] === 'choose' ? place : m[2]; }
+  render();
+}
+document.addEventListener('click', (e) => {
+  const w = e.target.closest('[data-weeks]');
+  if (w) { weeks = +w.dataset.weeks; store.set('rw-mock-weeks', String(weeks)); render(); return; }
+  const s = e.target.closest('[data-sel]');
+  if (s) { selected = +s.dataset.sel; render(); if (isPhone()) document.getElementById('b-detail')?.scrollIntoView({ block: 'start' }); }
+});
+document.addEventListener('keydown', (e) => { const s = e.target.closest && e.target.closest('tr[data-sel]'); if (s && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); s.click(); } });
+const themeBtn = document.getElementById('theme');
+function setTheme(dark) { document.documentElement.dataset.theme = dark ? 'dark' : 'light'; themeBtn.setAttribute('aria-checked', String(dark)); }
+setTheme(new URLSearchParams(location.search).get('theme') === 'dark' || (!new URLSearchParams(location.search).get('theme') && matchMedia('(prefers-color-scheme: dark)').matches));
+themeBtn.addEventListener('click', () => setTheme(themeBtn.getAttribute('aria-checked') !== 'true'));
+let wasPhone = isPhone(); addEventListener('resize', () => { if (isPhone() !== wasPhone) { wasPhone = isPhone(); render(); } });
+addEventListener('hashchange', route); route();
+</script>

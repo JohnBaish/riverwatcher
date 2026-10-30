@@ -23,6 +23,12 @@ Read these first, in this order:
 
 No `SPEC.md` or `PLAN.md` yet: John wants them once he has picked a design.
 
+Design options (step 3): `design/mockups/options.html`, one page with options A, B and C
+for RG4, CA12 and Berkshire, from a real EA snapshot (`mock-data.json`, made by
+`fetch-mock-data.mjs`; `build-options.mjs` puts it into `options.src.html`). Online as a
+private page: https://claude.ai/artifact/SK5qN1PJKSYwgqqJXEpNDG (republish after a
+rebuild). Previews in `design/previews/options-*.png`.
+
 Key points:
 
 - John is not a developer. Explain plainly and briefly, say what he needs to
@@ -57,6 +63,42 @@ Scope (decided by John):
 - Flood warnings in the first version, if easy (they look it: finding 11).
 
 ## Log
+
+### 2026-10-30 — design options A, B and C (branch `claude/hopeful-cerf-uld21e`)
+
+**What:** one mock-up page in Hindcaster's look (its tokens, dark values, cards, strip,
+summary, footer), with a mock-up bar to switch between the options and places:
+A, a card for each gauge, figures beside its chart; B, one table of the five gauges, then
+the chosen one in detail; C, the five on one shared scale from lowest to highest for the
+time of year, then each in detail. The postcode views have the round-up sentence, the
+chart with its period buttons (remembered on the device) and the four comparisons; CA12 has
+this morning's real flood alert; Berkshire shows the area view (summary, the most unusual
+high and low, every gauge folded away).
+
+**Rules used for the mock-ups (to confirm in the spec):** "the usual level" for a day is
+the middle of its highest and lowest level (the archive has no daily average level);
+the judgement is the last 24 hours' average against those days, a week either side of the
+date, in every past year; the chart's bands are the middle half and eight in 10 of those
+days. Near-duplicates: backups dropped; on the same river within 100 m, one kept (300 m
+merged Caversham Lock into the separate Reading gauge). A gauge's county is its nearest
+postcode district's (good enough for a mock-up only). The judgement colours are new (low
+water terracotta, high water blue, normal grey, always with the word), each arm checked
+with the dataviz validator in light and dark.
+
+**Found:** the archive marks almost every day before about 2015 "Incomplete" though the
+day's highest and lowest are there; filtering on it had cut records back to 2011 or 2015.
+At locks the level also shows how the lock is run: Sonning Lock was drawn down below zero in
+June and July 2026, and reads "very high" today while the Thames's flow is middling.
+
+**Verified:** Chromium, all three options for RG4, CA12 and Berkshire at 1200px and at
+390px with touch, light and dark (36 views): no script errors, no sideways scroll, nothing
+sticking out, both fonts loaded. Also the year chart, its tooltip, and the chosen period
+kept after a reload. Fixed on the way: phone screenshots first came out at 980px (no
+viewport tag; `build-options.mjs` now writes a complete page); chart text too small on
+phones (now drawn at phone width); the Floodline number breaking across lines.
+
+**Couldn't be checked:** a real phone; whether the GOV.UK link for a flood alert
+(`check-for-flooding.service.gov.uk/target-area/<id>`) is right (that host is blocked here).
 
 ### 2026-10-30 — batch 2 answered; hourly updates checked (branch `claude/hopeful-cerf-uld21e`)
 
