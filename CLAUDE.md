@@ -25,7 +25,8 @@ No `SPEC.md` or `PLAN.md` yet: John wants them once he has picked a design.
 
 Design options (step 3): `design/mockups/options.html`, one page with options A, B and C
 for RG4, CA12 and Berkshire, from a real EA snapshot (`mock-data.json`, made by
-`fetch-mock-data.mjs`; `build-options.mjs` puts it into `options.src.html`). Online as a
+`fetch-mock-data.mjs`; `build-options.mjs` puts it into `options.src.html`). Open Rivers positions: `river-positions.py` (OS Open Rivers, downloaded from api.os.uk, not
+kept). Online as a
 private page: https://claude.ai/artifact/SK5qN1PJKSYwgqqJXEpNDG (republish after a
 rebuild). Previews in `design/previews/options-*.png`.
 
@@ -63,6 +64,32 @@ Scope (decided by John):
 - Flood warnings in the first version, if easy (they look it: finding 11).
 
 ## Log
+
+### 2026-10-30 — option B chosen and revised; locks decided (branch `claude/hopeful-cerf-uld21e`)
+
+**John decided:** locks: B (only "high" and "very high" said at a lock or weir; otherwise
+"Held steady by a lock or weir"), A's line ("The level here is held by a weir, so it rises in
+very wet weather but says little about low water."), C (prefer free-flowing gauges), and D
+(a flow gauge for the reach) when flow is collected, which he's now open to for this. Design:
+option B, with gauges grouped by river and in river order (point 1), a chart height that
+doesn't exaggerate (point 2) and clearer chart shading (point 3).
+
+**Built in the mock-up (`opt r`, "B revised"):** gauges grouped under each river's name,
+nearest river first, each listed upstream to downstream, using each gauge's distance to the
+sea along OS Open Rivers (`design/mockups/river-positions.py`); "The Kennet joins here"
+between the right Thames gauges, and "Joins the Thames between Caversham Lock and Sonning
+Lock" (checked against the map: correct for the Kennet, the Loddon and the Greta). When all
+five nearest are held by structures, the nearest free-flowing gauge is added (RG4: the Loddon
+at Twyford). Each chart's height always covers its gauge's usual range over the whole year;
+its shading is the five judgement colours (pale at the ends), with the five words as the
+key; at a lock only the high zones show. The summary goes river by river. "Held by a
+structure": named after a lock, weir, sluice, mill or gate, with a downstream gauge, or on
+the non-tidal Thames below Lechlade (the Reading gauge isn't named after a lock but its level
+barely follows the flow); a first rule only.
+
+**Verified:** all four options for RG4, CA12 and Berkshire at 1200px and 390px with touch,
+light and dark (48 views): no errors, no sideways scroll, fonts loaded. Private page
+republished. **Couldn't check:** a real phone.
 
 ### 2026-10-30 — research: gauges at locks and weirs (branch `claude/hopeful-cerf-uld21e`)
 

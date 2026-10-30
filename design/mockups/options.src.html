@@ -114,6 +114,7 @@ details summary { cursor: pointer; font-weight: 600; margin-bottom: var(--space-
 .jchip.normal { background: var(--j-normal); color: var(--j-ink-soft); }
 .jchip.high { background: var(--j-high); color: var(--j-ink-soft); }
 .jchip.very-high { background: var(--j-vhigh); color: var(--j-ink-strong); }
+.jchip.held { background: transparent; color: var(--color-text); border: 1.5px solid var(--color-neutral-700); font-weight: 600; }
 .jchip.range { background: transparent; color: var(--color-text); border: 1.5px dashed var(--color-neutral-700); font-weight: 600; }
 .headline { font-size: 19px; line-height: 1.35; margin: 0; }
 .headline .when { font-weight: 400; }
@@ -132,6 +133,24 @@ details summary { cursor: pointer; font-weight: 600; margin-bottom: var(--space-
 .chart .grid { stroke: var(--color-divider); stroke-width: 1; }
 .chart .axis-t { font-size: 11px; fill: var(--color-neutral-700); font-family: var(--font-body); }
 .chart .b-out { fill: var(--band-outer); } .chart .b-in { fill: var(--band-inner); }
+/* The chart's zones in the five judgement colours (John, October 30th: the two grey bands weren't clear). */
+.chart .z { opacity: 0.3; } .chart .z-vlow, .chart .z-vhigh { opacity: 0.14; }
+.chart .z-vlow { fill: var(--j-vlow); } .chart .z-low { fill: var(--j-low); } .chart .z-normal { fill: var(--j-normal); } .chart .z-high { fill: var(--j-high); } .chart .z-vhigh { fill: var(--j-vhigh); }
+.legend .lz { opacity: 0.55; border-radius: 3px; }
+.held-note { font-size: 13px; margin: 4px 0 0; color: var(--color-neutral-700); }
+.river-group { padding: var(--space-4) var(--space-6); margin-bottom: var(--space-3); }
+.river-group h4 { margin: 0; font-size: 19px; }
+.river-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin-bottom: 4px; }
+.river-head .note { margin: 0; }
+.r-table { table-layout: fixed; }
+.r-table col.c1 { width: 27%; } .r-table col.c2 { width: 25%; } .r-table col.c3 { width: 11%; } .r-table col.c4 { width: 14%; } .r-table col.c5 { width: 11%; } .r-table col.c6 { width: 12%; }
+.r-table tbody tr { cursor: pointer; }
+.r-table tbody tr[aria-selected="true"] { background: color-mix(in srgb, var(--color-accent) 12%, transparent); }
+.r-table tbody tr[aria-selected="true"] td:first-child { box-shadow: inset 3px 0 0 var(--color-accent); }
+.r-table tr.joins td { cursor: default; padding: 4px var(--space-2); font-size: 12.5px; color: var(--color-neutral-700); font-style: italic; }
+.nearest { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-accent-700); margin-left: 6px; }
+.flow-cue { font-size: 12.5px; color: var(--color-neutral-700); }
+.b-join { font-size: 12.5px; color: var(--color-neutral-700); font-style: italic; padding: 4px 10px; border-top: 1px solid var(--color-divider); }
 .chart .typ { stroke: var(--color-neutral-700); stroke-dasharray: 4 3; stroke-width: 1.2; fill: none; }
 .chart .line { fill: none; stroke: var(--color-text); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
 .chart .end { fill: var(--color-accent); stroke: var(--color-surface); stroke-width: 2; }
@@ -273,8 +292,12 @@ function change(g) {
 }
 const riverOf = (g) => g.river || '';
 const cls = (w) => w.replace(' ', '-');
+const isHigh = (w) => w === 'high' || w === 'very high';
+const heldNow = (g) => g.held && !(g.history && isHigh(g.history.word)) && !(g.typical && g.live && g.live.mean24 > g.typical[1]);
 function judgement(g) {
   if (!g.live) return { word: null, cls: 'range', text: 'No reading in the last 24 hours' };
+  // At a lock or weir only "high" and "very high" are said; the low end is unreliable there (locks research, finding 8).
+  if (heldNow(g)) return { word: null, cls: 'held', text: 'Held steady by a lock or weir' };
   if (g.history) return { word: g.history.word, cls: cls(g.history.word), text: `${g.history.word[0].toUpperCase() + g.history.word.slice(1)} for ${timeOfYear}` };
   if (g.typical) {
     const v = g.live.mean24, [lo, hi] = g.typical;
@@ -290,16 +313,17 @@ function comparisons(g) {
     : [];
   const out = [];
   const from = h.from.slice(0, 4);
-  out.push(['This time of year', h.pct >= 50
+  if (!heldNow(g)) out.push(['This time of year', h.pct >= 50
     ? `Higher than on ${Math.min(99, h.pct)}% of ${timeOfYear} days since ${from}.`
     : `Lower than on ${Math.min(99, 100 - h.pct)}% of ${timeOfYear} days since ${from}.`]);
-  if (h.since) out.push(['Since', h.since.year ? `The ${h.since.way} for the time of year since ${h.since.year}.` : `The ${h.since.way} for the time of year since records began in ${from}.`]);
+  if (h.since && !heldNow(g)) out.push(['Since', h.since.year ? `The ${h.since.way} for the time of year since ${h.since.year}.` : `The ${h.since.way} for the time of year since records began in ${from}.`]);
   if (h.lastYear) out.push(['A year ago', `${metres(h.lastYear.mid)}, ${h.lastYear.word} for the time of year.`]);
   out.push(['Highest on record', `${metres(h.record.value)}, on ${dateYear(h.record.date)}.`]);
   return out;
 }
 const cmpList = (g) => `<ul class="cmp">${comparisons(g).map(([k, v]) => `<li><span class="k">${esc(k)}</span>${esc(v)}</li>`).join('')}</ul>`;
 const figureLine = (g) => g.live ? `<p class="figure"><b class="mono">${metres(g.live.value)}</b> at ${clock(new Date(g.live.time))}. ${esc(change(g))}.</p>` : '';
+const heldLine = (g) => g.held ? '<p class="held-note">The level here is held by a weir, so it rises in very wet weather but says little about low water.</p>' : '';
 const zeroNote = '<p class="zero-note">Height above the gauge\'s own zero, not the depth of the river.</p>';
 
 // ---- the round-up (postcode view) ----
@@ -343,7 +367,9 @@ function chartSvg(g, weeks, W = isPhone() ? 360 : 640, H = isPhone() ? 220 : 230
   const bandDays = [];
   if (bands) for (let t = t0; t <= t1 + day; t += day) { const b = bands[DOY(new Date(t))]; if (b) bandDays.push([t, b]); }
   let lo = Math.min(...pts.map((p) => p[1])), hi = Math.max(...pts.map((p) => p[1]));
-  for (const [, b] of bandDays) { lo = Math.min(lo, b[0]); hi = Math.max(hi, b[4]); }
+  // The chart's height always covers this gauge's usual range over the whole year (its lowest 10%
+  // and highest 90% days), so a small wobble looks small (John, October 30th, point 2).
+  if (bands) { const b = bands.filter(Boolean); lo = Math.min(lo, ...b.map((q) => q[0])); hi = Math.max(hi, ...b.map((q) => q[4])); }
   if (!bands && g.typical) { lo = Math.min(lo, g.typical[0]); hi = Math.max(hi, g.typical[1]); }
   const pad = (hi - lo) * 0.08 || 0.05; lo -= pad; hi += pad;
   const L = 46, R = 10, T = 10, B = 26;
@@ -353,7 +379,11 @@ function chartSvg(g, weeks, W = isPhone() ? 360 : 640, H = isPhone() ? 220 : 230
   for (const v of ticks) s += `<line class="grid" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text class="axis-t" x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${v.toFixed(2)}</text>`;
   if (bandDays.length) {
     const area = (a, b) => 'M' + bandDays.map(([t, q]) => `${x(t).toFixed(1)},${y(q[a]).toFixed(1)}`).join('L') + 'L' + bandDays.slice().reverse().map(([t, q]) => `${x(t).toFixed(1)},${y(q[b]).toFixed(1)}`).join('L') + 'Z';
-    s += `<path class="b-out" d="${area(0, 4)}"/><path class="b-in" d="${area(1, 3)}"/>`;
+    const edge = (v) => bandDays.map(([t]) => [t, v]);
+    const zone = (lower, upper, c) => { const a = lower.map(([t, v]) => `${x(t).toFixed(1)},${y(v).toFixed(1)}`), b = upper.slice().reverse().map(([t, v]) => `${x(t).toFixed(1)},${y(v).toFixed(1)}`); return `<path class="z ${c}" d="M${a.join('L')}L${b.join('L')}Z"/>`; };
+    const q = (k) => bandDays.map(([t, b]) => [t, b[k]]);
+    if (heldNow(g)) s += zone(q(3), q(4), 'z-high') + zone(q(4), edge(hi), 'z-vhigh');
+    else s += zone(edge(lo), q(0), 'z-vlow') + zone(q(0), q(1), 'z-low') + zone(q(1), q(3), 'z-normal') + zone(q(3), q(4), 'z-high') + zone(q(4), edge(hi), 'z-vhigh');
   } else if (g.typical) {
     for (const v of g.typical) s += `<line class="typ" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/>`;
   }
@@ -369,8 +399,9 @@ function chartSvg(g, weeks, W = isPhone() ? 360 : 640, H = isPhone() ? 220 : 230
   s += `<rect data-chart="${id}" x="${L}" y="0" width="${W - L - R}" height="${H}" fill="transparent"/></svg>`;
   return `<div class="chart-wrap">${s}<div class="tip" id="${id}-t" hidden></div></div>`;
 }
+const LZ = [['vlow', 'Very low'], ['low', 'Low'], ['normal', 'Normal'], ['high', 'High'], ['vhigh', 'Very high']];
 const legend = (g) => g.history
-  ? `<div class="legend"><span><i class="li-line"></i>Level</span><span><i class="li-in"></i>Usual for the time of year (the middle half of past years)</span><span><i class="li-out"></i>Most years (eight in 10)</span></div>`
+  ? `<div class="legend"><span><i class="li-line"></i>Level</span>${(heldNow(g) ? LZ.slice(3) : LZ).map(([c, w]) => `<span><i class="lz" style="background:var(--j-${c})"></i>${w}</span>`).join('')}<span>for the time of year</span></div>`
   : g.typical ? `<div class="legend"><span><i class="li-line"></i>Level</span><span><i class="li-typ"></i>The EA's usual range</span></div>` : '';
 function hover(e) {
   const r = e.target.closest('[data-chart]'); if (!r) return;
@@ -414,13 +445,14 @@ function optionA(p, gs) {
     <div>${chartSvg(g, weeks)}${legend(g)}${zeroNote}</div></article>`).join('')}</div></section>`;
 }
 // ---- option B ----
-let selected = 0;
+let selected = null;
 function spark(g) {
   const pts = series(g, 2); if (!pts.length) return '';
   const W = 120, H = 32, t0 = NOW - 14 * 864e5, t1 = +NOW;
   let lo = Math.min(...pts.map((q) => q[1])), hi = Math.max(...pts.map((q) => q[1]));
   const bands = g.history && g.history.bands; const b = bands ? bands[DOY(NOW)] : null;
   if (b) { lo = Math.min(lo, b[1]); hi = Math.max(hi, b[3]); }
+  if (bands) { const a = bands.filter(Boolean); lo = Math.min(lo, ...a.map((q) => q[0])); hi = Math.max(hi, ...a.map((q) => q[4])); }
   const pad = (hi - lo) * 0.1 || 0.02; lo -= pad; hi += pad;
   const x = (t) => ((t - t0) / (t1 - t0)) * W, y = (v) => 2 + (1 - (v - lo) / (hi - lo)) * (H - 4);
   return `<svg class="spark" viewBox="0 0 ${W} ${H}" aria-hidden="true">${b ? `<rect class="b" x="0" width="${W}" y="${y(b[3])}" height="${y(b[1]) - y(b[3])}"/>` : ''}<path d="M${pts.map(([t, v]) => `${x(t).toFixed(1)},${y(v).toFixed(1)}`).join('L')}"/></svg>`;
@@ -434,6 +466,79 @@ function optionB(p, gs) {
     ? `<div class="card" style="padding:4px 0"><div class="b-rows">${gs.map(({ g, miles }, i) => `<button type="button" class="b-row" data-sel="${i}" aria-selected="${i === selected}"><span>${gaugeTitle(g, miles)}<span style="display:block;margin-top:6px">${chip(g)}</span></span><span class="mono" style="text-align:right"><b>${g.live ? metres(g.live.value) : '–'}</b><span class="note" style="display:block">${g.live ? (Math.abs(g.live.change24) < 0.02 ? 'Steady' : (g.live.change24 > 0 ? 'Up ' : 'Down ') + Math.abs(Math.round(g.live.change24 * 100)) + ' cm') : ''}</span></span></button>`).join('')}</div></div>`
     : `<div class="card" style="padding:var(--space-2) var(--space-4)"><table class="table b-table"><thead><tr><th>Gauge</th><th>For the time of year</th><th>Latest</th><th>Last 24 hours</th><th>A year ago</th><th>Two weeks</th></tr></thead><tbody>${gs.map(({ g, miles }, i) => `<tr data-sel="${i}" aria-selected="${i === selected}" tabindex="0"><td>${gaugeTitle(g, miles)}</td><td>${chip(g)}</td><td class="mono"><b>${g.live ? metres(g.live.value) : '–'}</b><div class="note">${g.live ? clock(new Date(g.live.time)) : ''}</div></td><td>${g.live ? esc(change(g).replace(' in the last 24 hours', '')) : ''}</td><td>${g.history && g.history.lastYear ? `${metres(g.history.lastYear.mid)}<div class="note">${g.history.lastYear.word}</div>` : '<span class="muted">–</span>'}</td><td>${spark(g)}</td></tr>`).join('')}</tbody></table></div>`;
   return `<section class="source"><div class="section-head"><h3>The nearest gauges</h3><span class="note">${isPhone() ? 'Tap' : 'Choose'} one to see it in detail.</span></div>${list}${bDetail(s.g, s.miles)}</section>`;
+}
+// ---- option B, revised (John, October 30th): grouped by river, in the river's order ----
+const riverKey = (g) => (g.river || (g.along && g.along.link) || g.name).toLowerCase().replace(/^river /, '').trim();
+const riverLabel = (g) => g.river || (g.along && g.along.link) || g.name;
+const theRiver = (name) => /^River /.test(name) ? 'the ' + name.replace(/^River /, '') : name;
+function riverGroups(p) {
+  const items = p.gauges.map((x) => ({ g: G[x.ref], miles: x.miles, extra: false }));
+  if (p.free) items.push({ g: G[p.free.ref], miles: p.free.miles, extra: true });
+  const by = new Map();
+  for (const it of items) { const k = riverKey(it.g); if (!by.has(k)) by.set(k, { key: k, name: riverLabel(it.g), items: [] }); by.get(k).items.push(it); }
+  const groups = [...by.values()];
+  for (const gr of groups) {
+    // Upstream first, so the list reads the way the water flows.
+    gr.items.sort((a, b) => ((b.g.along || {}).toSeaKm ?? 0) - ((a.g.along || {}).toSeaKm ?? 0));
+    gr.nearest = Math.min(...gr.items.map((i) => i.miles));
+    gr.extra = gr.items.every((i) => i.extra);
+  }
+  groups.sort((a, b) => (a.extra - b.extra) || a.nearest - b.nearest);
+  // Where a tributary joins a river that's also shown: between which of its gauges.
+  for (const gr of groups) {
+    const j = gr.items[0].g.along && gr.items[0].g.along.joins;
+    if (!j) continue;
+    const main = groups.find((m) => m !== gr && m.key === j[0].toLowerCase().replace(/^river /, '').trim());
+    if (!main) continue;
+    const km = j[1], above = main.items.filter((i) => i.g.along && i.g.along.toSeaKm > km), below = main.items.filter((i) => i.g.along && i.g.along.toSeaKm <= km);
+    const a = above[above.length - 1], b = below[0];
+    gr.joins = { main, km, text: a && b ? `Joins ${theRiver(main.name)} between ${a.g.name} and ${b.g.name}.` : a ? `Joins ${theRiver(main.name)} below ${a.g.name}.` : `Joins ${theRiver(main.name)} above ${b.g.name}.` };
+    main.inflows = (main.inflows || []).concat([{ name: gr.name, km }]);
+  }
+  return groups;
+}
+function riverSentence(gr) {
+  const name = theRiver(gr.name), cap = name[0].toUpperCase() + name.slice(1);
+  const judged = gr.items.map((i) => i.g).filter((g) => g.live && g.history);
+  if (!judged.length) return `${cap} has no long records to compare.`;
+  const free = judged.filter((g) => !g.held), highs = judged.filter((g) => g.held && isHigh(g.history.word));
+  if (free.length) {
+    // One word, or the span when the river's gauges differ ("normal to high").
+    const ORDER = ['very low', 'low', 'normal', 'high', 'very high'], ws = free.map((g) => ORDER.indexOf(g.history.word));
+    const w = Math.min(...ws) === Math.max(...ws) ? ORDER[ws[0]] : `${ORDER[Math.min(...ws)]} to ${ORDER[Math.max(...ws)]}`;
+    return `${cap}${free.length === 1 ? ' at ' + free[0].name : ''} is ${w} for ${timeOfYear}${highs.length ? `, and ${highs[0].history.word} at ${highs[0].name}` : ''}.`;
+  }
+  if (highs.length) return `${cap} is ${highs[0].history.word} for ${timeOfYear} at ${highs[0].name}${judged.length > highs.length ? ', and held steady by locks and weirs elsewhere' : ''}.`;
+  return `${cap} is held steady by ${judged.length > 1 ? 'locks and weirs' : 'a lock or weir'} here, and isn't high for ${timeOfYear}.`;
+}
+const roundupByRiver = (p) => `Near ${p.code}: ` + riverGroups(p).map(riverSentence).map((t, i) => i === 0 ? t[0].toLowerCase() + t.slice(1) : t).join(' ');
+const shortChange = (g) => g.live ? (Math.abs(g.live.change24) < 0.02 ? 'Steady' : (g.live.change24 > 0 ? 'Up ' : 'Down ') + Math.abs(Math.round(g.live.change24 * 100)) + ' cm') : '';
+function optionR(p) {
+  const groups = riverGroups(p);
+  const flat = groups.flatMap((gr) => gr.items);
+  const nearestAll = flat.reduce((a, b) => (b.miles < a.miles ? b : a));
+  if (selected == null || !flat[selected]) selected = flat.indexOf(nearestAll);
+  let i = -1;
+  const cards = groups.map((gr) => {
+    const notes = [gr.items.length > 1 ? 'Upstream to downstream' : null, gr.joins ? gr.joins.text : null,
+      gr.extra ? `Added: the nearest gauge to ${p.code} not held by a lock or weir.` : null].filter(Boolean);
+    const joinAt = (a, b) => (gr.inflows || []).filter((f) => a.g.along && b.g.along && a.g.along.toSeaKm > f.km && b.g.along.toSeaKm <= f.km);
+    const rows = gr.items.map((it, k) => {
+      i++;
+      const { g, miles } = it, near = it === nearestAll ? '<span class="nearest">Nearest</span>' : '';
+      const sub = `<div class="gsub">${milesText(miles)} away</div>`;
+      const between = k > 0 ? joinAt(gr.items[k - 1], it) : [];
+      const joinRow = (f) => isPhone() ? `<div class="b-join">${esc(theRiver(f.name).replace(/^t/, 'T'))} joins here</div>` : `<tr class="joins"><td colspan="6">${esc(theRiver(f.name).replace(/^t/, 'T'))} joins here</td></tr>`;
+      if (isPhone()) return between.map(joinRow).join('') + `<button type="button" class="b-row" data-sel="${i}" aria-selected="${i === selected}"><span><h4 class="gname" style="font-size:17px">${esc(g.name)}${near}</h4>${sub}<span style="display:block;margin-top:6px">${chip(g)}</span></span><span class="mono" style="text-align:right"><b>${g.live ? metres(g.live.value) : '–'}</b><span class="note" style="display:block">${shortChange(g)}</span></span></button>`;
+      return between.map(joinRow).join('') + `<tr data-sel="${i}" aria-selected="${i === selected}" tabindex="0"><td><b>${esc(g.name)}</b>${near}${sub}</td><td>${chip(g)}</td><td class="mono"><b>${g.live ? metres(g.live.value) : '–'}</b><div class="note">${g.live ? clock(new Date(g.live.time)) : ''}</div></td><td>${esc(shortChange(g))}</td><td>${g.history && g.history.lastYear ? `${metres(g.history.lastYear.mid)}<div class="note">${g.history.lastYear.word}</div>` : '<span class="muted">–</span>'}</td><td>${spark(g)}</td></tr>`;
+    }).join('');
+    const body = isPhone() ? `<div class="b-rows">${rows}</div>`
+      : `<table class="table r-table"><colgroup><col class="c1"><col class="c2"><col class="c3"><col class="c4"><col class="c5"><col class="c6"></colgroup><thead><tr><th>Gauge</th><th>For the time of year</th><th>Latest</th><th>Last 24 hours</th><th>A year ago</th><th>Two weeks</th></tr></thead><tbody>${rows}</tbody></table>`;
+    return `<div class="card river-group"><div class="river-head"><h4>${esc(gr.name)}</h4>${notes.map((n) => `<span class="note">${esc(n)}</span>`).join('')}</div>${body}</div>`;
+  }).join('');
+  const s = flat[selected];
+  return `<section class="source"><div class="section-head"><h3>The nearest gauges, river by river</h3><span class="note">${isPhone() ? 'Tap' : 'Choose'} one to see it in detail.</span></div>${cards}
+    <div class="card b-detail" id="b-detail"><div>${gaugeTitle(s.g, s.miles)}<div style="margin:8px 0">${headline(s.g)}${figureLine(s.g)}${heldLine(s.g)}</div>${periods()}${chartSvg(s.g, weeks)}${legend(s.g)}${zeroNote}</div><div>${cmpList(s.g)}</div></div></section>`;
 }
 // ---- option C ----
 const ZONES = [[0, 10, 'very-low'], [10, 25, 'low'], [25, 75, 'normal'], [75, 90, 'high'], [90, 100, 'very-high']];
@@ -460,12 +565,13 @@ function areaView() {
   const name = MOCK.county.name;
   const gs = MOCK.county.gauges.map((r) => G[r]).filter((g) => g && g.live);
   const judged = gs.filter((g) => g.history).sort((a, b) => b.history.pct - a.history.pct);
-  const hiN = judged.filter((g) => g.history.pct > 75).length, loN = judged.filter((g) => g.history.pct < 25).length;
-  const count = {}; for (const g of judged) count[g.history.word] = (count[g.history.word] || 0) + 1;
+  const free = judged.filter((g) => !g.held), heldN = judged.length - free.length;
+  const hiN = judged.filter((g) => g.history.pct > 75).length, loN = free.filter((g) => g.history.pct < 25).length;
+  const count = {}; for (const g of free) count[g.history.word] = (count[g.history.word] || 0) + 1;
   const top = Object.entries(count).sort((a, b) => b[1] - a[1])[0][0];
-  const sum = `${top === 'normal' ? 'Most rivers' : 'Rivers'} in ${name} are ${top === 'normal' ? '' : 'mostly '}${top} for ${timeOfYear}. ${Num(hiN)} of the ${judged.length} gauges with long records are high or very high, and ${num(loN)} are low or very low.`;
+  const sum = `${top === 'normal' ? 'Most rivers' : 'Rivers'} in ${name} are ${top === 'normal' ? '' : 'mostly '}${top} for ${timeOfYear}. ${Num(hiN)} of the ${judged.length} gauges with long records are high or very high, and ${num(loN)} are low or very low. ${opt === 'r' ? `${Num(heldN)} are held steady by locks or weirs, so they're only counted when high.` : ''}`;
   const item = (g) => `<div class="end-item"><span><b>${esc(g.name)}</b><div class="gsub">${esc(riverOf(g))}</div></span><span style="text-align:right">${chip(g)}<div class="note mono">${metres(g.live.value)}</div></span></div>`;
-  const ends = `<div class="area-ends"><div class="card"><div class="card-kicker">Highest for the time of year</div>${judged.slice(0, 3).map(item).join('')}</div><div class="card"><div class="card-kicker">Lowest for the time of year</div>${judged.slice(-3).reverse().map(item).join('')}</div></div>`;
+  const ends = `<div class="area-ends"><div class="card"><div class="card-kicker">Highest for the time of year</div>${judged.slice(0, 3).map(item).join('')}</div><div class="card"><div class="card-kicker">Lowest for the time of year</div>${(opt === 'r' ? free : judged).slice(-3).reverse().map(item).join('')}</div></div>`;
   const rest = gs.filter((g) => !g.history);
   const all = `<details class="card" style="padding:var(--space-4) var(--space-6)"><summary>All ${gs.length} gauges in ${name}, highest for the time of year first</summary><div class="all-list">${[...judged, ...rest].map((g) => `<div class="item"><span><b>${esc(g.name)}</b><div class="gsub">${esc(riverOf(g))}</div></span><span style="text-align:right">${chip(g)}<div class="note mono">${metres(g.live.value)} · ${esc(Math.abs(g.live.change24 ?? 0) < 0.02 ? 'steady' : (g.live.change24 > 0 ? 'up ' : 'down ') + Math.abs(Math.round(g.live.change24 * 100)) + ' cm')}</div></span></div>`).join('')}</div></details>`;
   return `${head(name)}<div class="section-head"><h3>Summary</h3></div><div class="card roundup"><p>${esc(sum)}</p></div>
@@ -473,12 +579,12 @@ function areaView() {
 }
 
 // ---- the page ----
-let opt = 'a', place = 'rg4';
+let opt = 'r', place = 'rg4';
 function render() {
   chartId = 0; CHARTS.clear();
   const app = document.getElementById('app');
   document.getElementById('updated').textContent = `Updated ${clock(NOW)}`;
-  const optName = { a: 'A: a card for each gauge', b: 'B: one table, one chart', c: 'C: one shared scale' };
+  const optName = { r: 'B revised: river by river', a: 'A (first draft)', b: 'B (first draft)', c: 'C (first draft)' };
   document.getElementById('mock-opts').innerHTML = Object.entries(optName).map(([k, v]) => `<a href="#${k}-${place}" aria-current="${k === opt}">${v}</a>`).join('');
   document.getElementById('mock-places').innerHTML = [['rg4', 'RG4'], ['ca12', 'CA12 (flood alert)'], ['berkshire', 'Berkshire']].map(([k, v]) => `<a href="#${opt}-${k}" aria-current="${k === place}">${v}</a>`).join('');
   document.getElementById('mock-note').textContent = `Real Environment Agency readings, ${longDate(NOW)}, ${clock(NOW)} (provisional)`;
@@ -487,14 +593,15 @@ function render() {
   else {
     const p = MOCK.places[place.toUpperCase()];
     const gs = p.gauges.map((x) => ({ g: G[x.ref], miles: x.miles }));
-    const main = opt === 'a' ? optionA(p, gs) : opt === 'b' ? optionB(p, gs) : optionC(p, gs);
-    body = `${head(`Near ${p.code} (${p.place})`)}${warningsBlock(p)}<div class="section-head"><h3>Summary</h3></div><div class="card roundup"><p>${esc(roundup(p.code, gs.map((x) => x.g)))}</p></div>${main.replace('</section>', `<p class="data-credit">${esc(MOCK.credit)}</p></section>`)}`;
+    const main = opt === 'r' ? optionR(p) : opt === 'a' ? optionA(p, gs) : opt === 'b' ? optionB(p, gs) : optionC(p, gs);
+    body = `${head(`Near ${p.code} (${p.place})`)}${warningsBlock(p)}<div class="section-head"><h3>Summary</h3></div><div class="card roundup"><p>${esc(opt === 'r' ? roundupByRiver(p) : roundup(p.code, gs.map((x) => x.g)))}</p></div>${main.replace('</section>', `<p class="data-credit">${esc(MOCK.credit)}</p></section>`)}`;
   }
   app.innerHTML = body + `<div class="card about"><h3>About these figures</h3><p class="muted">To be drafted once a design is chosen (John, October 30th): each gauge's own zero, "for the time of year", provisional figures, and where the history comes from.</p></div>
     <footer class="footer-notice">This uses Environment Agency flood and river level data from the real-time data API (Beta). Contains public sector information licensed under the Open Government Licence v3.0. Contains OS data © Crown Copyright and database rights 2026. Contains Royal Mail data © Royal Mail copyright and database right 2026. Contains National Statistics data © Crown copyright and database right 2026.<br><br>Riverwatcher is a free-to-use personal project by John Baish. More free tools at <a href="https://www.baish.net/" target="_blank" rel="noopener noreferrer">www.baish.net</a>. Contact: workshop@baish.net. We don't record anything you do here, apart from anonymous visit statistics (no cookies, no personal data) showing us how the site is used.</footer>`;
 }
 function route() {
-  const m = /^#?([abc])-(rg4|ca12|berkshire|choose)$/.exec(location.hash);
+  selected = null;
+  const m = /^#?([abcr])-(rg4|ca12|berkshire|choose)$/.exec(location.hash);
   if (m) { opt = m[1]; place = m[2] === 'choose' ? place : m[2]; }
   render();
 }

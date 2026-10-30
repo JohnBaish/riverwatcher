@@ -62,6 +62,15 @@ async function pool(items, n, f) {
 }
 
 // ---- the gauges ----
+// Held by a lock or weir (locks research, October 30th): named after a structure, or with a
+// downstream gauge (a level measured on both sides of something), or on the non-tidal Thames
+// below Lechlade, which is one lock reach after another. A first rule, for the mock-ups only:
+// other navigations (the Kennet, the Medway, the Great Ouse and more) need a checked list.
+function heldByStructure(s, ms) {
+  if (/\b(lock|weir|sluice|mill|gate)\b/i.test(String(s.label))) return true
+  if (ms.some((m) => m.qualifier === 'Downstream Stage')) return true
+  return /^River Thames$/.test(String(s.riverName)) && s.long > -1.69
+}
 const [stations, latest, archive] = await Promise.all([
   json(`${FM}/id/stations?_view=full&_limit=10000`),
   json(`${FM}/data/readings?latest&_limit=20000`),
@@ -84,7 +93,8 @@ for (const s of stations.items) {
   const sc = s.stageScale && typeof s.stageScale === 'object' ? s.stageScale : null
   gauges.push({
     ref: s.stationReference, name: s.label, river: s.riverName ?? null, town: s.town ?? null,
-    lat: s.lat, long: s.long, measure: last(m['@id']), unit: m.unitName, rloi: s.RLOIid ?? null,
+    lat: s.lat, long: s.long, easting: s.easting, northing: s.northing, measure: last(m['@id']), unit: m.unitName, rloi: s.RLOIid ?? null,
+    held: heldByStructure(s, ms),
     archive: a ? a.notation : null,
     typical: sc && sc.typicalRangeLow != null ? [sc.typicalRangeLow, sc.typicalRangeHigh] : null,
   })
@@ -119,7 +129,10 @@ for (const code of POSTCODES) {
   const [la, lo, place] = districts[code]
   const near = gauges.map((g) => ({ g, d: miles([la, lo], [g.lat, g.long]) }))
     .filter((x) => x.d <= WITHIN_MILES).sort((a, b) => a.d - b.d).slice(0, NEAREST)
-  places[code] = { code, place, lat: la, long: lo, gauges: near.map((x) => ({ ref: x.g.ref, miles: x.d })) }
+  const free = near.some((x) => !x.g.held) ? null : gauges.map((g) => ({ g, d: miles([la, lo], [g.lat, g.long]) }))
+    .filter((x) => !x.g.held && x.d <= WITHIN_MILES).sort((a, b) => a.d - b.d)[0]
+  places[code] = { code, place, lat: la, long: lo, gauges: near.map((x) => ({ ref: x.g.ref, miles: x.d })),
+    free: free ? { ref: free.g.ref, miles: free.d } : null }
 }
 const inCounty = gauges.filter((g) => g.county === COUNTY)
 
@@ -134,7 +147,7 @@ for (const p of Object.values(places)) {
 
 // ---- each gauge's figures ----
 const wanted = new Map()
-for (const p of Object.values(places)) for (const x of p.gauges) wanted.set(x.ref, { charts: true })
+for (const p of Object.values(places)) for (const x of [...p.gauges, ...(p.free ? [p.free] : [])]) wanted.set(x.ref, { charts: true })
 for (const g of inCounty) if (!wanted.has(g.ref)) wanted.set(g.ref, { charts: false })
 const byRef = new Map(gauges.map((g) => [g.ref, g]))
 const ymd = (d) => d.toISOString().slice(0, 10)
