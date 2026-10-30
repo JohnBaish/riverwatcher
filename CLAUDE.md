@@ -16,7 +16,7 @@ Read these first, in this order:
    John's answers. Then `design/content-answers-2026-10-30.md`: the main page's
    content, as agreed so far.
 3. `HOUSE-STYLE.md`: the shared look and ways of working. Copied from
-   clockwheel on 2026-10-30 (commit `aa12cd6`), with `SEO-HANDOVER.md`,
+   clockwheel on 2026-10-30 (commit `674122d`), with `SEO-HANDOVER.md`,
    `.claude/skills/fresh-look/` and `.gitignore`. Clockwheel holds the master
    copies; if they change, re-copy them and note it here.
 4. The tracker: `projects/riverwatcher.md` in `JohnBaish/baish.net-directory`.
@@ -65,6 +65,11 @@ Scope (decided by John):
 - Flood warnings in the first version, if easy (they look it: finding 11).
 
 ## Log
+
+### 2026-10-30 — house style re-copied (notes only, straight to `main`)
+
+From clockwheel `674122d`, which now records this repo's two dark-mode findings as house rules: §2
+finer text smoothing in dark mode, §3 never bold Caprasimo. The mock-up already follows both.
 
 ### 2026-10-30 — John's answers to SPEC §13; "About these figures" edited (branch `claude/hopeful-cerf-uld21e`)
 
