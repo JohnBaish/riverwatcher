@@ -21,7 +21,8 @@ Read these first, in this order:
    copies; if they change, re-copy them and note it here.
 4. The tracker: `projects/riverwatcher.md` in `JohnBaish/baish.net-directory`.
 
-No `SPEC.md` or `PLAN.md` yet: John wants them once he has picked a design.
+**`SPEC.md` and `PLAN.md`** (drafted October 30th, for John to agree; SPEC §13 has the open
+questions). Read them before anything else once agreed.
 
 Design options (step 3): `design/mockups/options.html`, one page with options A, B and C
 for RG4, CA12 and Berkshire, from a real EA snapshot (`mock-data.json`, made by
@@ -64,6 +65,15 @@ Scope (decided by John):
 - Flood warnings in the first version, if easy (they look it: finding 11).
 
 ## Log
+
+### 2026-10-30 — spec and plan drafted (branch `claude/hopeful-cerf-uld21e`)
+
+`SPEC.md` (what Riverwatcher does, with Agreed and Proposed marked, and eight questions in §13)
+and `PLAN.md` (stages 0 to 5). Checked while writing: the archive gives every gauge's daily
+highest and lowest for a date in one request (about 2,360 stations, 0.8 MB, five seconds), and all
+2,141 matched river gauges have both, so "the usual level" works everywhere; the OS Open Rivers
+licence line ("Contains Ordnance Survey data © Crown copyright and database right 2026"). The
+storage sizes in SPEC §6 are estimates, to measure in stage 2. Docs only.
 
 ### 2026-10-30 — option B revised: John's answers (branch `claude/hopeful-cerf-uld21e`)
 
