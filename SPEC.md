@@ -16,7 +16,8 @@ It draws on: John's research notes (`design/research-notes-2026-10-25.md`), the 
 (`design/mockups/options.html`, online at https://claude.ai/artifact/SK5qN1PJKSYwgqqJXEpNDG).
 
 **Status, Friday October 30th 2026.** **Agreed** means John has said yes. **Proposed** means
-Claude's draft, for John to confirm, change or turn down. Section 13 lists the open questions.
+Claude's draft, for John to confirm, change or turn down. Section 13 lists the questions and
+John's answers; two are still open (4 and 6).
 
 ---
 
@@ -56,7 +57,11 @@ real-time data API (Beta)."
 (`wiskiID` or `stationReference`). One request gives every gauge's daily figures for a date (about
 2,360 stations, 0.8 MB, five seconds; tested October 30th). Recent days are "Unchecked". Every day
 before about 2015 is marked "Incomplete" even when its highest and lowest are there, so
-completeness is ignored and only "Suspect" and "Missing" days are left out (data tests).
+completeness is ignored and only "Suspect" and "Missing" days are left out (data tests). A
+record starts in the first year with most of its days present: some gauges have a stray early
+reading (Roe Bridge on the Brock has one day in 1919, then nothing for decades). Checked October
+30th, all 2,184 river gauges with history: 1,088 start before 2000, 365 before 1980, 153 since
+2020; the earliest full record is the Severn at Montford, from 1952.
 
 ### 2c. Ordnance Survey
 
@@ -79,7 +84,7 @@ completeness is ignored and only "Suspect" and "Missing" days are left out (data
    one is kept, preferring one with archive history (2,895 left).
 3. **Silent gauges:** no reading for more than six hours: no judgement, "No reading since
    [Thursday 4.15pm]", and the gauge stays in the list (Agreed).
-4. **Held by a lock or weir** (Agreed in principle, the rule Proposed): a gauge whose level is
+4. **Held by a lock or weir** (Agreed; the list is Claude's, John doesn't need to see it): a gauge whose level is
    held by a structure. A gauge is held if it is named after a lock, weir, sluice, mill or gate;
    or has a downstream gauge too; or is on a list of managed reaches checked by hand (the
    non-tidal Thames below Lechlade, and the EA's other navigations: the Medway, the Great Ouse,
@@ -138,9 +143,10 @@ written once.
    date), and the last four weeks of hourly readings from the live feed (one request per gauge,
    once, at a gentle pace).
 
-To keep the code repo small, the data could live in its own repo (`JohnBaish/riverwatcher-data`),
-whose history can be cleared from time to time without losing anything that matters; the
-collector would then ask Vercel to rebuild through a deploy hook. Question 1.
+**The data lives in its own repo** (`JohnBaish/riverwatcher-data`; John, October 30th, taking
+Claude's advice), so the code repo stays small. Its history can be cleared from time to time
+without losing anything that matters; the collector asks Vercel to rebuild through a deploy hook
+(a secret, kept in GitHub Actions).
 
 ## 7. The page (Agreed: option B revised)
 
@@ -150,7 +156,8 @@ with the switch).
 
 1. **The place strip** ("Near RG4 (Caversham)", Change), the kicker "River levels nearby, with
    historical comparisons" and the date.
-2. **Flood warnings**, only when there are any within 10 miles: severity, area, time issued, a
+2. **Flood warnings**, only when there are any within 10 miles (measured to the middle of each
+   warning's flood area; John, October 30th): severity, area, time issued, a
    link to GOV.UK, and "Riverwatcher isn't a flood warning service. For warnings, see GOV.UK's
    Check for flooding or call Floodline on 0345 988 1188."
 3. **Summary**, river by river (real figures, 4.15pm on October 30th): "Near RG4: the Thames is very high for late October at Sonning
@@ -178,7 +185,7 @@ with the switch).
    in the five judgement colours for each day of the period (the outer two paler); at a held gauge
    only the high zones. Its height always covers the gauge's usual range over the whole year, so a
    small wobble looks small. The key: "Level, Very low, Low, Normal, High, Very high for the time of
-   year", left-aligned (Proposed). A tooltip on hover or touch.
+   year", left-aligned or centred (question 6). A tooltip on hover or touch.
 7. **About these figures** (§9) and the credits at the foot (§10).
 
 Judgement colours (Agreed): low water terracotta, high water blue, normal grey, each always with
@@ -194,38 +201,43 @@ its word; each arm checked with the dataviz validator in light and dark.
    very low. [18] are held steady by locks or weirs, so they're only counted when high."), the most
    unusual high and low gauges, Hindcaster-style (held gauges only on the high side), then every
    gauge folded away, highest for the time of year first. For a region or England, the ten highest
-   and ten lowest instead of every gauge (Proposed, as Hindcaster: question 5).
+   and ten lowest instead of every gauge (Agreed, as Hindcaster).
 
-## 9. "About these figures" (Proposed: Claude's draft, for John to edit)
+## 9. "About these figures" (Proposed: Claude's draft with John's changes of October 30th)
 
-> Riverwatcher shows river levels measured by the Environment Agency's gauges, usually every 15
-> minutes, and collected here every hour. Recent figures are provisional: the Environment Agency
-> checks them later and sometimes corrects them.
+> Riverwatcher shows river levels measured by the Environment Agency's gauges. These usually
+> collect data every 15 minutes, and Riverwatcher fetches that information once an hour. Recent
+> figures are provisional: the Environment Agency checks them later and sometimes corrects them.
 >
 > Heights are above each gauge's own zero, not the depth of the river, so the figures for
 > different gauges can't be compared with each other.
 >
 > "For the time of year" compares the last 24 hours with the same gauge's levels on the days a week
-> either side of today's date, in every year on record. Normal is the middle half of those days;
-> low and high are the next 15% on each side; very low and very high are the lowest and highest
-> 10%.
+> either side of today's date, in every year on record. How far back the records go varies: just
+> under half the gauges have records from before 2000, a few go back to the 1950s, and some
+> started only in the last few years; each gauge's figures say the year its record begins. Normal
+> is the middle half of those days; low and high are the next 15% on each side; very low and very
+> high are the lowest and highest 10%.
 >
 > On rivers with locks and weirs, such as the Thames, the level is kept steady for boats, so it
-> rises in very wet weather but says little about low water. There, Riverwatcher only says when
-> the level is high. Where a gauge has no long record, Riverwatcher uses the Environment Agency's
-> own usual range for it, which covers the whole year.
+> rises in very wet weather but doesn't tell us much about low water. For these, Riverwatcher only
+> says when the level is high. Where a gauge has no long record, Riverwatcher uses the Environment
+> Agency's own usual range for it, which covers the whole year.
 >
 > Rivers are listed upstream to downstream, using Ordnance Survey's map of rivers.
 
-## 10. Credits and footer (Agreed, the OS lines Proposed)
+The sentence on how far back records go is new, for John to check: from the archive on October
+30th, 1,088 of 2,184 river gauges' records start before 2000; the earliest full one is the Severn
+at Montford, from 1952; 153 started in 2020 or later.
+
+## 10. Credits and footer (Agreed)
 
 At the foot of the page: "This uses Environment Agency flood and river level data from the
 real-time data API (Beta)."; "Contains public sector information licensed under the Open
 Government Licence v3.0."; "Contains OS data © Crown Copyright and database rights 2026.";
 "Contains Royal Mail data © Royal Mail copyright and database right 2026."; "Contains National
-Statistics data © Crown copyright and database right 2026." The Open Rivers line ("Contains
-Ordnance Survey data © Crown copyright and database right 2026") may be covered by the first OS
-line: question 7.
+Statistics data © Crown copyright and database right 2026." One OS line covers both Open Names
+and Open Rivers (John, October 30th).
 
 The footer as Hindcaster's: "Riverwatcher is a free-to-use personal project by John Baish. More
 free tools at www.baish.net. Contact: workshop@baish.net. We don't record anything you do here,
@@ -241,28 +253,31 @@ cron-job.org access key has an expiry date to note in `PLAN.md`.
 
 ## 12. Later (not in the first version)
 
-1. **River flow**, first for lock reaches (John, October 30th: worth collecting if it helps
-   there): describe a held river from a nearby flow gauge ("The Thames's flow at Reading is normal
-   for late October"); about 80 gauges send flow live and about 860 have daily flow in the archive,
-   usually two days behind.
+1. **River flow for lock reaches** (John, October 30th: worth collecting if it helps there). How
+   it would work (Claude's advice, question 4): a held gauge is paired with the nearest flow gauge
+   on the same river, with no tributary joining in between (from OS Open Rivers). Its row keeps
+   "Held steady by a lock or weir", and adds the river's flow for the time of year, worked out the
+   same way as levels: "Flow at Reading: normal for late October (Wednesday)". The summary uses it:
+   "The Thames's flow at Reading is normal for late October; its locks hold the level steady."
+   Coverage (October 30th): 239 of 535 held gauges have a flow gauge on the same river within 15
+   km; on the Thames, 52 of 56 (eight flow gauges, Farmoor to Walton). Most flow comes only from
+   the archive's daily figures, usually two days behind (about 80 gauges send flow live), so the
+   day it's for is always named.
 2. **Downstream gauges** at locks, once Riverwatcher has its own history for them.
 3. **Tidal stations** for coastal postcodes; **groundwater**.
 4. **Full postcodes** rather than districts.
 5. **Wales and Scotland** (Natural Resources Wales and SEPA, as explored for Hindcaster).
 
-## 13. Questions for John
+## 13. Questions for John (answered October 30th, except 4 and 6)
 
-1. **Where the data lives:** in this repo, or in its own repo that can be cleared from time to time
-   (§6)? Claude suggests its own repo: the hourly commits would otherwise add perhaps 100 MB a year
-   to this one, for good.
-2. **The list of managed reaches** (§3.4): Claude drafts it from the EA's list of navigations and
-   the gauge names; would John like to see it before it's used?
-3. **Flood warnings within 10 miles:** measured to the middle of each warning's flood area (simple)
-   or to its edge (needs each area's outline, larger)? Claude suggests the middle first.
-4. **Before launch or after:** is flow for lock reaches (§12.1) wanted in the first version, or
-   straight after?
-5. **Region and England views:** the ten highest and ten lowest gauges, rather than every gauge
-   (England has about 2,900)?
-6. **The key's alignment:** left-aligned, as suggested, or centred?
-7. **Credits:** one OS line for both Open Names and Open Rivers, or both lines?
-8. **"About these figures":** the draft in §9.
+1. **Where the data lives:** its own repo (John: "happy to take your advice"). §6.
+2. **The list of managed reaches:** Claude drafts it; John doesn't need to see it. §3.4.
+3. **Flood warnings within 10 miles:** to the middle of each flood area first. §7.2.
+4. **Flow for lock reaches:** John asked how it would translate onto the page. Claude's advice
+   is in §12.1; Claude suggests it as the first stage after launch, with a mock-up first, rather
+   than in the first version. Open.
+5. **Region and England views:** the ten highest and ten lowest. §8.2.
+6. **The key's alignment:** John asked to see both; pictures sent October 30th. Open.
+7. **Credits:** one OS line. §10.
+8. **"About these figures":** John's changes made (§9); the new sentence on how far back records
+   go is for him to check.

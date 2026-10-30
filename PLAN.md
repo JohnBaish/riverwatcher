@@ -15,8 +15,9 @@ revised. Done when John agrees the spec.
 ## Stage 1 — the gauge list and its history (no page yet)
 
 1. Set up the project as Hindcaster's: Vite, React and TypeScript, the same tool versions, `npm
-   run check` (Node runs the checks directly; no test framework), lint, type check. The data repo
-   too, if John chooses one (SPEC question 1).
+   run check` (Node runs the checks directly; no test framework), lint, type check.
+   **John's job:** create the data repo, `JohnBaish/riverwatcher-data` (public, as this one), and
+   add it to the session.
 2. **The rules as plain functions** (in `scripts/lib/`), reusing Hindcaster's EA handling where
    it fits: which gauges count (SPEC §3), near-duplicates, the held list, "for the time of year"
    (§4), "Steady", and the comparisons. Each with checks, including real cases from the tests
@@ -70,13 +71,17 @@ The chooser, as Hindcaster's, and the area views (SPEC §8).
 5. A `/fresh-look` review; the fixes John chooses.
 6. The tracker, the baish.net hub card (in clockwheel, with John's OK) and the overview PDF.
 
+## Stage 6 — flow for lock reaches (after launch, if John agrees: SPEC question 4)
+
+A mock-up first, then: flow history for the flow gauges, each held gauge paired with a flow gauge
+on the same river (SPEC §12.1), the flow line in the rows, the detail and the summary.
+
 ## Later
 
-SPEC §12: river flow for lock reaches first (John may want it in the first version: SPEC
-question 4), then downstream gauges, tidal stations, groundwater, full postcodes, Wales and
-Scotland.
+SPEC §12: downstream gauges, tidal stations, groundwater, full postcodes, Wales and Scotland.
 
 ## Dates to remember
 
 - The cron-job.org GitHub access key: expiry date to note when it's made (stage 2).
+- The Vercel deploy hook (a secret in GitHub Actions): made in stage 2.
 - Re-check the free plans' limits (GitHub, cron-job.org, Vercel) before launch.

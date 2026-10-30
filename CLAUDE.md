@@ -66,6 +66,19 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-10-30 — John's answers to SPEC §13; "About these figures" edited (branch `claude/hopeful-cerf-uld21e`)
+
+John: the data in its own repo; the managed-reaches list is Claude's; flood warnings measured to
+each area's middle; ten highest and lowest for region and England; one OS credit line; his
+changes to "About these figures". Open: flow for lock reaches (Claude's advice in SPEC §12.1,
+suggested as stage 6 after launch) and the key (left-aligned and centred pictures sent). Checked
+for the new "on record" sentence: the first year of all 2,184 river gauges' histories (1,088
+before 2000, 365 before 1980, 153 since 2020; the earliest full record the Severn at Montford,
+1952; Roe Bridge's single 1919 reading is a stray, so a record starts in its first year with most
+days). Counted for flow: 239 of 535 held gauges have a flow gauge on the same river within 15 km;
+the Thames 52 of 56. Also wrote John a prompt for a new thread to put the sharper dark text on the
+other sites and in the house style (sent to him, not in this repo).
+
 ### 2026-10-30 — dark mode: blurry names (branch `claude/hopeful-cerf-uld21e`)
 
 John saw river and gauge names blurry at the edges in dark mode. The colours are the latest
