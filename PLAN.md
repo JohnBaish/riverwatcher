@@ -16,8 +16,8 @@ revised. Done when John agrees the spec.
 
 1. Set up the project as Hindcaster's: Vite, React and TypeScript, the same tool versions, `npm
    run check` (Node runs the checks directly; no test framework), lint, type check.
-   **John's job:** create the data repo, `JohnBaish/riverwatcher-data` (public, as this one), and
-   add it to the session.
+   **John's job:** create the data repo, `JohnBaish/riverwatcher-data` (public, empty), and add it
+   to the session.
 2. **The rules as plain functions** (in `scripts/lib/`), reusing Hindcaster's EA handling where
    it fits: which gauges count (SPEC §3), near-duplicates, the held list, "for the time of year"
    (§4), "Steady", and the comparisons. Each with checks, including real cases from the tests

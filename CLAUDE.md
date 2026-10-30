@@ -66,6 +66,13 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-10-30 — the key agreed; the data repo to be public (branch `claude/hopeful-cerf-uld21e`)
+
+John: the key aligned to the chart is "great" (SPEC question 6 closed; all of §13 answered). He
+asked whether the data repo should be public or private: public, on Claude's advice (unlimited free
+Actions minutes, Vercel reads it with no key, the EA data is open under the OGL; a README carries
+the credit). SPEC §6 and §13 updated.
+
 ### 2026-10-30 — flow for locks after launch; the key aligned to the chart (branch `claude/hopeful-cerf-uld21e`)
 
 John agreed flow for lock reaches as stage 6, after launch, with a mock-up first. On the key, he

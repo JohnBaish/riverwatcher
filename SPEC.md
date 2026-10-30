@@ -17,7 +17,7 @@ It draws on: John's research notes (`design/research-notes-2026-10-25.md`), the 
 
 **Status, Friday October 30th 2026.** **Agreed** means John has said yes. **Proposed** means
 Claude's draft, for John to confirm, change or turn down. Section 13 lists the questions and
-John's answers; one is still to confirm (6).
+John's answers; all are answered.
 
 ---
 
@@ -143,8 +143,9 @@ written once.
    date), and the last four weeks of hourly readings from the live feed (one request per gauge,
    once, at a gentle pace).
 
-**The data lives in its own repo** (`JohnBaish/riverwatcher-data`; John, October 30th, taking
-Claude's advice), so the code repo stays small. Its history can be cleared from time to time
+**The data lives in its own repo** (`JohnBaish/riverwatcher-data`, public: free Actions minutes,
+no key needed to read it, and the EA data is open; John, October 30th, taking Claude's advice), so
+the code repo stays small. Its README gives the EA credit. Its history can be cleared from time to time
 without losing anything that matters; the collector asks Vercel to rebuild through a deploy hook
 (a secret, kept in GitHub Actions).
 
@@ -185,8 +186,8 @@ with the switch).
    in the five judgement colours for each day of the period (the outer two paler); at a held gauge
    only the high zones. Its height always covers the gauge's usual range over the whole year, so a
    small wobble looks small. The key: "Level, Very low, Low, Normal, High, Very high for the time of
-   year", left-aligned to the chart's own left edge, in line with its first date (John asked to see it,
-   October 30th; question 6). A tooltip on hover or touch.
+   year", left-aligned to the chart's own left edge, in line with its first date (Agreed, John,
+   October 30th). A tooltip on hover or touch.
 7. **About these figures** (§9) and the credits at the foot (§10).
 
 Judgement colours (Agreed): low water terracotta, high water blue, normal grey, each always with
@@ -270,7 +271,7 @@ cron-job.org access key has an expiry date to note in `PLAN.md`.
 4. **Full postcodes** rather than districts.
 5. **Wales and Scotland** (Natural Resources Wales and SEPA, as explored for Hindcaster).
 
-## 13. Questions for John (answered October 30th; 6 to confirm)
+## 13. Questions for John (all answered October 30th)
 
 1. **Where the data lives:** its own repo (John: "happy to take your advice"). §6.
 2. **The list of managed reaches:** Claude drafts it; John doesn't need to see it. §3.4.
@@ -278,8 +279,7 @@ cron-job.org access key has an expiry date to note in `PLAN.md`.
 4. **Flow for lock reaches:** as advised in §12.1, the first stage after launch (stage 6), with a
    mock-up first (John agreed, October 30th).
 5. **Region and England views:** the ten highest and ten lowest. §8.2.
-6. **The key's alignment:** John found left-aligned too far left and asked for it aligned to the
-   chart's own edge; built and sent October 30th, for him to confirm.
+6. **The key's alignment:** aligned to the chart's own left edge ("great", John, October 30th).
 7. **Credits:** one OS line. §10.
 8. **"About these figures":** John's changes made (§9); the new sentence on how far back records
    go is for him to check.
