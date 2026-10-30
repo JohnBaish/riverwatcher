@@ -8,7 +8,7 @@ Made by `npm run gauges` on Friday, 30 October 2026, from the Environment Agency
 2. **2,954** of them sent a reading in the last 7 days; 250 are left out (section 9).
 3. **2** backups and **64** near-duplicates left out (section 8), leaving **2,888** gauges.
 4. **2,109** have daily history in the archive; 358 more have only the EA's all-year typical range; **421** have neither, so Riverwatcher could show their level but not whether it's high or low (section 6).
-5. **439** are held by a lock or weir (section 2); **70** are on lakes or reservoirs (section 5).
+5. **443** are held by a lock or weir (section 2); **70** are on lakes or reservoirs (section 5).
 6. **2,810** are placed on OS Open Rivers; 78 aren't within 600 m of a river (section 4).
 7. **2,879** are in England; 9 are just over the border or out to sea (section 7).
 
@@ -156,7 +156,7 @@ A gauge counts as held for the first of these that applies:
 - **Named after a lock, weir, sluice, mill, gate or staunch:** 304
 - **On a canal or navigation:** 16
 - **On the non-tidal Thames below Lechlade:** 12
-- **On a navigation, from its head down:** 107
+- **On a navigation, from its head down:** 111
 
 A gauge with a downstream level as well isn't held on that account alone (a change from SPEC §3.4: many are gauging weirs or culverts, where the level follows the flow): 136 such gauges aren't held.
 
@@ -165,24 +165,24 @@ A gauge with a downstream level as well isn't held on that account alone (a chan
 | River | Head | Km to the sea | Gauges held from there down |
 | --- | --- | --- | --- |
 | River Aire | Leeds Crown Point | 107.4 | 14 |
-| River Ancholme | Brandy Wharf | 24.4 | 2 |
-| River Avon | Stratford | 133.4 | 7 |
-| River Avon | Pulteney Weir | 24.6 | 6 |
+| River Ancholme | Brandy Wharf | 31.9 | 2 |
+| River Avon | Stratford | 156.3 | 7 |
+| River Avon | Pulteney Weir | 41.9 | 9 |
 | River Cam | Jesus Lock Sluice Auto Cambridge | 80.3 | 4 |
-| River Chelmer | Chelmsford Gates Sluice | 24.3 | 3 |
-| River Don | Rotherham | 37.4 | 8 |
+| River Chelmer | Chelmsford Gates Sluice | 36.6 | 3 |
+| River Don | Rotherham | 90.7 | 8 |
 | River Glen | Fletland Mill Sluice Baston | 41.3 | 3 |
-| River Great Ouse | Bedford | 124.7 | 18 |
-| River Kennet | Newbury | 134.9 | 3 |
+| River Great Ouse | Bedford | 124.7 | 20 |
+| River Kennet | Newbury | 226.4 | 3 |
 | River Medway | Town Lock | 68.8 | 14 |
 | River Nene | Nunn Mills Sluice Automation Northampton | 150.6 | 22 |
 | River Ouse | Naburn Lock | 80.5 | 6 |
-| River Severn | Worcester (Barbourne) | 93.2 | 14 |
+| River Severn | Worcester (Barbourne) | 116.0 | 14 |
 | River Soar | Pillings Lock | 186.2 | 3 |
 | River Stort | Bishops Stortford, Grange Paddocks | 54.7 | 4 |
-| River Thames | St Johns Lock | 213.8 | 54 |
+| River Thames | St Johns Lock | 305.3 | 54 |
 | River Trent | Cranfleet Lock | 163.9 | 9 |
-| River Wey | River Wey at Unstead Sluice | 58.1 | 8 |
+| River Wey | River Wey at Unstead Sluice | 149.7 | 8 |
 | River Witham | Bargate Weir | 63.9 | 10 |
 
 Every held gauge, by river:
@@ -253,7 +253,7 @@ Every held gauge, by river:
 - **River Anton:** Andover Town Mill (name)
 - **River Arrow:** Titley Mill (name)
 - **River Arun:** Provender Mill (name)
-- **River Avon:** Stratford (navigation), Bidford on Avon (navigation), Evesham (navigation), Pershore (navigation), Avon Weir (name), Avon Mill (name), Eckington Sluice (name), Bredon (navigation), Chippenham Gate (name), Upper Pound (navigation), Melksham Gate (name), Pulteney Weir (name), Bath Destructor Bridge (navigation), Twerton Gate (name), Netham Weir (name), Saltford (navigation), Keynsham, Rivermead (navigation), Knapp Mill (name), Bristol Netham Lock (name)
+- **River Avon:** Stratford (navigation), Bidford on Avon (navigation), Evesham (navigation), Pershore (navigation), Avon Weir (name), Eckington Sluice (name), Avon Mill (name), Bredon (navigation), Upper Pound (navigation), Chippenham Gate (name), Melksham Gate (name), Pulteney Weir (name), Bath Destructor Bridge (navigation), Twerton Gate (name), Saltford (navigation), Keynsham, Rivermead (navigation), Bristol Netham Lock (name), Netham Weir (name), Bristol Bedminster St Johns Lane Upstream (navigation), Ashton Vale (navigation), Knapp Mill (name)
 - **River Bain:** Horncastle Victoria Mill (name), Fulsby Lock R Bain (name)
 - **River Bela:** Beetham Weir (name)
 - **River Beult:** Cheveney Gate (name)
@@ -268,7 +268,7 @@ Every held gauge, by river:
 - **River Deben:** Letheringham Mill Sluice (name), Glevering Mill Sluice (name)
 - **River Delph:** Welmore Lake Sluice (name)
 - **River Derwent:** Mowthorpe Weir Head (name), Norton Mill Beck PS (name), Blackhall Mill (name), Seaton Mill, Barepot, Workington (name)
-- **River Don:** Rotherham (navigation), Rotherham Forge Island (navigation), Kilnhurst Lower (navigation), Mexborough Lock (name), Sprotbrough (navigation), Doncaster (navigation), Fishlake (navigation), Kirk Bramwith (navigation)
+- **River Don:** Rotherham (navigation), Rotherham Forge Island (navigation), Kilnhurst Lower (navigation), Mexborough Lock (name), Sprotbrough (navigation), Doncaster (navigation), Kirk Bramwith (navigation), Fishlake (navigation)
 - **River Dour:** Crabble Mill (name)
 - **River East Allen:** Allen Mill Bridge (name)
 - **River Eden:** Haxted Mill (name)
@@ -283,7 +283,7 @@ Every held gauge, by river:
 - **River Gaunless:** Ramshaw Mill (name)
 - **River Gipping:** Hawks Mill Sluice Needham Market (name), Horseshoe Sluice (name)
 - **River Glen:** Fletland Mill Sluice Baston (name), Kates Bridge (navigation), Surfleet Sluice (name)
-- **River Great Ouse:** Bedford (navigation), Bedford (navigation), Cardington (navigation), Castle Mill (name), Roxton (navigation), Eaton Socon (navigation), St Neots (navigation), Offord (navigation), Offord Grafham Intake Sidelooker (navigation), Brampton Sluice (name), Godmanchester (navigation), Houghton (navigation), Hemingford (navigation), St Ives (navigation), Brownshill (navigation), Earith (navigation), Soham Lode (navigation), Ely (navigation)
+- **River Great Ouse:** Bedford (navigation), Bedford (navigation), Cardington (navigation), Castle Mill (name), Roxton (navigation), Eaton Socon (navigation), St Neots (navigation), Offord (navigation), Offord Grafham Intake Sidelooker (navigation), Brampton Sluice (name), Godmanchester (navigation), Houghton (navigation), Hemingford (navigation), St Ives (navigation), Brownshill (navigation), Earith (navigation), Soham Lode (navigation), Sutton Gault (navigation), Ely (navigation), Welney Causeway (navigation)
 - **River Hamble:** Botley Mill Stream (name)
 - **River Holme:** Queen's Mill (name)
 - **River Irk:** Collyhurst Weir (name)
@@ -309,7 +309,7 @@ Every held gauge, by river:
 - **River Rhee:** Haslingfield Burnt Mill (name)
 - **River Ribble:** Locks Weir (name), Arnford Weir (name)
 - **River Roding:** Shonks Mill Bridge (name)
-- **River Rother:** Iping Mill (name), Woodhouse Mill (name), Crowhurst Weir (name)
+- **River Rother:** Woodhouse Mill (name), Iping Mill (name), Crowhurst Weir (name)
 - **River Sence:** Temple Mill (name)
 - **River Severn:** Worcester (Barbourne) (navigation), Diglis (navigation), Kempsey Yacht Club (navigation), Saxons Lode (navigation), Mythe Bridge (navigation), Deerhurst Flood Plain Level (navigation), Deerhurst (navigation), Haw Bridge (navigation), Ashleworth (navigation), Sandhurst (navigation), Gloucester (navigation), Minsterworth (navigation), Epney (navigation), Sharpness (navigation)
 - **River Skell:** Alma Weir (name)
@@ -379,6 +379,8 @@ A check on OS Open Rivers: each tributary should join the river it really joins.
 | River Witham → The Haven | 18 |
 | River Calder → River Aire | 18 |
 | River Wey → River Thames | 17 |
+| River Avon → Swash Channel | 16 |
+| River Welland → Welland Outfall | 14 |
 | River Derwent → Rusholme Reach | 14 |
 | River Irwell → Manchester Ship Canal | 13 |
 | River Don → River Ouse | 13 |
@@ -394,8 +396,10 @@ A check on OS Open Rivers: each tributary should join the river it really joins.
 | River Cherwell → River Thames | 9 |
 | River Teme → River Severn | 9 |
 | River Pinn → River Colne | 9 |
+| Great Stour → River Stour | 8 |
 | River Mole → River Ember | 8 |
 | River Derwent → River Trent | 8 |
+| River Wandle → River Thames | 8 |
 | River Mersey → Manchester Ship Canal | 8 |
 | River Waveney → River Yare | 8 |
 | River Dearne → River Don | 8 |
@@ -410,10 +414,6 @@ A check on OS Open Rivers: each tributary should join the river it really joins.
 | River Stour → River Severn | 6 |
 | River Chelt → River Severn | 6 |
 | River Kennet → River Thames | 6 |
-| River Loddon → River Thames | 6 |
-| River Piddle → Main Channel | 6 |
-| River Tone → River Parrett | 6 |
-| River Tame → River Mersey | 6 |
 
 **319 gauges sit on a stretch with a different name from the EA's river name** (often a mill stream, a side channel or a small tributary just beside the main river; the EA's name is kept). The first 40:
 
@@ -460,9 +460,9 @@ A check on OS Open Rivers: each tributary should join the river it really joins.
 | Mor Brook | Moors River | Mor Brook | 3 |
 | Prestbury Road | Wymans Brook | Wyman's Brook | 1 |
 
-**Rivers in more than one piece.** OS Open Rivers has gaps that couldn't be joined up, so these rivers' gauges (in the same county) are in separate pieces and won't be put in order across the gap. 21 cases (some are really two rivers with one name):
+**Rivers in more than one piece.** OS Open Rivers has gaps that couldn't be joined up, so these rivers' gauges (in the same county) are in separate pieces and won't be put in order across the gap. 19 cases (some are really two rivers with one name):
 
-River North Tyne (Northumberland); Finchett's Gutter (Cheshire); River Avon (Wiltshire); River Blackwater (Hampshire); River Gade (Hertfordshire); River Soar (Leicestershire); River Sence (Leicestershire); River Char (Dorset); River Yeo (Devon); River Axe (Somerset); River Allen (Cornwall); River Avon (Bristol); River Weaver (Cheshire); Trout Beck (Cumbria); River Arun (West Sussex); Fossdyke Navigation (Lincolnshire); River Lark (Suffolk); River Waveney (Suffolk); River Great Ouse (Cambridgeshire); Sea Cut (North Yorkshire); Beverley and Barmston Drain (East Riding of Yorkshire).
+River North Tyne (Northumberland); Finchett's Gutter (Cheshire); River Avon (Wiltshire); River Blackwater (Hampshire); River Gade (Hertfordshire); River Soar (Leicestershire); River Sence (Leicestershire); River Char (Dorset); River Yeo (Devon); River Axe (Somerset); River Allen (Cornwall); River Weaver (Cheshire); Trout Beck (Cumbria); River Arun (West Sussex); Fossdyke Navigation (Lincolnshire); River Lark (Suffolk); River Waveney (Suffolk); Sea Cut (North Yorkshire); Beverley and Barmston Drain (East Riding of Yorkshire).
 
 ## 4. Far from any river
 
@@ -999,7 +999,17 @@ An archive station counts as the same gauge when it's within 1 km, or further aw
 | Didsbury | River Mersey | 1.6 | live | not sure |
 | Crow Tree Farm Brook | Unnamed Watercourse | 1.0 | live | not sure |
 
-## 11. Archive notes
+## 11. What each gauge has
+
+The history download (`npm run history`) hasn't been run yet, so this section only gives what the list itself says.
+
+| What it has | Gauges |
+| --- | --- |
+| Neither: the level only | 421 |
+| Archive history, not yet downloaded | 2109 |
+| No archive history: the EA's typical range | 358 |
+
+## 12. Archive notes
 
 The archive carries a note on 10 of these gauges:
 

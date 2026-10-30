@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "check": "node scripts/check-rules.ts",
     "gauges": "node scripts/build-gauges.ts",
-    "history": "node scripts/build-history.ts"
+    "history": "node scripts/build-history.ts",
+    "backfill": "node scripts/backfill.ts"
   },
   "devDependencies": {
     "@types/node": "^24.13.3",

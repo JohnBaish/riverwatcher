@@ -383,7 +383,50 @@ p(row(['---', '---', '---', '---', '---']))
 for (const m of moved.sort((a, b) => b.km - a.km)) p(row([m.name, m.river, m.km.toFixed(1), m.used, m.sure ? '' : 'not sure']))
 p()
 
-p('## 11. Archive notes')
+p('## 11. What each gauge has')
+p()
+const histFile = join(dataDir, 'history', 'index.json')
+type HistEntry = { status: 'ok' | 'short' | 'failed'; fromYear?: number; lastDay?: string; note?: string }
+const hist: Record<string, HistEntry> | null = existsSync(histFile) ? JSON.parse(readFileSync(histFile, 'utf8')).gauges : null
+if (!hist) {
+  p('The history download (`npm run history`) hasn\'t been run yet, so this section only gives what the list itself says.')
+  p()
+}
+{
+  const kinds = new Map<string, string[]>()
+  const add = (k: string, name: string) => kinds.set(k, [...(kinds.get(k) ?? []), name])
+  for (const g of out) {
+    const h = hist?.[g.ref]
+    if (g.archive && h?.status === 'ok') add('History for the time of year', g.name)
+    else if (g.archive && h?.status === 'short') add(g.typical ? 'Archive history too short (less than three years): the EA\'s typical range instead' : 'Archive history too short, and no typical range: the level only', g.name)
+    else if (g.archive && h?.status === 'failed') add('Archive download failed (to try again)', g.name)
+    else if (g.archive && !h) add('Archive history, not yet downloaded', g.name)
+    else if (g.typical) add('No archive history: the EA\'s typical range', g.name)
+    else add('Neither: the level only', g.name)
+  }
+  p(row(['What it has', 'Gauges']))
+  p(row(['---', '---']))
+  for (const [k, v] of kinds) p(row([k, v.length]))
+  p()
+  if (hist) {
+    const old = out.filter((g) => hist[g.ref]?.status === 'ok' && hist[g.ref].lastDay! < `${now.getUTCFullYear() - 2}`)
+    p(`**Old history.** ${n(old.length)} gauges' archive levels stop more than two years ago, so their "time of year" rests on those years only (Twyford on the Loddon stops in 2011). For John: use them, or treat them as having no history?`)
+    p()
+    p(row(['Gauge', 'River', 'Record', 'Last day']))
+    p(row(['---', '---', '---', '---']))
+    for (const g of old.sort((a, b) => (hist[a.ref].lastDay! < hist[b.ref].lastDay! ? -1 : 1))) p(row([g.name, g.river, hist[g.ref].fromYear, hist[g.ref].lastDay]))
+    p()
+    const failedList = out.filter((g) => hist[g.ref]?.status === 'failed')
+    if (failedList.length) {
+      p('**Failed downloads:**')
+      p()
+      for (const g of failedList) p(`- ${g.name}: ${hist[g.ref].note}`)
+      p()
+    }
+  }
+}
+
+p('## 12. Archive notes')
 p()
 const notes = built.filter((g) => g.archiveNote)
 p(`The archive carries a note on ${n(notes.length)} of these gauges:`)

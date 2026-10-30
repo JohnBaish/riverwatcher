@@ -180,7 +180,8 @@ with the switch).
    - "Higher than on 61% of late October days since 2000." (Greta Bridge; not at held gauges);
    - "The highest for the time of year since 2025." (Keswick Campsite; only when high or low; not at held gauges);
    - "A year ago: 6.71 m, normal for the time of year." (Reading);
-   - "Highest on record: 7.44 m, on January 8th 2024." (Reading)
+   - "Highest on record: 7.54 m, on January 7th 2024." (Reading; corrected in stage 1, October 30th:
+     the mock-up's 7.44 m on January 8th left out days with no lowest level)
 6. **The chart:** two, four, six, 10 or 26 weeks or a year, starting on two weeks and remembered
    on the device (John may review). Hourly averages up to six weeks, daily averages beyond. Shaded
    in the five judgement colours for each day of the period (the outer two paler); at a held gauge

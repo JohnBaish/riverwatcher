@@ -83,6 +83,9 @@ export const COAST_M = 500
 /** Inland, a dead end is bridged to the same river up to this far, or any river up to BRIDGE_ANY_M. */
 export const BRIDGE_SAME_INLAND_M = 1000
 export const BRIDGE_ANY_INLAND_M = 300
+/** At the sea's edge: the same river within 150 m, any within 20 m. */
+export const BRIDGE_SAME_SEA_M = 150
+export const BRIDGE_ANY_SEA_M = 20
 
 /** The high-water line's points, by 1 km square, for asking whether a point is at the coast. */
 export function coastIndex(lines: Float64Array[]): Map<string, number[]> {
@@ -206,22 +209,25 @@ export function readNetwork(dataDir: string, coast: Map<string, number[]>): Netw
     const l0 = incoming[0]
     const ex = l0.xy[l0.xy.length - 2], ey = l0.xy[l0.xy.length - 1]
     const sea = incoming.some((l) => l.form === 'tidalRiver') || atCoast(coast, ex, ey)
-    if (sea) { ends.add(n); continue }
+    // At the sea's edge a gap is looked for more closely (the tidal Thames has one at
+    // Isleworth, at a node OS marks as an outlet).
+    const [sameLimit, anyLimit] = sea ? [BRIDGE_SAME_SEA_M, BRIDGE_ANY_SEA_M] : [BRIDGE_SAME_INLAND_M, BRIDGE_ANY_INLAND_M]
     let best: { score: number; d: number; j: number; rest: number } | null = null
     for (const j of nearby(grid, ex, ey)) {
       const l = links[j]
       if (l.form === 'canal' || l.end === n || l.start === n || (isDead(l.end) && nodeForm.get(l.end) !== 'outlet') || leadsTo(l.end, n)) continue
       const hit = nearestOn(l.xy, ex, ey)
       const same = incoming.some((x) => x.name && normRiver(x.name) === normRiver(l.name))
-      if (hit.d > (same ? BRIDGE_SAME_INLAND_M : BRIDGE_ANY_INLAND_M)) continue
+      if (hit.d > (same ? sameLimit : anyLimit)) continue
       // The same river wins over a closer other one unless the other is very close.
-      const score = same ? hit.d - BRIDGE_ANY_INLAND_M : hit.d
+      const score = same ? hit.d - anyLimit : hit.d
       if (!best || score < best.score) best = { score, d: hit.d, j, rest: Math.max(0, hit.total - hit.along) * (hit.total ? (l.length || hit.total) / hit.total : 1) }
     }
     if (best) {
       const step: Step = { to: links[best.j].end, length: best.d + best.rest, link: best.j, kind: 'bridge' }
       bridgesTo.set(step.to, [...(bridgesTo.get(step.to) ?? []), { ...step, to: n }])
-    } else lateEnds.add(n)
+    } else if (sea) ends.add(n)
+    else lateEnds.add(n)
   }
 
   // Upstream from every true end (a river mouth, or where a river really ends inland),
@@ -258,29 +264,43 @@ export function readNetwork(dataDir: string, coast: Map<string, number[]>): Netw
   }
   for (const n of ends) { toSea.set(n, 0); cost.set(n, 0); push(0, n) }
   const LATE = 1e12
-  for (const n of lateEnds) { toSea.set(n, 0); cost.set(n, LATE); push(LATE, n) }
-  const run = () => {
-  while (heap.length) {
+  // Stretches drawn the wrong way round are used only for what can't be reached otherwise:
+  // first the way down as drawn (and across gaps); then, keeping everything found so far,
+  // against the drawing too.
+  const fixed = new Set<string>()
+  const run = (reverse: boolean) => {
+    while (heap.length) {
       const [c, n] = pop()
       if (c > (cost.get(n) ?? Infinity)) continue
       const here = toSea.get(n)!
       const tryUp = (up: string, step: Step, extra: number) => {
+        if (fixed.has(up)) return
         const nc = c + extra
         if (nc < (cost.get(up) ?? Infinity)) { cost.set(up, nc); toSea.set(up, here + step.length); down.set(up, step); push(nc, up) }
       }
       for (const i of into.get(n) ?? []) tryUp(links[i].start, { to: n, length: links[i].length, link: i, kind: 'link' }, links[i].length)
       for (const b of bridgesTo.get(n) ?? []) tryUp(b.to, { to: n, length: b.length, link: b.link, kind: 'bridge' }, b.length)
-      for (const i of out.get(n) ?? []) {
+      if (reverse) for (const i of out.get(n) ?? []) {
         if (links[i].form === 'canal') continue
         tryUp(links[i].end, { to: n, length: links[i].length, link: i, kind: 'reverse' }, links[i].length * REVERSE_COST)
       }
     }
   }
-  run()
+  const settle = () => { for (const n of toSea.keys()) fixed.add(n) }
+  const again = () => { for (const n of toSea.keys()) push(cost.get(n)!, n) }
+  run(false)
+  settle(); again(); run(true)
   // Pieces of the map that still reach no end (their gaps only lead to each other) end at
   // their own dead ends.
+  // Then the dead ends that aren't at the sea and couldn't be bridged, for what's left.
+  settle()
+  for (const n of lateEnds) if (!toSea.has(n)) { toSea.set(n, 0); cost.set(n, LATE); push(LATE, n) }
+  run(false)
+  settle(); again(); run(true)
+  settle()
   for (const n of into.keys()) if (!out.has(n) && !toSea.has(n)) { lateEnds.add(n); toSea.set(n, 0); cost.set(n, 2 * LATE); push(2 * LATE, n) }
-  run()
+  run(false)
+  settle(); again(); run(true)
   return { links, toSea, down, outs: out, grid, lateEnds }
 }
 
