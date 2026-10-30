@@ -413,7 +413,7 @@ function chartSvg(g, weeks, W = isPhone() ? 360 : 640, H = isPhone() ? 220 : 230
 }
 const LZ = [['vlow', 'Very low'], ['low', 'Low'], ['normal', 'Normal'], ['high', 'High'], ['vhigh', 'Very high']];
 const legend = (g) => g.history
-  ? `<div class="legend"><span><i class="li-line"></i>Level</span>${(heldNow(g) ? LZ.slice(3) : LZ).map(([c, w], i, a) => `<span${i === a.length - 1 ? ' style="white-space:nowrap"' : ''}><i class="lz" style="background:var(--j-${c})"></i>${w}${i === a.length - 1 ? ' for the time of year' : ''}</span>`).join('')}</div>`
+  ? `<div class="legend" style="padding-left:${(46 / (isPhone() ? 360 : 640) * 100).toFixed(2)}%"><span><i class="li-line"></i>Level</span>${(heldNow(g) ? LZ.slice(3) : LZ).map(([c, w], i, a) => `<span${i === a.length - 1 ? ' style="white-space:nowrap"' : ''}><i class="lz" style="background:var(--j-${c})"></i>${w}${i === a.length - 1 ? ' for the time of year' : ''}</span>`).join('')}</div>`
   : g.typical ? `<div class="legend"><span><i class="li-line"></i>Level</span><span><i class="li-typ"></i>The EA's usual range</span></div>` : '';
 function hover(e) {
   const r = e.target.closest('[data-chart]'); if (!r) return;

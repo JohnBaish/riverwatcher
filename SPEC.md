@@ -17,7 +17,7 @@ It draws on: John's research notes (`design/research-notes-2026-10-25.md`), the 
 
 **Status, Friday October 30th 2026.** **Agreed** means John has said yes. **Proposed** means
 Claude's draft, for John to confirm, change or turn down. Section 13 lists the questions and
-John's answers; two are still open (4 and 6).
+John's answers; one is still to confirm (6).
 
 ---
 
@@ -185,7 +185,8 @@ with the switch).
    in the five judgement colours for each day of the period (the outer two paler); at a held gauge
    only the high zones. Its height always covers the gauge's usual range over the whole year, so a
    small wobble looks small. The key: "Level, Very low, Low, Normal, High, Very high for the time of
-   year", left-aligned or centred (question 6). A tooltip on hover or touch.
+   year", left-aligned to the chart's own left edge, in line with its first date (John asked to see it,
+   October 30th; question 6). A tooltip on hover or touch.
 7. **About these figures** (§9) and the credits at the foot (§10).
 
 Judgement colours (Agreed): low water terracotta, high water blue, normal grey, each always with
@@ -213,9 +214,10 @@ its word; each arm checked with the dataviz validator in light and dark.
 > different gauges can't be compared with each other.
 >
 > "For the time of year" compares the last 24 hours with the same gauge's levels on the days a week
-> either side of today's date, in every year on record. How far back the records go varies: just
-> under half the gauges have records from before 2000, a few go back to the 1950s, and some
-> started only in the last few years; each gauge's figures say the year its record begins. Normal
+> either side of today's date, in every year on record. There's a lot of variation in when the
+> historical records for each gauge start. Just under half the gauges have records from before
+> 2000, a few go back to the 1950s, and some started only in the last few years; each gauge's
+> figures say the year its record begins. Normal
 > is the middle half of those days; low and high are the next 15% on each side; very low and very
 > high are the lowest and highest 10%.
 >
@@ -226,7 +228,7 @@ its word; each arm checked with the dataviz validator in light and dark.
 >
 > Rivers are listed upstream to downstream, using Ordnance Survey's map of rivers.
 
-The sentence on how far back records go is new, for John to check: from the archive on October
+The sentences on how far back records go are John's wording (October 30th), from these figures: from the archive on October
 30th, 1,088 of 2,184 river gauges' records start before 2000; the earliest full one is the Severn
 at Montford, from 1952; 153 started in 2020 or later.
 
@@ -259,7 +261,7 @@ cron-job.org access key has an expiry date to note in `PLAN.md`.
    "Held steady by a lock or weir", and adds the river's flow for the time of year, worked out the
    same way as levels: "Flow at Reading: normal for late October (Wednesday)". The summary uses it:
    "The Thames's flow at Reading is normal for late October; its locks hold the level steady."
-   Coverage (October 30th): 239 of 535 held gauges have a flow gauge on the same river within 15
+   Agreed as stage 6, after launch, with a mock-up first (John, October 30th). Coverage (October 30th): 239 of 535 held gauges have a flow gauge on the same river within 15
    km; on the Thames, 52 of 56 (eight flow gauges, Farmoor to Walton). Most flow comes only from
    the archive's daily figures, usually two days behind (about 80 gauges send flow live), so the
    day it's for is always named.
@@ -268,16 +270,16 @@ cron-job.org access key has an expiry date to note in `PLAN.md`.
 4. **Full postcodes** rather than districts.
 5. **Wales and Scotland** (Natural Resources Wales and SEPA, as explored for Hindcaster).
 
-## 13. Questions for John (answered October 30th, except 4 and 6)
+## 13. Questions for John (answered October 30th; 6 to confirm)
 
 1. **Where the data lives:** its own repo (John: "happy to take your advice"). §6.
 2. **The list of managed reaches:** Claude drafts it; John doesn't need to see it. §3.4.
 3. **Flood warnings within 10 miles:** to the middle of each flood area first. §7.2.
-4. **Flow for lock reaches:** John asked how it would translate onto the page. Claude's advice
-   is in §12.1; Claude suggests it as the first stage after launch, with a mock-up first, rather
-   than in the first version. Open.
+4. **Flow for lock reaches:** as advised in §12.1, the first stage after launch (stage 6), with a
+   mock-up first (John agreed, October 30th).
 5. **Region and England views:** the ten highest and ten lowest. §8.2.
-6. **The key's alignment:** John asked to see both; pictures sent October 30th. Open.
+6. **The key's alignment:** John found left-aligned too far left and asked for it aligned to the
+   chart's own edge; built and sent October 30th, for him to confirm.
 7. **Credits:** one OS line. §10.
 8. **"About these figures":** John's changes made (§9); the new sentence on how far back records
    go is for him to check.

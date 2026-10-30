@@ -66,6 +66,14 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-10-30 — flow for locks after launch; the key aligned to the chart (branch `claude/hopeful-cerf-uld21e`)
+
+John agreed flow for lock reaches as stage 6, after launch, with a mock-up first. On the key, he
+found left-aligned too far left: it now starts at the chart's own left edge (46/640 of its width on a
+computer, 46/360 on a phone), in line with the first date; three-way comparison in
+`design/previews/key-compare-*.png`. His wording for "About these figures" on when records start.
+Swept again (48 views); private page republished.
+
 ### 2026-10-30 — house style re-copied (notes only, straight to `main`)
 
 From clockwheel `674122d`, which now records this repo's two dark-mode findings as house rules: §2
