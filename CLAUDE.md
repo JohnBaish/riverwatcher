@@ -13,7 +13,8 @@ Read these first, in this order:
    (see below), its worked example's readings are illustrations only, and some
    of its sources were seen only in search results.
 2. `design/data-tests-2026-10-30.md`: what the EA's APIs really do, tested, and
-   John's answers.
+   John's answers. Then `design/content-answers-2026-10-30.md`: the main page's
+   content, as agreed so far.
 3. `HOUSE-STYLE.md`: the shared look and ways of working. Copied from
    clockwheel on 2026-10-30 (commit `aa12cd6`), with `SEO-HANDOVER.md`,
    `.claude/skills/fresh-look/` and `.gitignore`. Clockwheel holds the master
@@ -56,6 +57,14 @@ Scope (decided by John):
 - Flood warnings in the first version, if easy (they look it: finding 11).
 
 ## Log
+
+### 2026-10-30 — the main page's content, batch 1 (branch `claude/hopeful-cerf-uld21e`)
+
+John answered batch 1 (`design/content-answers-2026-10-30.md`): judgement first;
+the five words; a choice of two weeks to a year for the chart; all four history
+comparisons if room; the nearest five within 10 miles; metres and centimetres;
+flood warnings only when there are some; Hindcaster's views. Checked: the live
+feed keeps about four weeks, so longer charts come from the archive.
 
 ### 2026-10-30 — correction: lock levels do move (branch `claude/hopeful-cerf-uld21e`)
 
