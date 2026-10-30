@@ -33,3 +33,29 @@ Claude's draft; square brackets stand for real figures.
    points in ceremonial counties and regions from OS Boundary-Line. An area view
    would compare gauges by the time-of-year judgement, never by their heights
    (each gauge has its own zero).
+
+## Batch 2
+
+1. **Heading and tagline:** "River levels nearby, with historical comparisons"
+   (John's wording).
+2. **Hourly updates**, each gauge showing "Latest reading [9.45am]"; a gauge
+   silent for more than six hours shows no judgement, just "No reading since
+   [Thursday 4.15pm]", and stays in the list. John asked whether hourly is safe
+   on the free services: checked (see the log entry of this date in `CLAUDE.md`).
+3. **Say "Steady", but always give the figure:** "Steady: up [1] cm in the last
+   24 hours" (exact wording to settle with the design).
+4. **The chart starts on two weeks**, and the page remembers the visitor's last
+   choice. John will review this.
+5. **Area views as proposed:** a count of judgements ("Most rivers in Berkshire
+   are normal for late October. [5] of [38] gauges are high or very high."), the
+   most unusual high and low gauges Hindcaster-style, then every gauge folded.
+6. **A one-sentence round-up for the postcode view:** John would like to see it
+   in the designs.
+7. **Agreed:** "Riverwatcher isn't a flood warning service. For warnings, see
+   GOV.UK's Check for flooding or call Floodline on 0345 988 1188." (Floodline
+   number checked on GOV.UK, October 30th.)
+8. **Credits at the foot of the page:** the EA's sentence from its own
+   documentation, "This uses Environment Agency flood and river level data from
+   the real-time data API (Beta)."; the Open Government Licence line for the
+   archive; the OS, Royal Mail and National Statistics lines for postcodes.
+9. **"About these figures": Claude drafts it** once the design is chosen.

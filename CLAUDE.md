@@ -58,6 +58,19 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-10-30 — batch 2 answered; hourly updates checked (branch `claude/hopeful-cerf-uld21e`)
+
+John answered batch 2 (`design/content-answers-2026-10-30.md`). Hourly updates
+checked against the free plans (by web search, so second-hand; re-check before
+launch): GitHub's standard runners are free in public repos; cron-job.org allows a
+job every minute; Vercel's Hobby plan allows 100 deployments a day and 6,000
+build minutes a month, with one build at a time (24 hourly builds a day, plus
+branch previews, fits). The EA's own guidance is one call for all latest readings
+every 15 minutes. **The real limit is the repo's size:** every hourly commit adds
+to git history for good, so the collector must keep its hourly files small (to
+design in the spec). The cron-job.org token will expire and need renewing, as
+Hindcaster's.
+
 ### 2026-10-30 — the main page's content, batch 1 (branch `claude/hopeful-cerf-uld21e`)
 
 John answered batch 1 (`design/content-answers-2026-10-30.md`): judgement first;
