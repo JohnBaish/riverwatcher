@@ -66,6 +66,11 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-10-30 — the prompt for stage 1 (notes only)
+
+`design/prompt-stage-1-2026-10-30.md`: what John pastes into a new thread to start stage 1, once
+he has agreed the spec and created `JohnBaish/riverwatcher-data`.
+
 ### 2026-10-30 — the key agreed; the data repo to be public (branch `claude/hopeful-cerf-uld21e`)
 
 John: the key aligned to the chart is "great" (SPEC question 6 closed; all of §13 answered). He
