@@ -66,6 +66,17 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-10-30 — dark mode: blurry names (branch `claude/hopeful-cerf-uld21e`)
+
+John saw river and gauge names blurry at the edges in dark mode. The colours are the latest
+(Hindcaster's agreed dark set). Found: the "Nearest" tag inherited Caprasimo at bold weight,
+which Caprasimo doesn't have, so the browser faked the bold (fixed: the body font, as the other
+small labels). The headings themselves are true Caprasimo 400; light text on dark looks heavier
+on a Mac, so the mock-up now asks for finer smoothing in dark mode only
+(`-webkit-font-smoothing: antialiased`), for John to compare. Mac only; can't be seen from this
+container. If it helps, it belongs in the house style (Hindcaster has the same). Swept again (48
+views); private page republished.
+
 ### 2026-10-30 — spec and plan drafted (branch `claude/hopeful-cerf-uld21e`)
 
 `SPEC.md` (what Riverwatcher does, with Agreed and Proposed marked, and eight questions in §13)
