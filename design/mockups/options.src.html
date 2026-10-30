@@ -401,7 +401,7 @@ function chartSvg(g, weeks, W = isPhone() ? 360 : 640, H = isPhone() ? 220 : 230
 }
 const LZ = [['vlow', 'Very low'], ['low', 'Low'], ['normal', 'Normal'], ['high', 'High'], ['vhigh', 'Very high']];
 const legend = (g) => g.history
-  ? `<div class="legend"><span><i class="li-line"></i>Level</span>${(heldNow(g) ? LZ.slice(3) : LZ).map(([c, w]) => `<span><i class="lz" style="background:var(--j-${c})"></i>${w}</span>`).join('')}<span>for the time of year</span></div>`
+  ? `<div class="legend"><span><i class="li-line"></i>Level</span>${(heldNow(g) ? LZ.slice(3) : LZ).map(([c, w], i, a) => `<span${i === a.length - 1 ? ' style="white-space:nowrap"' : ''}><i class="lz" style="background:var(--j-${c})"></i>${w}${i === a.length - 1 ? ' for the time of year' : ''}</span>`).join('')}</div>`
   : g.typical ? `<div class="legend"><span><i class="li-line"></i>Level</span><span><i class="li-typ"></i>The EA's usual range</span></div>` : '';
 function hover(e) {
   const r = e.target.closest('[data-chart]'); if (!r) return;
@@ -442,7 +442,7 @@ const headline = (g) => `<p class="headline">${chip(g)}</p>`;
 function optionA(p, gs) {
   return `<section class="source"><div class="section-head"><h3>The nearest gauges</h3></div>${periods()}<div class="a-list">${gs.map(({ g, miles }) => `
     <article class="card a-card"><div>${gaugeTitle(g, miles)}${headline(g)}${figureLine(g)}${cmpList(g)}</div>
-    <div>${chartSvg(g, weeks)}${legend(g)}${zeroNote}</div></article>`).join('')}</div></section>`;
+    <div>${chartSvg(g, weeks)}${legend(g)}</div></article>`).join('')}</div></section>`;
 }
 // ---- option B ----
 let selected = null;
@@ -458,7 +458,7 @@ function spark(g) {
   return `<svg class="spark" viewBox="0 0 ${W} ${H}" aria-hidden="true">${b ? `<rect class="b" x="0" width="${W}" y="${y(b[3])}" height="${y(b[1]) - y(b[3])}"/>` : ''}<path d="M${pts.map(([t, v]) => `${x(t).toFixed(1)},${y(v).toFixed(1)}`).join('L')}"/></svg>`;
 }
 function bDetail(g, miles) {
-  return `<div class="card b-detail" id="b-detail"><div>${gaugeTitle(g, miles)}<div style="margin:8px 0">${headline(g)}${figureLine(g)}</div>${periods()}${chartSvg(g, weeks)}${legend(g)}${zeroNote}</div><div>${cmpList(g)}</div></div>`;
+  return `<div class="card b-detail" id="b-detail"><div>${gaugeTitle(g, miles)}<div style="margin:8px 0">${headline(g)}${figureLine(g)}</div>${periods()}${chartSvg(g, weeks)}${legend(g)}</div><div>${cmpList(g)}</div></div>`;
 }
 function optionB(p, gs) {
   const s = gs[selected] || gs[0];
@@ -538,7 +538,7 @@ function optionR(p) {
   }).join('');
   const s = flat[selected];
   return `<section class="source"><div class="section-head"><h3>The nearest gauges, river by river</h3><span class="note">${isPhone() ? 'Tap' : 'Choose'} one to see it in detail.</span></div>${cards}
-    <div class="card b-detail" id="b-detail"><div>${gaugeTitle(s.g, s.miles)}<div style="margin:8px 0">${headline(s.g)}${figureLine(s.g)}${heldLine(s.g)}</div>${periods()}${chartSvg(s.g, weeks)}${legend(s.g)}${zeroNote}</div><div>${cmpList(s.g)}</div></div></section>`;
+    <div class="card b-detail" id="b-detail"><div>${gaugeTitle(s.g, s.miles)}<div style="margin:8px 0">${headline(s.g)}${figureLine(s.g)}${heldLine(s.g)}</div>${periods()}${chartSvg(s.g, weeks)}${legend(s.g)}</div><div>${cmpList(s.g)}</div></div></section>`;
 }
 // ---- option C ----
 const ZONES = [[0, 10, 'very-low'], [10, 25, 'low'], [25, 75, 'normal'], [75, 90, 'high'], [90, 100, 'very-high']];
@@ -555,7 +555,7 @@ function optionC(p, gs) {
     ? `${scale(g)}<div style="display:flex;justify-content:space-between;gap:8px;font-size:13px;margin-top:2px"><span>${chip(g)}</span><span class="mono"><b>${metres(g.live.value)}</b> · ${esc(Math.abs(g.live.change24) < 0.02 ? 'steady' : (g.live.change24 > 0 ? 'up ' : 'down ') + Math.abs(Math.round(g.live.change24 * 100)) + ' cm in 24 hours')}</span></div>`
     : `<div>${chip(g)} <span class="mono">${g.live ? metres(g.live.value) : ''}</span></div>`}</div></div>`).join('');
   const key = `<div class="legend" style="justify-content:space-between;margin:0 0 4px"><span>Lowest for ${timeOfYear}</span><span>Normal</span><span>Highest</span></div>`;
-  const details = gs.map(({ g, miles }, i) => `<details class="card"${i === 0 ? ' open' : ''}><summary><span class="gname" style="font-family:var(--font-heading)">${esc(g.name)}</span>${chip(g)}</summary><div class="c-inner"><div>${figureLine(g)}${periods()}${chartSvg(g, weeks)}${legend(g)}${zeroNote}</div><div>${cmpList(g)}</div></div></details>`).join('');
+  const details = gs.map(({ g, miles }, i) => `<details class="card"${i === 0 ? ' open' : ''}><summary><span class="gname" style="font-family:var(--font-heading)">${esc(g.name)}</span>${chip(g)}</summary><div class="c-inner"><div>${figureLine(g)}${periods()}${chartSvg(g, weeks)}${legend(g)}</div><div>${cmpList(g)}</div></div></details>`).join('');
   return `<section class="source"><div class="section-head"><h3>How each gauge compares with ${timeOfYear} in past years</h3></div><div class="card c-board">${key}${rows}</div>
     <div class="c-details"><div class="section-head" style="margin-top:var(--space-6)"><h3>Each gauge in detail</h3></div>${details}</div></section>`;
 }
@@ -596,7 +596,7 @@ function render() {
     const main = opt === 'r' ? optionR(p) : opt === 'a' ? optionA(p, gs) : opt === 'b' ? optionB(p, gs) : optionC(p, gs);
     body = `${head(`Near ${p.code} (${p.place})`)}${warningsBlock(p)}<div class="section-head"><h3>Summary</h3></div><div class="card roundup"><p>${esc(opt === 'r' ? roundupByRiver(p) : roundup(p.code, gs.map((x) => x.g)))}</p></div>${main.replace('</section>', `<p class="data-credit">${esc(MOCK.credit)}</p></section>`)}`;
   }
-  app.innerHTML = body + `<div class="card about"><h3>About these figures</h3><p class="muted">To be drafted once a design is chosen (John, October 30th): each gauge's own zero, "for the time of year", provisional figures, and where the history comes from.</p></div>
+  app.innerHTML = body + `<div class="card about"><h3>About these figures</h3><p class="muted">To be drafted once a design is chosen (John, October 30th), including "Heights are above each gauge's own zero, not the depth of the river." Also: "for the time of year", provisional figures, and where the history comes from.</p></div>
     <footer class="footer-notice">This uses Environment Agency flood and river level data from the real-time data API (Beta). Contains public sector information licensed under the Open Government Licence v3.0. Contains OS data © Crown Copyright and database rights 2026. Contains Royal Mail data © Royal Mail copyright and database right 2026. Contains National Statistics data © Crown copyright and database right 2026.<br><br>Riverwatcher is a free-to-use personal project by John Baish. More free tools at <a href="https://www.baish.net/" target="_blank" rel="noopener noreferrer">www.baish.net</a>. Contact: workshop@baish.net. We don't record anything you do here, apart from anonymous visit statistics (no cookies, no personal data) showing us how the site is used.</footer>`;
 }
 function route() {

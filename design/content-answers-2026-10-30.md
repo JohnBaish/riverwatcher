@@ -59,3 +59,22 @@ Claude's draft; square brackets stand for real figures.
    the real-time data API (Beta)."; the Open Government Licence line for the
    archive; the OS, Royal Mail and National Statistics lines for postcodes.
 9. **"About these figures": Claude drafts it** once the design is chosen.
+
+## Batch 3: option B revised (October 30th)
+
+John: "This is great. Really good."
+
+1. **Order within a river:** upstream to downstream, with the nearest gauge marked, as built
+   ("you're showing what I had in mind").
+2. **When every nearby gauge is held by a lock or weir**, add the nearest free-flowing gauge
+   within 10 miles in its own river card: to try.
+3. **The chart's height always covers the gauge's usual yearly range:** yes.
+4. **The chart's shading in the five judgement colours:** clearer; keep it.
+5. **A lake gets its own card under its name** (Derwentwater at Lodore): yes.
+6. **The summary river by river:** looks good.
+
+Also: "Height above the gauge's own zero, not the depth of the river." moves out of the
+charts into "About these figures" (still to write); in the key, "for the time of year" now
+sits with "Very high" so they read together. Whether to centre the key: Claude suggested
+keeping it left-aligned (it lines up with the text above, and wrapped rows look ragged when
+centred on a phone), for John to decide.

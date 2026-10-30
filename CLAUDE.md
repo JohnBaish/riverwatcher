@@ -65,6 +65,13 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-10-30 — option B revised: John's answers (branch `claude/hopeful-cerf-uld21e`)
+
+John answered batch 3 (`design/content-answers-2026-10-30.md`): all six agreed or to try.
+Mock-up: the zero sentence taken out of the charts (kept for "About these figures"), and
+"Very high for the time of year" kept on one line in the key. Swept again (48 views, no
+errors, no sideways scroll); private page republished.
+
 ### 2026-10-30 — option B chosen and revised; locks decided (branch `claude/hopeful-cerf-uld21e`)
 
 **John decided:** locks: B (only "high" and "very high" said at a lock or weir; otherwise
