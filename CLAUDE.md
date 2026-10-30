@@ -21,8 +21,7 @@ Read these first, in this order:
    copies; if they change, re-copy them and note it here.
 4. The tracker: `projects/riverwatcher.md` in `JohnBaish/baish.net-directory`.
 
-**`SPEC.md` and `PLAN.md`** (drafted October 30th, for John to agree; SPEC §13 has the open
-questions). Read them before anything else once agreed.
+**`SPEC.md` and `PLAN.md`** (agreed by John, October 30th). Read them before anything else.
 
 Design options (step 3): `design/mockups/options.html`, one page with options A, B and C
 for RG4, CA12 and Berkshire, from a real EA snapshot (`mock-data.json`, made by
@@ -57,6 +56,26 @@ Key points:
 - Build dark mode in from the start (HOUSE-STYLE §2, §16).
 - **Project tracker:** when something significant changes (a stage finished, a decision made, something goes live or is parked), update this project's file and its line in `INDEX.md` in `JohnBaish/baish.net-directory`, following that repo's README. Also at the end of each session (John).
 
+## Layout (stage 1)
+
+- **Code here, data in `JohnBaish/riverwatcher-data`** (public; `data/`). Scripts take the
+  data folder as an argument, by default `../riverwatcher-data/data`.
+- `scripts/lib/`: `ea.ts` (fetching, CSV), `gauges.ts` (which stations count,
+  near-duplicates, names, the held list and `NAVIGATIONS`), `rivers.ts` (OS Open Rivers:
+  the network repaired, each gauge's place and joins), `areas.ts` (county and region,
+  from Hindcaster's `build-areas.ts`), `shapefile.ts` (from Hindcaster, with polylines),
+  `history.ts` (the time-of-year table, records, "since", the judgement, Steady),
+  `days.ts` (hourly averages, a day's usual level).
+- `npm run gauges <Open Rivers data folder> <Boundary-Line folder> [<data>]`:
+  `data/gauges.json` and `design/gauge-review.md`. `RW_CACHE=<folder>` reuses the EA
+  lists. Both OS downloads come from api.os.uk (ESRI Shapefile, GB) and aren't kept.
+- `npm run history [<data>]` and `npm run backfill [<data>]`: `data/history/` and
+  `data/days/`, resumable; run by the data repo's History workflow ("Run workflow",
+  choose the code branch).
+- `npm run check` (`scripts/check-rules.ts`): the rules, with real history fixtures in
+  `design/fixtures/history/`, and the gauge list's rivers when the data repo is beside
+  this one.
+
 Scope (decided by John):
 
 - River levels only: no tidal, groundwater or rainfall.
@@ -65,6 +84,59 @@ Scope (decided by John):
 - Flood warnings in the first version, if easy (they look it: finding 11).
 
 ## Log
+
+### 2026-10-30 — stage 1: the gauge list, the history and the backfill (branch `stage-1-gauges`)
+
+**John** agreed the spec and created `JohnBaish/riverwatcher-data`; start stage 1.
+
+**What:** Vite, React and TypeScript set up as Hindcaster's (same versions, a placeholder
+page), and the layout above. Downloads checked against OS's checksums (Open Rivers
+October 2026, Boundary-Line).
+- **The gauge list:** 3,204 river gauges by SPEC §3.1; 2,954 reported in the last week;
+  2 backups and 64 near-duplicates left out: **2,888**. 2,109 have archive history, 358
+  only the EA's typical range, 421 neither.
+- **Archive matches** need the same name or to be within 1 km: four matches by reference
+  alone were different stations (Uphill Rhyne took Sampford Brett's history, 29 km away).
+  Where the names agree but the lists disagree on the position, the one on the gauge's
+  own river is used (Canal Road and Warwick Old Budbrooke Road from the archive).
+- **Names:** all-capital labels take the archive's name or are tidied ("MANTHORPE GS
+  WITS" → "Manthorpe"); river names from the EA, then the archive, then Open Rivers.
+- **OS Open Rivers had to be repaired** to give each river one order from source to sea:
+  nodes at the same spot merged (within 1.5 m); a river ends only at the sea (a tidal
+  stretch or within 500 m of Boundary-Line's high-water line) unless a gap can be bridged;
+  other dead ends are gaps, bridged to a stretch within 300 m (1 km on the same river,
+  150 m at the sea's edge), never to one that flows back; stretches drawn backwards used
+  only where nothing else reaches; Welsh names in English. Now the Thames (Ewen 339 km to
+  the sea, Caversham 191), Trent, Severn, Great Ouse, Aire, Nene, Medway, Kennet and
+  Witham are each one river in order; 19 smaller cases stay in pieces (review §3).
+- **Held** (SPEC §3.4 changed, the list being Claude's): a downstream measure alone no
+  longer counts (136 such gauges are gauging weirs or culverts, where the level follows
+  the flow); "Locks" isn't a lock (Locks Weir on the Ribble). Navigations come from a
+  checked list (`NAVIGATIONS`), each held from its head down: the Thames, the Medway,
+  the Great Ouse from Bedford, the Nene, the Kennet from Newbury, the Severn from
+  Worcester, the Aire from Leeds, and others. 443 held.
+- **History:** for every fifth day of the year, the levels below which each 2.5% of past
+  days (a week either side) lie, in whole millimetres; each week's highest and lowest; the
+  records. About 26 KB for a 30-year gauge. Against exact day-by-day sums at Caversham, the
+  table is 0.6 points out on average (worst 3.1), and the word never differs (1,098 tests).
+  The last 60 days aren't used. "Since" uses the three weeks round the date.
+- **Day files** are UTC days (24 UTC hours), so clock changes need nothing. A live day's
+  usual level matched the archive's to the millimetre on 15 of 18 days tried.
+
+**Found:**
+- **Reading's record is 7.54 m on January 7th 2024**, not the mock-up's 7.44 m on the 8th:
+  the archive's "lowest" is sometimes a little above its "highest" for the same date, and
+  January 7th has no lowest. Such days are kept now; SPEC §7.5 corrected.
+- The Loddon at Twyford's archive levels stop in June 2011 (review §11 lists all such).
+- Six of the agreed mock-up's figures checked against the history files, all within 5
+  points, same word (Caversham 50% against 46%: the table reads between steps five days
+  apart while levels rise fast in late October).
+
+**Checks:** `npm run check` 79 passed; breaking the "low" edge and the Thames rule on
+purpose made them fail. `tsc -b`, lint and build clean. No page yet, so nothing in a
+browser.
+
+**Running:** the data repo's History workflow (run 1, started 20.18 UTC), both parts.
 
 ### 2026-10-30 — the prompt for stage 1 (notes only)
 

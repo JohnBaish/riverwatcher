@@ -7,7 +7,7 @@
 
 import { existsSync, readFileSync } from 'node:fs'
 import {
-  dropNearDuplicates, heldReason, isBackup, namesAgree, navigationHeads, riverKey, riverMeasure, shownName, tidyName, type Station,
+  dropNearDuplicates, heldReason, isBackup, isLake, namesAgree, navigationHeads, riverKey, riverMeasure, shownName, tidyName, type Station,
 } from './lib/gauges.ts'
 import {
   average24, buildHistory, dayOfYear, judge, joinDays, levelsFor, movement, percentBelow, readDailyCsv, recordStart, sinceYear, timeOfYear, wordFor,
@@ -55,6 +55,7 @@ check('same site, codes aside', namesAgree('BLAKES LOCK G.STN', 'Blakes Lock'))
 check('different sites', !namesAgree('UPHILL RHYNE TERRACE TILTING WEIR', 'Sampford Brett Screen') && !namesAgree('Rainfall station', 'Wannock Mill'))
 eq('Welsh names in English', englishName('Afon Hafren', 'River Severn'), 'River Severn')
 eq('English names as they are', englishName('River Wye', ''), 'River Wye')
+check('lakes, not streams called "Water"', isLake(null, 'Derwent Reservoir', null) && isLake('Lake Windermere', 'Bowness', null) && !isLake('Wooler Water', 'Wooler', 'inlandRiver') && !isLake('Atherton Lake Brook', 'Howe Bridge', 'inlandRiver'))
 check('river names compare without "River"', normRiver('River Kennet') === normRiver('kennet'))
 
 // ---- held by a lock or weir ----

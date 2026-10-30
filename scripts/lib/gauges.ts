@@ -199,10 +199,11 @@ export function riverName(live: string | undefined, archive: string | undefined,
   return { river: null, from: null }
 }
 
-/** A lake, reservoir or mere, from the river's name or Open Rivers' "lake" form (SPEC §7.4:
- *  a lake has its own card). */
+/** A lake, reservoir, mere or pond, from the names or Open Rivers' "lake" form (SPEC §7.4:
+ *  a lake has its own card). Not "… Water": in England that's usually a stream (Wooler
+ *  Water, Shreen Water). */
 export const isLake = (river: string | null, name: string, form: string | null) =>
-  form === 'lake' || /\b(lake|mere|reservoir|tarn|water)$/i.test(river ?? '') || /\breservoir\b/i.test(name)
+  form === 'lake' || /^lake\b|\b(lake|mere|reservoir|tarn)$/i.test(river ?? '') || /\b(reservoir|lake|pond)\b/i.test(name)
 
 // ---- matching the archive ----
 

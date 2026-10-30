@@ -8,7 +8,7 @@ Made by `npm run gauges` on Friday, 30 October 2026, from the Environment Agency
 2. **2,954** of them sent a reading in the last 7 days; 250 are left out (section 9).
 3. **2** backups and **64** near-duplicates left out (section 8), leaving **2,888** gauges.
 4. **2,109** have daily history in the archive; 358 more have only the EA's all-year typical range; **421** have neither, so Riverwatcher could show their level but not whether it's high or low (section 6).
-5. **443** are held by a lock or weir (section 2); **70** are on lakes or reservoirs (section 5).
+5. **443** are held by a lock or weir (section 2); **53** are on lakes or reservoirs (section 5).
 6. **2,810** are placed on OS Open Rivers; 78 aren't within 600 m of a river (section 4).
 7. **2,879** are in England; 9 are just over the border or out to sea (section 7).
 
@@ -553,31 +553,22 @@ River North Tyne (Northumberland); Finchett's Gutter (Cheshire); River Avon (Wil
 
 | Gauge | River or lake | County |
 | --- | --- | --- |
-| Coldgate Mill | Wooler Water | Northumberland |
-| Wooler | Wooler Water | Northumberland |
-| Pawston | Bowmont Water | Northumberland |
 | Derwent Reservoir | Derwent Reservoir | Durham |
+| Hinksey Lake | Hinksey Stream | Oxfordshire |
+| Crondall Pond | River Hart | Hampshire |
+| Brownwich Pond | Brownwich Stream | Hampshire |
+| Stanwell Gate 1 (Lake Offtake) | River Colne | Greater London |
 | Kings Pond | River Wey | Hampshire |
-| Moyles Court | Docken's Water | Hampshire |
-| Colesbrook | Shreen Water | Dorset |
-| Huntingford Bridge | Shreen Water | Dorset |
-| Sydling St Nicholas | Sydling Water | Dorset |
+| Shirley Pond | Tanners Brook | Hampshire |
 | Cerne Abbas Reservoir | River Cerne | Dorset |
-| Dawlish | Dawlish Water | Devon |
 | Cannock Churchbridge Hall Lane | Wash Brook | Staffordshire |
 | Scalford Dam | Scalford Brook | Leicestershire |
 | Foston Reservoir | Foston Brook | Derbyshire |
 | Loe Pool | River Cober | Cornwall |
 | Bodmin Priory Pond |  | Cornwall |
 | Bodmin St Petrocs Well | Bodmin Town Leat | Cornwall |
-| Bradiford | Bradiford Water | Devon |
-| Plaistow Mill | Bradiford Water | Devon |
-| West Luccombe | Horner Water | Somerset |
-| Goosehill Bridge, Castleton | Peakshole Water | Derbyshire |
-| Halsewater | Halse Water | Somerset |
+| Sherborne Lake | River Yeo | Dorset |
 | Cribbs Causeway Reservoir |  | Gloucestershire |
-| Seven Kings Park | Loxford Water | Greater London |
-| Rawtenstall | Limey Water | Lancashire |
 | Walkden The Reach | Whittle Brook | Greater Manchester |
 | Torside Reservoir | Torside Reservoir | Derbyshire |
 | Bottoms Reservoir |  | Derbyshire |
@@ -586,42 +577,34 @@ River North Tyne (Northumberland); Finchett's Gutter (Cheshire); River Avon (Wil
 | Lower Rivington Reservoir | Lower Rivington Reservoir | Lancashire |
 | Upper Rivington Reservoir | River Yarrow | Lancashire |
 | Stocks Reservoir Level | River Hodder | Lancashire |
-| Barden Lane | Pendle Water | Lancashire |
-| Lomeshaye | Pendle Water | Lancashire |
-| Reedyford | Pendle Water | Lancashire |
-| Carry Bridge | Colne Water | Lancashire |
 | Abbeystead Reservoir | River Wyre | Lancashire |
 | Far Sawrey | Windermere | Cumbria |
 | Brown Howe | Coniston Water | Cumbria |
+| Ennerdale Lake | River Ehen | Cumbria |
 | Thirlmere Reservoir (Spillway level = 16.55m) | Thirlmere Reservoir | Cumbria |
 | Castle Howe | Bassenthwaite Lake | Cumbria |
 | Haweswater Reservoir (Spillway level = 31.39m) | Haweswater Reservoir | Cumbria |
 | Pooley Bridge Steamer Pier | Ullswater | Cumbria |
 | Coalburn Beck | Coal Burn | Northumberland |
 | Thacka Beck Reservoir | Thacka Beck | Cumbria |
+| North Pond | River Hamble | Hampshire |
 | Weldon Flood Storage Reservoir | Willow Brook | Northamptonshire |
 | Romsey Botley Road | Tadburn Lake | Hampshire |
-| Eling | Bartley Water | Hampshire |
-| Totton | Bartley Water | Hampshire |
-| Ashurst Bridge | Bartley Water | Hampshire |
 | Eye Brook Reservoir Caldecott |  | Leicestershire |
 | Ruxley Pits Outfall | River Cray | Greater London |
 | Brayford Pool | River Witham | Lincolnshire |
 | Litte Bowden Flood Storage Reservoir | River Jordan | Leicestershire |
-| Fordingbridge Bowerwood Road | Ashford Water | Hampshire |
-| Lode | Quy Water | Cambridgeshire |
+| Welmore Lake Sluice | River Delph | Norfolk |
 | Rattlesden Reservoir Sluice | Rattlesden River | Suffolk |
+| Emsworth Mill Pond Sluices |  | Hampshire |
 | Great Easton Flood Storage Reservoir | River Welland | Leicestershire |
 | Medbourne Flood Storage Reservoir | Medbourne Brook | Leicestershire |
 | Ruckinge Dyke |  | Kent |
-| Dulverton Town Marsh | Marsh Water | Somerset |
-| Ferndown Tricketts Cross | Uddens Water | Dorset |
 | Ardingly Shellbrook | Shell Brook | West Sussex |
 | Warnham Mill Gate | Warnham Mill Pond | West Sussex |
 | Meadowgate Regulator | River Rother | South Yorkshire |
-| Todmorden Salford | Walsden Water | West Yorkshire |
-| Walsden | Walsden Water | West Yorkshire |
-| Nutclough | Hebden Water | West Yorkshire |
+| Meadowgate Lake | River Rother | South Yorkshire |
+| Rother Valley Lake | Rother Washlands | South Yorkshire |
 | Skipton Waller Hill Reservoir | Waller Hill Beck | North Yorkshire |
 
 ## 6. No history and no typical range

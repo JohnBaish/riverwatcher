@@ -91,6 +91,10 @@ reading (Roe Bridge on the Brock has one day in 1919, then nothing for decades).
    the Nene, the Stour, the Welland, the Ancholme, the Glen and the Black Sluice Navigation,
    and any others found). Names alone miss gauges in a lock reach: the "Reading" gauge's level
    barely follows the Thames's flow.
+   *Stage 1 (October 30th, Claude): a downstream gauge on its own no longer counts (136 such
+   gauges are gauging weirs or culverts, where the level follows the flow); each navigation
+   on the list is held from its head down (`NAVIGATIONS` in `scripts/lib/gauges.ts`;
+   `design/gauge-review.md` §2).*
 5. **Place along the river:** each gauge is put on its nearest stretch in OS Open Rivers
    (preferring one with the EA's river name, within 600 m) and given its distance to the sea
    along the river. A tributary's route shows which river it joins, and where.
