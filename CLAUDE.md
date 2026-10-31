@@ -88,6 +88,11 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-10-31 — cron-job.org set up; the key's expiry noted (notes only)
+
+John set up the hourly cron-job.org job (first run 6.10pm today); its GitHub access key expires
+on January 29th 2027 (PLAN.md, "Dates to remember"). Tracker updated.
+
 ### 2026-10-31 — stage 3.1: the postcode view built, for John to look at (branch `claude/inspiring-hypatia-60x279`, not merged)
 
 **John:** start stage 3 (`design/prompt-stage-3-2026-10-31.md`): show the agreed design rebuilt

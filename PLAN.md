@@ -82,8 +82,9 @@ SPEC §12: downstream gauges, tidal stations, groundwater, full postcodes, Wales
 
 ## Dates to remember
 
-- The cron-job.org GitHub access key: expiry date to note when John makes it (stage 2; steps in
-  `design/cron-job-org-steps.md`).
+- **The cron-job.org GitHub access key expires on January 29th 2027** (John, October 31st 2026).
+  Make a new key before then and paste it into the cron-job.org job (steps in
+  `design/cron-job-org-steps.md`). The job first ran at 6.10pm on October 31st 2026.
 - The Monthly workflow runs on the 3rd of each month at 02.23 UTC (in the data repo, from
   October 31st 2026). If GitHub doesn't start it on November 3rd, John re-saves
   `.github/workflows/monthly.yml` on github.com under his own account (as Hindcaster's needed).
