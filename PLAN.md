@@ -82,6 +82,10 @@ SPEC §12: downstream gauges, tidal stations, groundwater, full postcodes, Wales
 
 ## Dates to remember
 
-- The cron-job.org GitHub access key: expiry date to note when it's made (stage 2).
+- The cron-job.org GitHub access key: expiry date to note when John makes it (stage 2; steps in
+  `design/cron-job-org-steps.md`).
+- The Monthly workflow runs on the 3rd of each month at 02.23 UTC (in the data repo, from
+  October 31st 2026). If GitHub doesn't start it on November 3rd, John re-saves
+  `.github/workflows/monthly.yml` on github.com under his own account (as Hindcaster's needed).
 - The Vercel deploy hook (a secret in GitHub Actions): made in stage 2.
 - Re-check the free plans' limits (GitHub, cron-job.org, Vercel) before launch.

@@ -111,6 +111,10 @@ branch): run 1, 12 minutes, no cache, made the October 30th day file from 374,49
 gauge's line in `latest.json`; 19 to 23 silent; no flood warnings in force this morning, so
 that part is untested against a real warning.
 
+**John:** merge (done: `main` brought in the house-style re-copy first, both log entries kept,
+checks 100); the Monthly workflow yes (in the data repo, on the 3rd at 02.23 UTC); cron-job.org
+when he can. Until then the collector runs only by hand.
+
 ### 2026-10-31 — house style re-copied (notes only, straight to `main`)
 
 From clockwheel `9edeea5`: §10 asks sessions to run `node site/check-tracker.mjs` in
