@@ -18,7 +18,7 @@ import { readLines } from './lib/shapefile.ts'
 import { readAreas, areaOf } from './lib/areas.ts'
 import {
   ARCHIVE_NEAR_M, metres, namesAgree,
-  dropNearDuplicates, hasDownstream, heldReason, isDrain, navName, isBackup, isLake, navigationHeads, riverKey, riverMeasure, riverName, shownName,
+  DRAIN_NAME, DRAINED_COUNTIES, dropNearDuplicates, hasDownstream, heldReason, isDrain, navName, isBackup, isLake, navigationHeads, riverKey, riverMeasure, riverName, shownName,
   type HeldReason, type Station,
 } from './lib/gauges.ts'
 
@@ -190,7 +190,7 @@ const out = built
   .map((g) => {
     const area = areaOf(areas, g.e, g.n)
     const head = g.river && g.at ? heads.get(riverKey(g.river, g.at.outlet))?.toSeaKm : undefined
-    const held: HeldReason | null = heldReason({ name: `${g.name} ${g.label}`, river: g.river, long: g.long, form: g.at?.form ?? null, toSeaKm: g.at?.toSeaKm ?? null }, head)
+    const held: HeldReason | null = heldReason({ name: `${g.name} ${g.label}`, river: g.river, county: area.county, long: g.long, form: g.at?.form ?? null, toSeaKm: g.at?.toSeaKm ?? null }, head)
     return {
       ref: g.ref,
       name: g.name,
@@ -204,7 +204,6 @@ const out = built
       typical: g.typical,
       held,
       downstream: g.downstream,
-      drain: isDrain(g.river),
       lake: isLake(g.river, g.name, g.at?.form ?? null),
       county: area.county, region: area.region,
       toSeaKm: g.at?.toSeaKm ?? null,
@@ -218,7 +217,7 @@ const out = built
 
 mkdirSync(dataDir, { recursive: true })
 writeFileSync(join(dataDir, 'gauges.json'), JSON.stringify({
-  note: 'River gauges in and near England (Riverwatcher, scripts/build-gauges.ts). ref: the EA station reference; measure: its level measure; archive: the Hydrology archive station with daily highest and lowest levels, if any; typical: the EA\'s typical range (all year); held: why its level is held by a lock or weir (name, canal, thames, navigation), or null; downstream: it also has a downstream level; drain: a fen drain, rhyne or similar, whose level may be pumped; toSeaKm: distance to the sea along the river (OS Open Rivers); system: rivers with the same number flow out at the same place; joins: the river it flows into, and where (distance to the sea); e, n: British National Grid metres.',
+  note: 'River gauges in and near England (Riverwatcher, scripts/build-gauges.ts). ref: the EA station reference; measure: its level measure; archive: the Hydrology archive station with daily highest and lowest levels, if any; typical: the EA\'s typical range (all year); held: why its level is held (name, canal, drain, thames, navigation), or null; downstream: it also has a downstream level; toSeaKm: distance to the sea along the river (OS Open Rivers); system: rivers with the same number flow out at the same place; joins: the river it flows into, and where (distance to the sea); e, n: British National Grid metres.',
   made: now.toISOString(),
   credits: [
     'This uses Environment Agency flood and river level data from the real-time data API (Beta).',
@@ -278,6 +277,7 @@ p()
 const reasons: Record<HeldReason, string> = {
   name: 'Named after a lock, weir, sluice, mill, gate or staunch',
   canal: 'On a canal or navigation',
+  drain: 'On a fen drain, rhyne or similar, in the drained lowlands (John, October 31st)',
   thames: 'On the non-tidal Thames below Lechlade',
   navigation: 'On a navigation, from its head down',
 }
@@ -309,7 +309,12 @@ for (const [river, gs] of [...heldByRiver].sort(([a], [b]) => a.localeCompare(b)
 }
 p()
 
-p('**Fen drains, rhynes and the like** aren\'t held, though their levels are often set by pumping. For John: ' + n(out.filter((g) => g.drain && !g.held).length) + ' of them, mostly in Lincolnshire, Cambridgeshire, Norfolk and Somerset. Say if they should be treated as held.')
+{
+  const drainWord = out.filter((g) => DRAIN_NAME.test(g.river ?? ''))
+  p(`**Drains.** A drainage word in the river's name (drain, rhyne, lode, delph, eau, dyke, dike, catchwater) counts only in ${DRAINED_COUNTIES.join(', ')}. Held as drains: ${n(out.filter((g) => g.held === 'drain').length)}. Not held, being elsewhere (usually streams, or urban drains):`)
+  p()
+  p(drainWord.filter((g) => !isDrain(g.river, g.county)).map((g) => `${g.name} (${g.river}, ${g.county ?? 'outside England'})${g.held ? `, held by its ${g.held}` : ''}`).join('; ') + '.')
+}
 p()
 
 p('## 3. Rivers joining')

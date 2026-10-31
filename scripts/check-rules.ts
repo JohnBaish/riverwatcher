@@ -65,6 +65,9 @@ eq('Reading: on the Thames below Lechlade', held('Reading', 'River Thames', -0.9
 eq('Cricklade: on the Thames above Lechlade, free', held('Cricklade', 'River Thames', -1.87), null)
 eq('Greta Bridge: free ("Bridge" isn\'t a structure)', held('Greta Bridge', 'River Greta', -3.15), null)
 eq('a canal', held('Par Highways', 'Treffry Canal', -4.7), 'canal')
+eq('a fen drain in the lowlands', heldReason({ name: 'Wainfleet', river: 'Steeping River Catchwater Drain', county: 'Lincolnshire', long: 0.2, form: null, toSeaKm: null }, undefined), 'drain')
+eq('a "dike" in the hills is a stream', heldReason({ name: 'Grimescar', river: 'Grimescar Dike', county: 'West Yorkshire', long: -1.8, form: null, toSeaKm: null }, undefined), null)
+eq('the River Leam is a river', heldReason({ name: 'Eathorpe', river: 'River Leam', county: 'Warwickshire', long: -1.4, form: null, toSeaKm: null }, undefined), null)
 eq('Reading Calcot Bridge: on the Kennet navigation, below its head at Newbury', held('Reading Calcot Bridge', 'River Kennet', -1.05, 108.4, 134.9), 'navigation')
 eq('Marlborough: on the Kennet above it', held('Marlborough', 'River Kennet', -1.73, 170, 134.9), null)
 {

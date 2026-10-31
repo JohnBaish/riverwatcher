@@ -101,6 +101,14 @@ Scope (decided by John):
   2024, 243 in early 2024), while their 15-minute readings usually go on to now (22 of the 32
   checked to October 2026, 6 partly; Wilfholme, Didsbury and Knapp Mill have neither since
   2003, 2022 and 2023). Proposed to John: work out the missing days from the 15-minute readings.
+- **John agreed:** fill the gaps (`RW_FILL=1` in `build-history.ts`, the workflow's "fill";
+  run 3); trial: Twyford 567 days filled (11 years), Coalburn Beck 8,155 (34 years).
+- **John decided (A):** gauges whose gaps can't be filled say "History incomplete" and name
+  the gap (SPEC §4.7). **(B11):** fen drains and rhynes are held (SPEC §4.6), and "About these
+  figures" must say so (SPEC §9). Rule: a drainage word in the river's name, in the drained
+  counties only (`DRAINED_COUNTIES`); 76 held this way, 520 held in all. "Dike" and "dyke"
+  elsewhere are usually hill streams; "Cut" and "Leam" are rivers. **(B10):** open; John asked
+  whether the 422 gauges with neither history nor typical range give usable information.
 
 ### 2026-10-30 — stage 1: the gauge list, the history and the backfill (branch `stage-1-gauges`)
 

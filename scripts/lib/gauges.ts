@@ -75,7 +75,7 @@ export function dropNearDuplicates<G extends { ref: string; name: string; river:
 
 // ---- held by a lock or weir (SPEC §3.4, the list Claude's to draft) ----
 
-export type HeldReason = 'name' | 'canal' | 'thames' | 'navigation'
+export type HeldReason = 'name' | 'canal' | 'drain' | 'thames' | 'navigation'
 
 /** Named after a structure (agreed, October 30th): a lock, weir, sluice, mill or gate, or a
  *  staunch (the Great Ouse's word for a weir with a gate). Not "Locks" (Locks Weir on the
@@ -130,9 +130,10 @@ export const navName = (river: string | null) => (river ?? '').toLowerCase().rep
  *  distance to the sea of its navigation's head (see `navigationHeads`). A gauge with a
  *  downstream measure isn't held on that account alone: many are gauging weirs or culverts,
  *  where the level follows the flow (locks research, finding 6). */
-export function heldReason(g: { name: string; river: string | null; long: number; form: string | null; toSeaKm: number | null }, navigationHead: number | undefined): HeldReason | null {
+export function heldReason(g: { name: string; river: string | null; county?: string | null; long: number; form: string | null; toSeaKm: number | null }, navigationHead: number | undefined): HeldReason | null {
   if (STRUCTURE_NAME.test(g.name)) return 'name'
   if (isCanal(g.river, g.form)) return 'canal'
+  if (isDrain(g.river, g.county ?? null)) return 'drain'
   if (/^river thames$/i.test(g.river ?? '') && g.long > THAMES_HEAD_LONG) return 'thames'
   if (navigationHead !== undefined && g.toSeaKm !== null && g.toSeaKm <= navigationHead + 0.2) return 'navigation'
   return null
@@ -156,9 +157,13 @@ export function navigationHeads(gauges: { name: string; river: string | null; ou
 }
 export const riverKey = (river: string, outlet: string) => `${navName(river)}|${outlet}`
 
-/** A fen drain, rhyne or similar, whose level is set by pumping (not held as a lock reach,
- *  but listed for John). */
-export const isDrain = (river: string | null) => /\b(drain|rhyne|dyke|dike|lode|eau|delph|leam|cut)\b/i.test(river ?? '')
+/** A fen drain, rhyne or similar, whose level is usually set by pumping, so it's held like a
+ *  lock reach (John, October 31st). A drainage word in its name, in the low-lying drained
+ *  counties only: elsewhere a "dike" or "dyke" is usually a hill stream (Grimescar Dike,
+ *  Cockers Dyke), and "Cut" and "Leam" are rivers (The Cut, the River Leam). */
+export const DRAIN_NAME = /\b(drain|rhyne|lode|delph|eau|dyke|dike|catchwater)\b/i
+export const DRAINED_COUNTIES = ['Lincolnshire', 'Cambridgeshire', 'Norfolk', 'Suffolk', 'Somerset', 'East Riding of Yorkshire', 'Nottinghamshire']
+export const isDrain = (river: string | null, county: string | null) => DRAIN_NAME.test(river ?? '') && DRAINED_COUNTIES.includes(county ?? '')
 
 // ---- names ----
 

@@ -8,7 +8,7 @@ Made by `npm run gauges` on Saturday, 31 October 2026, from the Environment Agen
 2. **2,954** of them sent a reading in the last 7 days; 250 are left out (section 9).
 3. **2** backups and **64** near-duplicates left out (section 8), leaving **2,888** gauges.
 4. **2,108** have daily history in the archive; 358 more have only the EA's all-year typical range; **422** have neither, so Riverwatcher could show their level but not whether it's high or low (section 6).
-5. **444** are held by a lock or weir (section 2); **53** are on lakes or reservoirs (section 5).
+5. **520** are held by a lock or weir (section 2); **53** are on lakes or reservoirs (section 5).
 6. **2,810** are placed on OS Open Rivers; 78 aren't within 600 m of a river (section 4).
 7. **2,879** are in England; 9 are just over the border or out to sea (section 7).
 
@@ -155,10 +155,11 @@ A gauge counts as held for the first of these that applies:
 
 - **Named after a lock, weir, sluice, mill, gate or staunch:** 306
 - **On a canal or navigation:** 16
+- **On a fen drain, rhyne or similar, in the drained lowlands (John, October 31st):** 76
 - **On the non-tidal Thames below Lechlade:** 12
 - **On a navigation, from its head down:** 110
 
-A gauge with a downstream level as well isn't held on that account alone (a change from SPEC §3.4: many are gauging weirs or culverts, where the level follows the flow): 136 such gauges aren't held.
+A gauge with a downstream level as well isn't held on that account alone (a change from SPEC §3.4: many are gauging weirs or culverts, where the level follows the flow): 128 such gauges aren't held.
 
 **Navigations** (from a list of navigable rivers checked by Claude; each is held from its head down: a named gauge where the navigation starts, otherwise the highest gauge named after a lock, staunch or sluice):
 
@@ -194,21 +195,32 @@ Every held gauge, by river:
 - **Back Delfin:** Wholsea Grange (canal)
 - **Baildon Dyke:** Skelmanthorpe Park Gate (name)
 - **Barge Canal:** Plaza Grill (canal)
+- **Barlings Eau:** Langworth (drain), Incident Deployable Atu (drain)
+- **Barmston Main Drain:** Lissett New Bridge (drain)
 - **Beam River:** Beam Auto Sluice (name)
+- **Beverley and Barmston Drain:** Wilfholme PS (drain), Beverley Waterside Pumping Station (drain), Hull High Flags (drain)
 - **Bielby Beck:** Thornton Lock (name)
 - **Billing Brook:** Billing Lock (name)
-- **Bourne Eau:** Mays Sluice (name)
+- **Bottisham Lode:** Bottisham Ps (drain)
+- **Bourne Eau:** Mays Sluice (name), Bourne Eau Ps (drain)
 - **Bradiford Water:** Plaistow Mill (name)
+- **Burstwick Drain:** Burstwick Hall Road Bridge (drain), Hedon Thorn Road Bridge (drain), Salt end (drain)
 - **Candover Stream:** Borough Bridge weir (name)
 - **Car Dyke:** Metheringham Delph Sluice (name)
+- **Catchwater Drain:** Tumby Woodside (drain), Mareham le Fen (drain)
 - **Colne Brook:** Horton Mill (name), Wraysbury Mill (name)
+- **Counter Drain:** Welches Dam (drain)
 - **Cow Bank Drain:** Burgh Sluice Doors Gibraltar (name)
+- **Cowcroft Drain:** Bratoft Road Bridge (drain)
 - **Cuckmere River:** Milton Lock (name)
+- **Currymoor Drain:** Currymoor Pumping Station (drain)
 - **Danes Stream:** Milford Flood Bar (name)
 - **Dun Navigation Canal:** Doncaster Strawberry Island Temp (canal)
 - **East Drain:** Ferriby Sluice East Drain Outfall (name)
+- **East Fen Catchwater:** Toynton Fenside (drain)
 - **East Halton Beck:** East Halton Skitter Sluice (name)
 - **East Okement River:** Okehampton Mill Road (name)
+- **Fleet Drain:** Hessle (drain)
 - **Fosdyke Canal:** Fosdyke Jetty (canal)
 - **Fossdyke Navigation:** Burton Marina (canal), Odder Bridge (canal)
 - **Foston Beck:** Foston Mill (name)
@@ -216,16 +228,24 @@ Every held gauge, by river:
 - **Frays River:** Uxbridge, Fountains Mill (name)
 - **Garren Brook:** Marstow Mill (name)
 - **Grand Union Canal:** Warwick Rothwell Road (canal)
-- **Great Eau:** Great Eau Outfall Sluice Saltfleet (name)
+- **Great Eau:** Claythorpe Great Eau (drain), Cloves Bridge Gs Saltfleetby All Saints (drain), Great Eau Outfall Sluice Saltfleet (name)
 - **Great Stour:** Brown Mill (name), Horton weir (name), West Gate Gardens (name)
 - **Harpers Brook:** Old Mill Bridge, Lowick (name)
 - **Haven Drain:** Winterton Beck Outfall Sluice Winteringham (name)
 - **Haverings New Sewer:** Havering Tidal Sluice (name)
+- **Head Dike:** Five Willow Wath Bridge Gs South Kyme (drain)
 - **Hilton Brook:** Sutton Mill (name)
+- **Holderness Drain:** Bransholme Great Culvert Pumping Station (drain), East Hull Hedon Road (drain), Holderness Drain Outfall PS (drain), Tickton PS (drain)
+- **Huish Level Rhyne:** Westover Pumping Station (drain)
 - **Jubilee Flood Relief Channel:** Jubilee River at Manor Farm Weir (name), Jubilee River at Slough Road Weir (name)
+- **Keyingham Drain:** Stone Creek (drain)
+- **Kings Sedgemoor Drain:** Bradney (drain), Dunball (drain)
 - **Letcombe Brook:** Dandridge Mill (name)
 - **Levisham Beck:** Levisham Mill (name)
+- **Longload Main Drain:** Huish Episcopi Pumping Station (drain)
+- **Longstongs Delph:** Sandhill Beck Gs Gsm Fiskerton (drain)
 - **Louth Canal:** Louth Tilting Gate Sluice (name), Thoresby,Louth Canal (canal), Tetney Outfall (canal)
+- **Lowfield Drain:** Newark Balderton (drain)
 - **Lukely Brook:** Carisbrook Mill (name)
 - **Main Drain:** Anderby Creek Sluice (name)
 - **Manchester ship canal:** Ferry Lane, Warrington (canal)
@@ -233,19 +253,30 @@ Every held gauge, by river:
 - **Mar Dyke:** Mardyke Sluice Purfleet (name)
 - **Market Weighton Canal:** North America (canal)
 - **Maud Foster Drain:** Maud Foster Sluice Boston (name)
+- **Maud Foster/Stonebridge Drain:** Sibsey (drain), Cowbridge (drain)
+- **Mickley Dyke:** Hempholme Pumping Station (drain)
+- **Middle Drain:** Middle Drain Outfall Immingham (drain)
 - **Mill Avon:** Abbey Mill GATE (name)
 - **Mill Beck:** Norton Mill Beck Screen (name)
+- **Monk Dyke:** Riston Pumping Station (drain)
 - **Morton's Leam:** Stanground Sluice Peterborough (name), Rings End Sluice (name)
 - **Nailsworth Stream:** Egypt Mill (name)
 - **New Mill Dike:** New Mill Holmfirth Road (name)
 - **Newknock Channel:** Scots Float Sluice (name)
+- **North Beck Drain:** Stallingborough (drain), North Beck Outfall Immingham (drain)
+- **North Drain:** North Drain (drain)
 - **North Walsham and Dilham Canal:** Honing Lock (name)
+- **Northmoor Main Drain:** Northmoor Drain (drain), Northmoor Ps (drain)
 - **Old Bedford River:** Old Bedford Sluice Salters Lode (name)
 - **Old River Witham:** Branston Island Sluice (name)
+- **Ouse Dyke:** Carlton (drain)
 - **Pennington Brook:** Leigh Pennington Mill Bridge (name)
+- **Pointon Lode:** Pointon Lode (drain)
+- **Poulton Drain:** Covenham St. Mary (drain)
 - **Rainham Creek:** Frog Island Tidal Sluice (name)
 - **Rattlesden River:** Rattlesden Reservoir Sluice (name)
 - **Riding Gate Brook:** Riding Gate Brook (name)
+- **Rippingale Running Dike:** Rippingale Running Dyke (drain)
 - **Rive Ditch:** West Byfleet Bridge (canal)
 - **River Adur:** Sakeham Weir (name)
 - **River Aire:** Leeds Crown Point (navigation), Leeds Crown Point Flood Alleviation Scheme (navigation), Leeds Knostrop Weir Flood Alleviation Scheme (name), Oulton Lemonroyd (navigation), Lowther Washlands Compartment B (navigation), Mickletown Ings (navigation), Castleford (navigation), Ferrybridge Lock (name), Knottingley Bank Dole Lock (name), Beal Weir Bridge (name), Birkin Holme Washlands (navigation), Chapel Haddlesey (navigation), Carlton Bridge (navigation), Airmyn (navigation)
@@ -272,6 +303,7 @@ Every held gauge, by river:
 - **River Don:** Rotherham (navigation), Rotherham Forge Island (navigation), Kilnhurst Lower (navigation), Mexborough Lock (name), Sprotbrough (navigation), Doncaster (navigation), Kirk Bramwith (navigation), Fishlake (navigation)
 - **River Dour:** Crabble Mill (name)
 - **River East Allen:** Allen Mill Bridge (name)
+- **River Eau:** Scotter (drain)
 - **River Eden:** Haxted Mill (name)
 - **River Ehen:** Bleach Green Weir (name)
 - **River Erewash:** Shipley Gate (name)
@@ -342,18 +374,31 @@ Every held gauge, by river:
 - **River Yare:** Cringleford Sluice (name), Keswick Mill Sluice (name), Trowse Mill Sluice (name)
 - **River Yealm:** Ivybridge Lee Mill (name)
 - **River Yeo:** Pen Mill (name)
+- **Roam Drain:** Hempholme PS (drain)
 - **Royal Military Canal:** Glenfield Gate West Hythe Dam Level (name), Glenfield Gate Upstream Level (name), Hundred House Bridge (canal)
+- **Saltmoor Main Drain:** Baltmoor Wall Saltmoor Barrier (drain), Saltmoor Drain (drain)
 - **Scrapsgate Drain:** Scraps Gate (name)
+- **Scurf Dyke:** Scurf Dyke (drain)
+- **Setting Dyke:** North Hull Birdsall Avenue (drain), North Hull National Avenue (drain)
 - **Sherston Avon:** St Johns Weir (name)
+- **Sincil Dyke:** Lincoln Monson Street (drain)
+- **Skeffling Drain:** Skeffling Pumping Station (drain)
+- **South Delph:** Branston Delph Penstock (drain)
+- **South Forty Foot Drain:** Billingborough Ousemere (drain), Dowsby Fen (drain), Swaton (drain), Donington Bridge (drain)
 - **St Neot River:** Colliford Weir (name)
+- **Stanground Lode:** Stanground Lode Gs Yaxley (drain)
+- **Stanmoor Main Drain:** Stanmoor Drain (drain)
 - **Steeping River:** HAVENHOUSE SLUICE AUTO WITS under test (name)
+- **Stock Moor Rhyne:** Stockmoor (drain)
 - **Stocksfield Burn:** Stocksfield Ridley Mill (name)
 - **Swavesey Drain:** Webbs Hole Sluice (name)
 - **The Beck:** Barrow Haven Outfall Sluice (name)
 - **The Gores:** Horseshoe Corner Tidal Sluice (name)
 - **The Haven:** Boston Grand Sluice (name)
+- **Thorngumbald Drain:** Thorngumbald Pumping Station (drain)
 - **Treffry Canal:** Par Highways (canal)
 - **Trib (fowey):** Siblyback Weir (name)
+- **Trusthorpe Pumping Drain:** Woldgrift Drain Outfall Mablethorpe (drain)
 - **Uphill Great Rhyne:** Uphill Rhyne Terrace Tilting Weir (name)
 - **Upper Brook:** Abbey Mill (name)
 - **Waren Burn:** Waren Mill (name)
@@ -362,12 +407,21 @@ Every held gauge, by river:
 - **West Beck:** Wansford Snakeholm Lock (name)
 - **West Common Stream:** Witch Inn Sluice (name)
 - **West Drain:** Scabcroft Weir upstream (name)
+- **West Fen Catchwater Drain:** New York (drain), Revesby (drain)
 - **West Glen River:** Greatford Sluice (name)
+- **West Moor Drain:** Midelney (drain)
+- **Western Drain:** Hessle Western Drain (drain), Hull Hessle Astral Close (drain)
+- **Westonzoyland Engine Rhyne:** Westonzoyland (drain)
+- **Willoughby High Drain:** Chapel St Leonards (drain)
+- **Winestead Drain:** Winestead Booster Pumping Station (drain), Patrington Haven Outstrays (drain)
+- **Wold Grift Drain:** Alford (drain), Bilsby (drain)
 - **Woodbridge Brook:** Crabb Mill (name)
 - **Wooler Water:** Coldgate Mill (name)
 - **Wraysbury River:** Stanwell Gate 2 (Airport Way) (name), Pound Mill, Staines (name)
 
-**Fen drains, rhynes and the like** aren't held, though their levels are often set by pumping. For John: 111 of them, mostly in Lincolnshire, Cambridgeshire, Norfolk and Somerset. Say if they should be treated as held.
+**Drains.** A drainage word in the river's name (drain, rhyne, lode, delph, eau, dyke, dike, catchwater) counts only in Lincolnshire, Cambridgeshire, Norfolk, Suffolk, Somerset, East Riding of Yorkshire, Nottinghamshire. Held as drains: 76. Not held, being elsewhere (usually streams, or urban drains):
+
+Stocklake (Broughton Lane Drain, Buckinghamshire); Craven Arms (Field Drain, Shropshire); Hayes Basin (Field Drain, Shropshire); Richard White Radial Gates (Nazeing Drain, Essex); Meadgate Sluices (Nazeing Drain, Essex); Oldbury (Oldbury Naite Rhyne, Gloucestershire); Poulton Cottam Hall Field Grid (Horsebridge Dyke, Lancashire); Preesall Pumping Station, Cockers Dyke (Cockers Dyke, Lancashire); Kirkbride (Monks Dyke, Cumbria); Brewery Grill (Oxlease Drain, Hampshire); Stifford Mardyke (Mar Dyke, Essex); Mardyke Sluice Purfleet (Mar Dyke, Essex), held by its name; Scraps Gate (Scrapsgate Drain, Kent), held by its name; White Water Dyke (White Water Dyke, Kent); Raunds North Street Bridge (Hog Dyke, Northamptonshire); Catcliffe Drain (Catcliffe Drain, South Yorkshire); Grimesthorpe (Bagley Dike, South Yorkshire); Wath upon Dearne (Brook Dike, South Yorkshire); Skelmanthorpe Park Gate (Baildon Dyke, West Yorkshire), held by its name; Fishlake Woodhouse Ings (Temporary) (Green Dyke, South Yorkshire); Bentley Ings Screen (Fowler Bridge Drain, South Yorkshire); New Mill Holmfirth Road (New Mill Dike, West Yorkshire), held by its name; Huddersfield Willow Lane (Grimescar Dike, West Yorkshire); Huddersfield York Avenue (Allison Dyke, West Yorkshire); Hensall Ings (Wheelan Dyke, North Yorkshire); Roall Ings (Roall Dyke, North Yorkshire); Pontefract Wash Dike (Wash Dike, West Yorkshire); Ferrybridge Fishergate (Wash Dike, West Yorkshire); York Foss Barrier (Browney Dyke, North Yorkshire).
 
 ## 3. Rivers joining
 

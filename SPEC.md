@@ -114,7 +114,12 @@ reading (Roe Bridge on the Brock has one day in 1919, then nothing for decades).
    95% and 5% of the time, all year round): "Below / Within / Above its usual range".
 6. **Held gauges** (Agreed, October 30th): only "High" or "Very high" for the time of year is
    said; otherwise "Held steady by a lock or weir". Their time-of-year percentage and "since"
-   lines are left out.
+   lines are left out. *Fen drains and rhynes in the drained lowlands are held too (John,
+   October 31st); the wording for them ("held steady by pumping"?) to settle in stage 3.*
+7. **History incomplete** (John, October 31st): where a gauge's archive record has a gap that
+   can't be filled (its readings stop, then start again or not at all), it says "History
+   incomplete" and names the gap (for example "no records from August 2003 to now"). Which
+   gaps count, and the exact wording, to settle in stage 3.
 
 ## 5. Updates (Agreed: hourly)
 
@@ -233,6 +238,9 @@ its word; each arm checked with the dataviz validator in light and dark.
 > Agency's own usual range for it, which covers the whole year.
 >
 > Rivers are listed upstream to downstream, using Ordnance Survey's map of rivers.
+
+**To add** (John, October 31st): a sentence on fen drains and rhynes being treated like locks
+and weirs, as their levels are usually set by pumping; and one on "History incomplete".
 
 The sentences on how far back records go are John's wording (October 30th), from these figures: from the archive on October
 30th, 1,088 of 2,184 river gauges' records start before 2000; the earliest full one is the Severn
