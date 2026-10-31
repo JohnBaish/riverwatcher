@@ -26,3 +26,21 @@ export function usualOfReadings(readings: [string, number][], date: string): num
   if (v.length < MIN_DAY_READINGS) return null
   return (Math.max(...v) + Math.min(...v)) / 2
 }
+
+/** Each UTC day's highest and lowest from the archive's 15-minute readings (CSV rows with
+ *  dateTime, value and quality), for days with at least MIN_DAY_READINGS good readings.
+ *  Readings marked Suspect or Missing are left out, as for the daily figures. */
+export function daysFromReadings(rows: Record<string, string>[]): Map<string, { high: number; low: number }> {
+  const per = new Map<string, number[]>()
+  for (const r of rows) {
+    if (r.quality === 'Suspect' || r.quality === 'Missing' || r.value === '' || r.value === undefined) continue
+    const v = Number(r.value)
+    const t = Date.parse(/Z|[+-]\d\d:?\d\d$/.test(r.dateTime ?? '') ? r.dateTime : `${r.dateTime}Z`)
+    if (!Number.isFinite(v) || Number.isNaN(t)) continue
+    const date = new Date(t).toISOString().slice(0, 10)
+    per.set(date, [...(per.get(date) ?? []), v])
+  }
+  const out = new Map<string, { high: number; low: number }>()
+  for (const [date, v] of per) if (v.length >= MIN_DAY_READINGS) out.set(date, { high: Math.max(...v), low: Math.min(...v) })
+  return out
+}

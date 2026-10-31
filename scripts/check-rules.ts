@@ -14,7 +14,7 @@ import {
   type Day, type History,
 } from './lib/history.ts'
 import { englishName, normRiver } from './lib/rivers.ts'
-import { hourlyAverages, usualOfReadings } from './lib/days.ts'
+import { daysFromReadings, hourlyAverages, usualOfReadings } from './lib/days.ts'
 
 let passed = 0
 const failures: string[] = []
@@ -133,6 +133,10 @@ eq('the last 24 hours\' average', average24([['2026-10-29T10:00:00Z', 9], ['2026
   const full: [string, number][] = Array.from({ length: 96 }, (_, i) => [new Date(Date.UTC(2026, 9, 25, 0, 15 * i)).toISOString(), i === 10 ? 2 : i === 50 ? 0.5 : 1])
   eq('a day\'s usual level from its readings: the middle of highest and lowest', usualOfReadings(full, '2026-10-25'), 1.25)
   eq('not from less than half a day', usualOfReadings(full.slice(0, 40), '2026-10-25'), null)
+  const rows = full.map(([t, v]) => ({ dateTime: t.slice(0, 19), value: String(v), quality: 'Unchecked' }))
+  rows.push({ dateTime: '2026-10-25T12:00:00', value: '9', quality: 'Suspect' })
+  eq('a day from the archive\'s 15-minute readings, Suspect left out', [...daysFromReadings(rows)], [['2026-10-25', { high: 2, low: 0.5 }]])
+  eq('and not from less than half a day', daysFromReadings(rows.slice(0, 40)).size, 0)
 }
 
 // ---- real gauges, against the agreed mock-up (4.41pm, October 30th 2026, worked out day
