@@ -33,7 +33,7 @@ const { gauges } = JSON.parse(readFileSync(join(dataDir, 'gauges.json'), 'utf8')
 const dir = join(dataDir, 'history')
 mkdirSync(dir, { recursive: true })
 const indexFile = join(dir, 'index.json')
-type Entry = { status: 'ok' | 'short' | 'failed'; made: string; fromYear?: number; years?: number; lastDay?: string; days?: number; note?: string; filledFrom?: string; filledDays?: number; fillTried?: string }
+type Entry = { status: 'ok' | 'short' | 'failed'; made: string; fromYear?: number; years?: number; lastDay?: string; days?: number; note?: string; filledFrom?: string; filledDays?: number; fillTried?: string; gaps?: { from: string; to: string | null }[] }
 const index: Record<string, Entry> = existsSync(indexFile) ? JSON.parse(readFileSync(indexFile, 'utf8')).gauges : {}
 const fresh = (e: Entry | undefined) => e && e.status !== 'failed' && Date.parse(today) - Date.parse(e.made) < REFRESH_DAYS * 86400e3
 
@@ -98,7 +98,7 @@ for (const g of todo) {
     const h = buildHistory(g.ref, g.archive!, days, today, { highs, lows })
     if (h) {
       writeFileSync(join(dir, `${g.ref}.json`), JSON.stringify(h) + '\n')
-      index[g.ref] = { status: 'ok', made: today, fromYear: h.fromYear, years: h.years, lastDay: h.lastDay, days: days.length, ...(filledDays ? { filledFrom, filledDays } : {}), ...(fillTried ? { fillTried } : {}) }
+      index[g.ref] = { status: 'ok', made: today, fromYear: h.fromYear, years: h.years, lastDay: h.lastDay, days: days.length, ...(h.gaps ? { gaps: h.gaps } : {}), ...(filledDays ? { filledFrom, filledDays } : {}), ...(fillTried ? { fillTried } : {}) }
     } else {
       index[g.ref] = { status: 'short', made: today, days: days.length, ...(days.length ? { note: `${days[0].date} to ${days[days.length - 1].date}` } : {}), ...(filledDays ? { filledFrom, filledDays } : {}), ...(fillTried ? { fillTried } : {}) }
     }

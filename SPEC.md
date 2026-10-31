@@ -125,8 +125,10 @@ reading (Roe Bridge on the Brock has one day in 1919, then nothing for decades).
    October 31st); the wording for them ("held steady by pumping"?) to settle in stage 3.*
 7. **History incomplete** (John, October 31st): where a gauge's archive record has a gap that
    can't be filled (its readings stop, then start again or not at all), it says "History
-   incomplete" and names the gap (for example "no records from August 2003 to now"). Which
-   gaps count, and the exact wording, to settle in stage 3.
+   incomplete" and names the gap (for example "no records from August 2003 to now"). **Which
+   gaps count** (John, October 31st, as Claude suggested): a gap of a year or more in the last
+   five years, or one of three months or more that runs to the end of the record (99 gauges,
+   kept as `gaps` in each history file). The exact wording to settle in stage 3.
 
 ## 5. Updates (Agreed: hourly)
 

@@ -128,8 +128,11 @@ Scope (decided by John):
 - **Gaps measured** (weeks with no records, before September 1st 2026): 1,124 of 2,097 gauges
   have a gap of three months or more somewhere, mostly long ago; within the last five years,
   433 (three months or more), 250 (six), 87 (a year); 38 reach the present. Only Wilfholme,
-  Didsbury and Knapp Mill stop more than two years ago. "History incomplete" needs a
-  definition from John (SPEC §4.7).
+  Didsbury and Knapp Mill stop more than two years ago. **John agreed** Claude's definition of
+  "History incomplete": a gap of a year or more in the last five years, or three months or
+  more to the end (SPEC §4.7; `incompleteGaps` in `history.ts`, `npm run gaps` for files made
+  before it): 99 gauges (38 whose record stops, 67 with a gap in the middle). Checks 90.
+- **Merged to `main`** at John's word ("please merge and continue"). Stage 1 done.
 
 ### 2026-10-30 — stage 1: the gauge list, the history and the backfill (branch `stage-1-gauges`)
 

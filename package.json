@@ -11,7 +11,8 @@
     "check": "node scripts/check-rules.ts",
     "gauges": "node scripts/build-gauges.ts",
     "history": "node scripts/build-history.ts",
-    "backfill": "node scripts/backfill.ts"
+    "backfill": "node scripts/backfill.ts",
+    "gaps": "node scripts/add-gaps.ts"
   },
   "devDependencies": {
     "@types/node": "^24.13.3",

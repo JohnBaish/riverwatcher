@@ -10,7 +10,7 @@ import {
   dropNearDuplicates, heldReason, isBackup, isLake, namesAgree, navigationHeads, riverKey, riverMeasure, shownName, tidyName, type Station,
 } from './lib/gauges.ts'
 import {
-  average24, buildHistory, dayOfYear, judge, joinDays, levelsFor, movement, percentBelow, readDailyCsv, recordStart, sinceYear, timeOfYear, wordFor,
+  average24, buildHistory, dayOfYear, incompleteGaps, judge, joinDays, levelsFor, movement, percentBelow, readDailyCsv, recordStart, sinceYear, timeOfYear, wordFor,
   type Day, type History,
 } from './lib/history.ts'
 import { englishName, normRiver } from './lib/rivers.ts'
@@ -111,6 +111,19 @@ eq('the last 24 hours\' average', average24([['2026-10-29T10:00:00Z', 9], ['2026
   eq('the lowest since', sinceYear(h, '2026-03-15', 1.05, 'lowest'), 2001)
   eq('none as high', sinceYear(h, '2026-03-15', 9, 'highest'), null)
   eq('the record', [h.record.high.value, h.record.low.value], [1500, 900])
+  eq('a record that ended in 2005 is incomplete from 2006', h.gaps, [{ from: '2006-01-01', to: null }])
+  {
+    const wk = (year: number, from: number, to: number) => ({ year, high: Array.from({ length: 52 }, (_, w) => (w >= from && w < to ? 1 : null)), low: [] })
+    const full = (year: number) => wk(year, 0, 52)
+    // 2010 to 2026 full, but nothing from week 10 of 2022 to week 20 of 2023 (more than a year, recent).
+    const ws = [...[2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021].map(full), wk(2022, 0, 10), wk(2023, 20, 52), full(2024), full(2025), wk(2026, 0, 35)]
+    eq('a recent gap of more than a year', incompleteGaps(ws, 2010, '2026-09-01').map((g) => g.from.slice(0, 7)), ['2022-03'])
+    // The same gap in 2012 is too long ago to say.
+    eq('an old gap isn\'t said', incompleteGaps([full(2010), full(2011), wk(2012, 0, 10), wk(2013, 20, 52), ...[2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025].map(full), wk(2026, 0, 35)], 2010, '2026-09-01'), [])
+    // A record that stops in March 2026: a gap to the end.
+    eq('a record that stops', incompleteGaps([...[2020, 2021, 2022, 2023, 2024, 2025].map(full), wk(2026, 0, 9)], 2020, '2026-09-01').map((g) => [g.from.slice(0, 7), g.to]), [['2026-03', null]])
+    eq('a gap of seven months isn\'t said', incompleteGaps([...[2020, 2021, 2022, 2023, 2024].map(full), wk(2025, 0, 20), wk(2026, 0, 35)], 2020, '2026-09-01').length, 0)
+  }
   check('too little history gives none', buildHistory('T', 'T', days.filter((d) => d.date < '2003-01-01'), '2026-10-30') === null)
   eq('held: only high said', [judge(1.0, '2026-03-15', h, null, true), judge(1.45, '2026-03-15', h, null, true)].map((j) => (j.basis === 'held' ? j.word : 'x')), [null, 'very high'])
   eq('no history: the EA\'s typical range', judge(2, '2026-03-15', null, [0.5, 1.5], false), { basis: 'typical', word: 'above' })

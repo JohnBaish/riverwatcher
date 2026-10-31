@@ -90,6 +90,38 @@ export type History = {
    *  year (weeks 0 to 51; days 364 count in week 51), or null where there are no days. */
   weeks: { year: number; high: (number | null)[]; low: (number | null)[] }[]
   record: { high: { value: number; date: string }; low: { value: number; date: string } }
+  /** Gaps that make the history incomplete (see `incompleteGaps`): from the first missing
+   *  week to the first week with records again, or to null if the record stops. */
+  gaps?: { from: string; to: string | null }[]
+}
+
+/** "History incomplete" (John, October 31st; SPEC §4.7): a gap of a year or more in the last
+ *  five years, or a gap of three months or more that runs to the end of the record (up to
+ *  `cutoff`, the newest day used). A gap is a run of weeks with no records. Older or shorter
+ *  gaps only mean a few fewer days for the comparison, so they aren't said. */
+export const GAP_RECENT_YEARS = 5
+export const GAP_MIN_DAYS = 365
+export const GAP_TAIL_MIN_DAYS = 91
+export function incompleteGaps(weeks: History['weeks'], fromYear: number, cutoff: string): { from: string; to: string | null }[] {
+  const have = new Set<string>()
+  for (const y of weeks) y.high.forEach((v, w) => { if (v !== null) have.add(`${y.year}:${w}`) })
+  const end = Date.parse(cutoff)
+  const recent = end - GAP_RECENT_YEARS * 365.25 * 86400e3
+  const day = (t: number) => new Date(t).toISOString().slice(0, 10)
+  const out: { from: string; to: string | null }[] = []
+  let start: number | null = null
+  const lastYear = Number(cutoff.slice(0, 4))
+  for (let y = fromYear; y <= lastYear; y++) {
+    for (let w = 0; w < 52; w++) {
+      const t = Date.UTC(y, 0, 1 + 7 * w)
+      if (t >= end) break
+      if (!have.has(`${y}:${w}`)) { start ??= t; continue }
+      if (start !== null && t - Math.max(start, recent) >= GAP_MIN_DAYS * 86400e3) out.push({ from: day(start), to: day(t) })
+      start = null
+    }
+  }
+  if (start !== null && end - start >= GAP_TAIL_MIN_DAYS * 86400e3) out.push({ from: day(start), to: null })
+  return out
 }
 
 /** Levels are kept as whole millimetres in the file, to keep it small. */
@@ -146,6 +178,7 @@ export function buildHistory(ref: string, archive: string, all: Day[], today: st
     table,
     weeks: [...weekMap].sort(([a], [b]) => a - b).map(([year, v]) => ({ year, ...v })),
     record: { high: { value: mm(hi.v), date: hi.date }, low: { value: mm(lo.v), date: lo.date } },
+    ...(() => { const g = incompleteGaps([...weekMap].map(([year, v]) => ({ year, ...v })), start, cutoff); return g.length ? { gaps: g } : {} })(),
   }
 }
 
