@@ -92,7 +92,7 @@ Scope (decided by John):
 
 John chose A: the chart's five bands (and the key's swatches) at the same strength, so "very high"
 and "very low" are the deepest, as on the labels. `global.css`; SPEC §7.6. Pictures
-`design/previews/chart-colours-*.png`. On the branch; not merged.
+`design/previews/chart-colours-*.png`. Merged to `main` at John's word.
 
 ### 2026-10-31 — the archive cleaned; today's hours; merged to `main` (branch `claude/inspiring-hypatia-60x279`)
 
