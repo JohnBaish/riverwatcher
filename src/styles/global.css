@@ -228,9 +228,9 @@ details summary { cursor: pointer; font-weight: 600; margin-bottom: var(--space-
 .chart { width: 100%; height: auto; display: block; touch-action: pan-y; }
 .chart .grid { stroke: var(--color-divider); stroke-width: 1; }
 .chart .axis-t { font-size: 11px; fill: var(--color-neutral-700); font-family: var(--font-body); }
-/* The zones in the five judgement colours (John, October 30th), the outer two paler. */
+/* The zones in the five judgement colours (John, October 30th), all at the same strength, so
+   "very high" and "very low" are the deepest, as on the labels (John, October 31st, option A). */
 .chart .z { opacity: 0.3; }
-.chart .z-vlow, .chart .z-vhigh { opacity: 0.14; }
 .chart .z-vlow { fill: var(--j-vlow); } .chart .z-low { fill: var(--j-low); } .chart .z-normal { fill: var(--j-normal); } .chart .z-high { fill: var(--j-high); } .chart .z-vhigh { fill: var(--j-vhigh); }
 .chart .typ { stroke: var(--color-neutral-700); stroke-dasharray: 4 3; stroke-width: 1.2; fill: none; }
 .chart .line { fill: none; stroke: var(--color-text); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
@@ -244,9 +244,6 @@ details summary { cursor: pointer; font-weight: 600; margin-bottom: var(--space-
 .legend .li-line { height: 2px; background: var(--color-text); vertical-align: 3px; }
 .legend .li-typ { height: 0; border-top: 1.5px dashed var(--color-neutral-700); vertical-align: 3px; border-radius: 0; }
 .legend .lz { opacity: 0.3; box-shadow: inset 0 0 0 1px var(--color-divider); }
-/* The key's swatches as pale as the chart's zones, the outer two paler still (John, October 31st:
-   the key showed "Very high" darker than the chart did). */
-.legend .lz-vlow, .legend .lz-vhigh { opacity: 0.14; }
 .lz-vlow { background: var(--j-vlow); } .lz-low { background: var(--j-low); } .lz-normal { background: var(--j-normal); } .lz-high { background: var(--j-high); } .lz-vhigh { background: var(--j-vhigh); }
 .river-group { padding: var(--space-4) var(--space-6); margin-bottom: var(--space-3); }
 .river-group h4 { margin: 0; font-size: 19px; }

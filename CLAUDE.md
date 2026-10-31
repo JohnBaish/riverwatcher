@@ -88,6 +88,12 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-10-31 — chart bands all at the same strength (option A)
+
+John chose A: the chart's five bands (and the key's swatches) at the same strength, so "very high"
+and "very low" are the deepest, as on the labels. `global.css`; SPEC §7.6. Pictures
+`design/previews/chart-colours-*.png`. On the branch; not merged.
+
 ### 2026-10-31 — the archive cleaned; today's hours; merged to `main` (branch `claude/inspiring-hypatia-60x279`)
 
 **John:** fix the "two zero points" fault; point 2 ends "No long record to compare."; 7 (a year ago

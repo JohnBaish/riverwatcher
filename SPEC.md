@@ -217,7 +217,9 @@ with the switch).
      the mock-up's 7.44 m on January 8th left out days with no lowest level)
 6. **The chart:** two, four, six, 10 or 26 weeks or a year, starting on two weeks and remembered
    on the device (John may review). Hourly averages up to six weeks, daily averages beyond. Shaded
-   in the five judgement colours for each day of the period (the outer two paler); at a held gauge
+   in the five judgement colours for each day of the period, all at the same strength (John,
+   October 31st, option A; at first the outer two were paler, which made "very high" look weaker
+   than "high"); at a held gauge
    only the high zones. Its height always covers the gauge's usual range over the whole year, so a
    small wobble looks small. The key: "Level, Very low, Low, Normal, High, Very high for the time of
    year", left-aligned to the chart's own left edge, in line with its first date (Agreed, John,
