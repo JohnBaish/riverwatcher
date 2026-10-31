@@ -88,6 +88,15 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-10-31 — stage 3 approved; last checks (notes only)
+
+**John** tried the private page: "This looks great. Really good. I have no amends at this stage."
+Last stage 3 sweep (PLAN 3.3): PL1, NE30, CH1, TD15 (border), HR3 (border), SW1A, HU1 (drains),
+PE13 (fens), TR21 (Scilly) and TR18 (coast) at 1200px and 390px with touch, light and dark (40
+views): no errors, no sideways scroll, both fonts loaded; every summary read through. **For John
+(not urgent):** where a river's gauges differ a lot the summary says "very low to very high"
+(the Team near NE30, Beverley Brook near SW1A); true, but it reads oddly.
+
 ### 2026-10-31 — the postcode view as a private page (notes only)
 
 At John's request: the real build (from `main`, data at 7.10pm) published as a private page,
