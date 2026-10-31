@@ -99,6 +99,13 @@ reading (Roe Bridge on the Brock has one day in 1919, then nothing for decades).
    (preferring one with the EA's river name, within 600 m) and given its distance to the sea
    along the river. A tributary's route shows which river it joins, and where.
 6. **County and region:** from OS Boundary-Line, as Hindcaster's gauges.
+7. **No history and no typical range** (John, October 31st, as Claude advised;
+   `design/level-only-2026-10-31.md`): 422 such gauges, mostly the EA's operational sites. They
+   move like rivers, so they're kept, but the nearest five are chosen from gauges with a
+   judgement first, and these only make up the numbers. They show level, movement and chart,
+   with a plain line instead of the judgement. Left out while flat or stuck (no change of more
+   than 2 cm in four weeks, or the same reading more than 90% of the time), worked out by the
+   collector.
 
 ## 4. "For the time of year" (Proposed rules; the five words Agreed)
 
