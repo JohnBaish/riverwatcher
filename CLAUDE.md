@@ -85,7 +85,24 @@ Scope (decided by John):
 
 ## Log
 
-### 2026-10-30 — stage 1: the gauge list, the history and the backfill (branch `stage-1-gauges`)
+### 2026-10-31 — Twyford, Barnwell and Scots Float; the archive's gaps (branch `stage-1-gauges`)
+
+**John** asked about the gauges whose history stops early.
+- **Twyford** (John: go ahead): its live gauge is the archive's "Twyford Main" (from September
+  2010; 15-minute readings identical), not the suspended "Twyford" (1994 to 2011), whose levels
+  differ by 8 to 24 cm where they overlap, so not joined (`ARCHIVE_INSTEAD`). Its daily figures
+  still stop in August 2023.
+- **Matches checked by readings:** of the 13 gauges matched by name though their positions
+  disagree, 11 agree to the millimetre; two were wrong and are refused (`ARCHIVE_REFUSED`):
+  Barnwell FSR (32.6 m live, the archive's Lower Barnwell 21.4 m, 3.6 km away) and Scots Float
+  Sluice E6380, whose archive record is really the other side of the sluice, E6381 (given to it).
+  The held test now reads the EA's own name too (E6381's archive name drops "Sluice").
+- **Found:** the archive's daily highest and lowest stop early at about 275 gauges (33 before
+  2024, 243 in early 2024), while their 15-minute readings usually go on to now (22 of the 32
+  checked to October 2026, 6 partly; Wilfholme, Didsbury and Knapp Mill have neither since
+  2003, 2022 and 2023). Proposed to John: work out the missing days from the 15-minute readings.
+
+ (branch `stage-1-gauges`)
 
 **John** agreed the spec and created `JohnBaish/riverwatcher-data`; start stage 1.
 

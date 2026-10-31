@@ -38,7 +38,19 @@ const ARCHIVE_POSITION = new Set<string>([])
  *  "Twyford Main" (2490_w1TH, from September 2010), whose 15-minute readings equal the live
  *  gauge's (October 8th 2026). The two don't agree where they overlap (8 to 24 cm apart), so
  *  they aren't joined; the newer one is used alone (John, October 31st). */
-const ARCHIVE_INSTEAD: Record<string, string> = { '2490TH': '1f60373d-2b3c-4c41-b4be-0950dd97e068_w1TH' }
+const ARCHIVE_INSTEAD: Record<string, string> = {
+  '2490TH': '1f60373d-2b3c-4c41-b4be-0950dd97e068_w1TH',
+  // Scots Float Sluice has a gauge on each side. The archive's "Scots Float" carries E6380's
+  // reference, but its readings are E6381's (1.137 m at 9.30am on October 15th 2026, both).
+  E6381: '13d51399-dfb4-4a26-bfd9-10f6fbbdcbb6',
+}
+
+/** Matches that turned out to be different gauges, checked by hand. "BARNWELL FSR WITS"
+ *  (E4816, Nene) reads about 32.6 m; the archive's "Lower Barnwell upstream", 3.6 km away,
+ *  read 21.4 m when it stopped in 2019. "SCOTS FLOAT SLUICE RL" (E6380): 0.077 m live against
+ *  the archive's 1.137 m at the same moment; that record is the other side of the sluice,
+ *  E6381 (both October 31st). */
+const ARCHIVE_REFUSED = new Set(['E4816', 'E6380'])
 const LIVE_POSITION = new Set<string>([])
 
 async function cached<T>(name: string, url: string): Promise<T> {
@@ -111,6 +123,10 @@ for (const s of stations.items) {
   const instead = ARCHIVE_INSTEAD[s.stationReference]
   let a = (instead ? archive.items.find((x) => x.notation === instead) : undefined) ?? archiveBy.get(String(s.wiskiID)) ?? archiveBy.get(s.stationReference) ?? null
   let pos = { lat: s.lat, long: s.long, e: s.easting, n: s.northing }
+  if (a && ARCHIVE_REFUSED.has(s.stationReference)) {
+    refused.push({ name: label, archive: one(a.label) ?? '', km: typeof a.easting === 'number' ? metres({ e: s.easting, n: s.northing }, { e: a.easting, n: a.northing! }) / 1000 : 0 })
+    a = null
+  }
   if (a && typeof a.easting === 'number' && typeof a.northing === 'number') {
     const apart = metres({ e: s.easting, n: s.northing }, { e: a.easting, n: a.northing })
     if (apart > ARCHIVE_NEAR_M) {
@@ -174,7 +190,7 @@ const out = built
   .map((g) => {
     const area = areaOf(areas, g.e, g.n)
     const head = g.river && g.at ? heads.get(riverKey(g.river, g.at.outlet))?.toSeaKm : undefined
-    const held: HeldReason | null = heldReason({ name: g.name, river: g.river, long: g.long, form: g.at?.form ?? null, toSeaKm: g.at?.toSeaKm ?? null }, head)
+    const held: HeldReason | null = heldReason({ name: `${g.name} ${g.label}`, river: g.river, long: g.long, form: g.at?.form ?? null, toSeaKm: g.at?.toSeaKm ?? null }, head)
     return {
       ref: g.ref,
       name: g.name,

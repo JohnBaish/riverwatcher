@@ -7,8 +7,8 @@ Made by `npm run gauges` on Saturday, 31 October 2026, from the Environment Agen
 1. **3,204** EA stations are river gauges by SPEC §3.1 (no tidal or groundwater measure; a "Stage" level in m, mASD or mAOD).
 2. **2,954** of them sent a reading in the last 7 days; 250 are left out (section 9).
 3. **2** backups and **64** near-duplicates left out (section 8), leaving **2,888** gauges.
-4. **2,109** have daily history in the archive; 358 more have only the EA's all-year typical range; **421** have neither, so Riverwatcher could show their level but not whether it's high or low (section 6).
-5. **443** are held by a lock or weir (section 2); **53** are on lakes or reservoirs (section 5).
+4. **2,108** have daily history in the archive; 358 more have only the EA's all-year typical range; **422** have neither, so Riverwatcher could show their level but not whether it's high or low (section 6).
+5. **444** are held by a lock or weir (section 2); **53** are on lakes or reservoirs (section 5).
 6. **2,810** are placed on OS Open Rivers; 78 aren't within 600 m of a river (section 4).
 7. **2,879** are in England; 9 are just over the border or out to sea (section 7).
 
@@ -59,7 +59,7 @@ The EA gives 449 gauges' names in capitals, usually with a site code ("GS", "WIT
 | SOUTH EFFORD MARSH | South Efford Marsh |  |
 | EXETER PINHOE TRADING ESTATE | Pinhoe Trading Estate | Pin Brook |
 
-**River names.** 2,283 come from the EA's live list, 163 from the archive, 357 from OS Open Rivers (the nearest named stretch), and **85 have none** (all below).
+**River names.** 2,283 come from the EA's live list, 162 from the archive, 358 from OS Open Rivers (the nearest named stretch), and **85 have none** (all below).
 
 | Gauge | EA name | County | Nearest stretch (m) |
 | --- | --- | --- | --- |
@@ -153,10 +153,10 @@ The EA gives 449 gauges' names in capitals, usually with a site code ("GS", "WIT
 
 A gauge counts as held for the first of these that applies:
 
-- **Named after a lock, weir, sluice, mill, gate or staunch:** 304
+- **Named after a lock, weir, sluice, mill, gate or staunch:** 306
 - **On a canal or navigation:** 16
 - **On the non-tidal Thames below Lechlade:** 12
-- **On a navigation, from its head down:** 111
+- **On a navigation, from its head down:** 110
 
 A gauge with a downstream level as well isn't held on that account alone (a change from SPEC §3.4: many are gauging weirs or culverts, where the level follows the flow): 136 such gauges aren't held.
 
@@ -175,7 +175,7 @@ A gauge with a downstream level as well isn't held on that account alone (a chan
 | River Great Ouse | Bedford | 124.7 | 20 |
 | River Kennet | Newbury | 226.4 | 3 |
 | River Medway | Town Lock | 68.8 | 14 |
-| River Nene | Nunn Mills Sluice Automation Northampton | 150.6 | 22 |
+| River Nene | Nunn Mills Sluice Automation Northampton | 150.6 | 21 |
 | River Ouse | Naburn Lock | 80.5 | 6 |
 | River Severn | Worcester (Barbourne) | 116.0 | 14 |
 | River Soar | Pillings Lock | 186.2 | 3 |
@@ -204,6 +204,7 @@ Every held gauge, by river:
 - **Colne Brook:** Horton Mill (name), Wraysbury Mill (name)
 - **Cow Bank Drain:** Burgh Sluice Doors Gibraltar (name)
 - **Cuckmere River:** Milton Lock (name)
+- **Danes Stream:** Milford Flood Bar (name)
 - **Dun Navigation Canal:** Doncaster Strawberry Island Temp (canal)
 - **East Drain:** Ferriby Sluice East Drain Outfall (name)
 - **East Halton Beck:** East Halton Skitter Sluice (name)
@@ -301,7 +302,7 @@ Every held gauge, by river:
 - **River Mersey:** Woolston Weir temp (name), Ashton Weir (name)
 - **River Mimram:** Fulling Mill (name)
 - **River Neet:** Woolstone Mill (name)
-- **River Nene:** Geldharts Mill (name), Duston Mill (name), St Andrews Mill (name), Nunn Mills Sluice Automation Northampton (name), Bedford Road Sluice Northampton (name), Bedford Road Sluice (name), Northampton Washlands (navigation), Nene Valley (navigation), Clifford Hill Lock Sluice Gsm Northampton (name), Cogenhoe (navigation), Hardwater Mill Sluice Great Doddington (name), Wellingborough Embankment (navigation), Lower Ringstead Sluice (name), Islip Sluice (name), Lilford (navigation), Lower Barnwell upstream (navigation), Elton Sluice (name), Wansford Sluice (name), Wansford A47 No1 (navigation), Wansford (navigation), Water Newton Sluice (name), Orton Sluice (name), Padholme Ps (navigation), Little Bridge (navigation), Dog in A Doublet Sluice (name)
+- **River Nene:** Geldharts Mill (name), Duston Mill (name), St Andrews Mill (name), Nunn Mills Sluice Automation Northampton (name), Bedford Road Sluice Northampton (name), Bedford Road Sluice (name), Northampton Washlands (navigation), Nene Valley (navigation), Clifford Hill Lock Sluice Gsm Northampton (name), Cogenhoe (navigation), Hardwater Mill Sluice Great Doddington (name), Wellingborough Embankment (navigation), Lower Ringstead Sluice (name), Islip Sluice (name), Lilford (navigation), Elton Sluice (name), Wansford Sluice (name), Wansford A47 No1 (navigation), Wansford (navigation), Water Newton Sluice (name), Orton Sluice (name), Padholme Ps (navigation), Little Bridge (navigation), Dog in A Doublet Sluice (name)
 - **River Orwell:** Handford Sluice (name)
 - **River Ouse:** Naburn Lock (name), Cawood (navigation), Selby Wistow Sluices (navigation), Selby Westmill (navigation), Goole (navigation), Blacktoft (navigation)
 - **River Parrett:** Oath Lock (name)
@@ -309,7 +310,7 @@ Every held gauge, by river:
 - **River Rhee:** Haslingfield Burnt Mill (name)
 - **River Ribble:** Locks Weir (name), Arnford Weir (name)
 - **River Roding:** Shonks Mill Bridge (name)
-- **River Rother:** Woodhouse Mill (name), Iping Mill (name), Crowhurst Weir (name)
+- **River Rother:** Woodhouse Mill (name), Iping Mill (name), Crowhurst Weir (name), Scots Float (name)
 - **River Sence:** Temple Mill (name)
 - **River Severn:** Worcester (Barbourne) (navigation), Diglis (navigation), Kempsey Yacht Club (navigation), Saxons Lode (navigation), Mythe Bridge (navigation), Deerhurst Flood Plain Level (navigation), Deerhurst (navigation), Haw Bridge (navigation), Ashleworth (navigation), Sandhurst (navigation), Gloucester (navigation), Minsterworth (navigation), Epney (navigation), Sharpness (navigation)
 - **River Skell:** Alma Weir (name)
@@ -609,9 +610,9 @@ River North Tyne (Northumberland); Finchett's Gutter (Cheshire); River Avon (Wil
 
 ## 6. No history and no typical range
 
-421 gauges have neither archive history nor an EA typical range. Most are the EA's operational sites, not on GOV.UK's Check for flooding. **For John:** list them with their level only, or leave them out of the nearest five unless there's nothing else? By county:
+422 gauges have neither archive history nor an EA typical range. Most are the EA's operational sites, not on GOV.UK's Check for flooding. **For John:** list them with their level only, or leave them out of the nearest five unless there's nothing else? By county:
 
-Lincolnshire 76, Northamptonshire 25, Suffolk 25, Essex 23, Cambridgeshire 21, Kent 20, Devon 20, East Sussex 18, Hampshire 17, Cornwall 16, Greater London 15, Norfolk 15, Surrey 10, West Sussex 9, Dorset 9, Isle of Wight 7, Leicestershire 7, Somerset 7, Greater Manchester 7, Cheshire 6, Buckinghamshire 6, (outside England) 6, Staffordshire 5, Derbyshire 5, Berkshire 4, North Yorkshire 4, East Riding of Yorkshire 4, Gloucestershire 3, Warwickshire 3, Lancashire 3, Rutland 3, West Yorkshire 3, Northumberland 2, Wiltshire 2, Shropshire 2, Merseyside 2, Cumbria 2, South Yorkshire 2, Oxfordshire 1, Worcestershire 1, West Midlands ceremonial county 1, Hertfordshire 1, Bedfordshire 1, Bristol 1, Durham 1.
+Lincolnshire 76, Northamptonshire 26, Suffolk 25, Essex 23, Cambridgeshire 21, Kent 20, Devon 20, East Sussex 18, Hampshire 17, Cornwall 16, Greater London 15, Norfolk 15, Surrey 10, West Sussex 9, Dorset 9, Isle of Wight 7, Leicestershire 7, Somerset 7, Greater Manchester 7, Cheshire 6, Buckinghamshire 6, (outside England) 6, Staffordshire 5, Derbyshire 5, Berkshire 4, North Yorkshire 4, East Riding of Yorkshire 4, Gloucestershire 3, Warwickshire 3, Lancashire 3, Rutland 3, West Yorkshire 3, Northumberland 2, Wiltshire 2, Shropshire 2, Merseyside 2, Cumbria 2, South Yorkshire 2, Oxfordshire 1, Worcestershire 1, West Midlands ceremonial county 1, Hertfordshire 1, Bedfordshire 1, Bristol 1, Durham 1.
 
 ## 7. Outside England
 
@@ -961,6 +962,8 @@ An archive station counts as the same gauge when it's within 1 km, or further aw
 | --- | --- | --- |
 | Bargate Weir | Queenborough Barrier | 218.7 |
 | Keynsham, Rivermead | Tellisford | 19.1 |
+| SCOTS FLOAT SLUICE RL | Scots Float | 2.3 |
+| BARNWELL FSR WITS | Lower Barnwell upstream | 3.6 |
 | Rainfall station | Wannock Mill | 291.0 |
 | UPHILL RHYNE TERRACE TILTING WEIR | Sampford Brett Screen | 29.4 |
 
@@ -972,7 +975,6 @@ An archive station counts as the same gauge when it's within 1 km, or further aw
 | Warwick Old Budbrooke Road | Gog Brook | 30.5 | archive |  |
 | Northmoor Drain | Northmoor Main Drain | 17.9 | live |  |
 | Glenfield Gate Upstream Level | Royal Military Canal | 7.2 | live | not sure |
-| BARNWELL FSR WITS | River Nene | 3.6 | archive |  |
 | Eccleston Heskin Bridge | Syd Brook | 3.2 | live |  |
 | Durranhill Pumping Station | Durranhill Beck | 2.8 | live |  |
 | Fordham | River Snail | 2.7 | archive |  |
@@ -986,22 +988,20 @@ An archive station counts as the same gauge when it's within 1 km, or further aw
 
 | What it has | Gauges |
 | --- | --- |
-| Neither: the level only | 421 |
-| History for the time of year | 1967 |
+| Neither: the level only | 422 |
+| History for the time of year | 1966 |
 | No archive history: the EA's typical range | 358 |
 | Archive history too short (less than three years): the EA's typical range instead | 101 |
 | Archive history too short, and no typical range: the level only | 41 |
 
-**Old history.** 33 gauges' archive levels stop more than two years ago, so their "time of year" rests on those years only (Twyford on the Loddon stops in 2011). For John: use them, or treat them as having no history?
+**Old history.** 32 gauges' archive levels stop more than two years ago, so their "time of year" rests on those years only (Twyford on the Loddon stops in 2011). For John: use them, or treat them as having no history?
 
 | Gauge | River | Record | Last day |
 | --- | --- | --- | --- |
 | Coalburn Beck | Coal Burn | 1992 | 2003-07-07 |
 | Wilfholme PS | River Hull | 1996 | 2003-08-10 |
 | Alma Weir | River Skell | 1985 | 2010-08-11 |
-| Twyford | River Loddon | 1995 | 2011-06-06 |
 | Lilford Park, Leigh | Atherton Lake Brook | 2004 | 2015-04-20 |
-| Lower Barnwell upstream | River Nene | 2010 | 2019-02-06 |
 | Crudgington | River Strine | 1987 | 2020-06-30 |
 | Gwithian | River Red | 2013 | 2020-11-11 |
 | Barcombe | River Ouse | 2008 | 2021-11-30 |
@@ -1022,6 +1022,7 @@ An archive station counts as the same gauge when it's within 1 km, or further aw
 | Stocks Reservoir Level | River Hodder | 1976 | 2023-06-20 |
 | Bow Bridge Abbey Road | Poaka Beck | 2011 | 2023-07-08 |
 | Burlington | River Worfe | 1999 | 2023-07-30 |
+| Twyford | River Loddon | 2011 | 2023-08-22 |
 | Caker Stream | Caker Stream | 1992 | 2023-10-11 |
 | Robertsbridge | River Rother | 2000 | 2023-10-17 |
 | Mitford | River Wansbeck | 1979 | 2023-10-20 |
