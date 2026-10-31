@@ -16,7 +16,7 @@ Read these first, in this order:
    John's answers. Then `design/content-answers-2026-10-30.md`: the main page's
    content, as agreed so far.
 3. `HOUSE-STYLE.md`: the shared look and ways of working. Copied from
-   clockwheel on 2026-10-30 (commit `674122d`), with `SEO-HANDOVER.md`,
+   clockwheel on 2026-10-30 (commit `674122d`; re-copied 2026-10-31 at `9edeea5`), with `SEO-HANDOVER.md`,
    `.claude/skills/fresh-look/` and `.gitignore`. Clockwheel holds the master
    copies; if they change, re-copy them and note it here.
 4. The tracker: `projects/riverwatcher.md` in `JohnBaish/baish.net-directory`.
@@ -54,7 +54,7 @@ Key points:
   (`scripts/lib/rainBulk.ts`, `scripts/lib/lastYear.ts`), and Lightreader's
   `src/data/outcodes.json`.
 - Build dark mode in from the start (HOUSE-STYLE §2, §16).
-- **Project tracker:** when something significant changes (a stage finished, a decision made, something goes live or is parked), update this project's file and its line in `INDEX.md` in `JohnBaish/baish.net-directory`, following that repo's README. Also at the end of each session (John).
+- **Project tracker:** when something significant changes (a stage finished, a decision made, something goes live or is parked), update this project's file and its line in `INDEX.md` in `JohnBaish/baish.net-directory`, following that repo's README, straight to its `main` (John's standing permission, even when this session was given its own branch). Before committing there, run `node site/check-tracker.mjs` in that repo and fix anything it lists. Also at the end of each session (John).
 
 ## Layout (stage 1)
 
@@ -110,6 +110,13 @@ branch): run 1, 12 minutes, no cache, made the October 30th day file from 374,49
 (2,885 gauges), quiet 23, one old day file removed; run 2, 4 seconds, the cache found. Every
 gauge's line in `latest.json`; 19 to 23 silent; no flood warnings in force this morning, so
 that part is untested against a real warning.
+
+### 2026-10-31 — house style re-copied (notes only, straight to `main`)
+
+From clockwheel `9edeea5`: §10 asks sessions to run `node site/check-tracker.mjs` in
+`JohnBaish/baish.net-directory` before committing tracker changes, and gives John's standing
+permission to commit tracker changes straight to that repo's `main`, even when a session was
+given its own branch. The tracker line in the key points above says the same. No app code changed.
 
 ### 2026-10-31 — Twyford, Barnwell and Scots Float; the archive's gaps (branch `stage-1-gauges`)
 
