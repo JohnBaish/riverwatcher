@@ -32,6 +32,13 @@ const now = new Date()
 /** Gauges whose two positions disagree, where neither sits on its river in OS Open Rivers,
  *  decided by hand (none yet: see the review's section 10). */
 const ARCHIVE_POSITION = new Set<string>([])
+
+/** Gauges whose archive record carries on under a newer station, checked by hand. Twyford
+ *  on the Loddon (2490TH): the archive's "Twyford" (1994 to 2011, suspended) was replaced by
+ *  "Twyford Main" (2490_w1TH, from September 2010), whose 15-minute readings equal the live
+ *  gauge's (October 8th 2026). The two don't agree where they overlap (8 to 24 cm apart), so
+ *  they aren't joined; the newer one is used alone (John, October 31st). */
+const ARCHIVE_INSTEAD: Record<string, string> = { '2490TH': '1f60373d-2b3c-4c41-b4be-0950dd97e068_w1TH' }
 const LIVE_POSITION = new Set<string>([])
 
 async function cached<T>(name: string, url: string): Promise<T> {
@@ -101,7 +108,8 @@ for (const s of stations.items) {
     leftOut.push({ ref: s.stationReference, name: label, why: at === undefined ? 'no reading at all' : `no reading since ${new Date(at).toISOString().slice(0, 10)}` })
     continue
   }
-  let a = archiveBy.get(String(s.wiskiID)) ?? archiveBy.get(s.stationReference) ?? null
+  const instead = ARCHIVE_INSTEAD[s.stationReference]
+  let a = (instead ? archive.items.find((x) => x.notation === instead) : undefined) ?? archiveBy.get(String(s.wiskiID)) ?? archiveBy.get(s.stationReference) ?? null
   let pos = { lat: s.lat, long: s.long, e: s.easting, n: s.northing }
   if (a && typeof a.easting === 'number' && typeof a.northing === 'number') {
     const apart = metres({ e: s.easting, n: s.northing }, { e: a.easting, n: a.northing })

@@ -167,7 +167,7 @@ eq('Twyford: the archive\'s levels stop in 2011', fixture('2490TH').lastDay.slic
 // ---- the gauge list's rivers, if it's here ----
 const listFile = new URL('../../riverwatcher-data/data/gauges.json', import.meta.url)
 if (existsSync(listFile)) {
-  type G = { ref: string; name: string; river: string | null; toSeaKm: number | null; system: number | null; joins: { river: string; toSeaKm: number } | null; held: string | null; county: string | null }
+  type G = { ref: string; archive: string | null; name: string; river: string | null; toSeaKm: number | null; system: number | null; joins: { river: string; toSeaKm: number } | null; held: string | null; county: string | null }
   const gs = (JSON.parse(readFileSync(listFile, 'utf8')) as { gauges: G[] }).gauges
   const by = (ref: string) => gs.find((g) => g.ref === ref)!
   const [cav, son, rdg, blakes, twy, greta, port, kes] = ['2201TH', '2301TH', '2200TH', '2298TH', '2490TH', '750832', '751007', '750917'].map(by)
@@ -180,6 +180,7 @@ if (existsSync(listFile)) {
   check('the Thames and the Derwent don\'t join anything (they reach the sea)', cav.joins === null && port.joins === null)
   eq('held as agreed: Caversham, Sonning, Reading, Blakes Lock; not Greta Bridge, Twyford', [cav, son, rdg, blakes, greta, twy].map((g) => !!g.held), [true, true, true, true, false, false])
   eq('counties', [cav.county, greta.county], ['Berkshire', 'Cumbria'])
+  eq('Twyford\'s archive is Twyford Main', twy.archive, '1f60373d-2b3c-4c41-b4be-0950dd97e068_w1TH')
   check('every major river in one piece', ['River Trent', 'River Severn', 'River Aire', 'River Nene', 'River Medway', 'River Kennet', 'River Witham'].every((r) => new Set(gs.filter((g) => g.river === r && g.toSeaKm !== null).map((g) => g.system)).size === 1))
 } else console.log('(The gauge list isn\'t beside this repo, so its rivers weren\'t checked.)')
 
