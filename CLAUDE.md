@@ -109,6 +109,15 @@ Scope (decided by John):
   counties only (`DRAINED_COUNTIES`); 76 held this way, 520 held in all. "Dike" and "dyke"
   elsewhere are usually hill streams; "Cut" and "Leam" are rivers. **(B10):** open; John asked
   whether the 422 gauges with neither history nor typical range give usable information.
+  Four weeks of live readings fetched (and 149 ordinary gauges to compare): they move like
+  rivers (median four-week range 28 cm against 38 cm; 81% moved 10 cm or more; 11 flat, 19
+  repeating one reading). Advice to John: keep them, prefer judged gauges in the nearest five,
+  a plain line instead of the judgement, leave out the flat or stuck ones.
+- **Run 2** (backfill, 02.56 to 04.57 UTC) stopped at its two-hour limit in the live part and,
+  as that part only saved at the end, kept nothing. `backfill.ts` now saves every 100 gauges
+  (three at a time) and carries on from `data/days/backfill.json`, which also remembers archive
+  dates that had nothing yet (to be asked again by the monthly top-up). Trial: two runs on five
+  gauges, the second doing nothing again. Run 3 (fill) started 04.57; a backfill run queued.
 
 ### 2026-10-30 — stage 1: the gauge list, the history and the backfill (branch `stage-1-gauges`)
 

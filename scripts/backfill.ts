@@ -15,8 +15,8 @@
 // levels in whole millimetres, hours 0 to 23 UTC (null where there was no reading). A day
 // is a UTC day, so a clock-change day needs nothing special. `u` comes from the archive
 // where it has the day. Carries on where it stopped: dates already in a file from the
-// archive aren't asked again, and the live part is skipped once done
-// (data/days/backfill.json). Stops itself after RW_MINUTES (default 330).
+// archive aren't asked again, nor dates it had nothing for yet, and the live part carries on
+// from the gauges it hasn't done (data/days/backfill.json keeps track). Stops itself after RW_MINUTES (default 330).
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -45,12 +45,19 @@ const write = (d: DayFile) => writeFileSync(fileOf(d.date), JSON.stringify(d) + 
 const ymd = (t: number) => new Date(t).toISOString().slice(0, 10)
 const mm = (x: number) => Math.round(x * 1000)
 
+// What's been done, so a run carries on where the last stopped: archive dates already asked
+// that had nothing yet (its last few weeks), and the gauges the live part has done.
+const progressFile = join(dir, 'backfill.json')
+type Progress = { archiveEmpty: string[]; since?: string; liveDone: string[]; liveFailed?: number; done?: string }
+const progress: Progress = existsSync(progressFile) ? { archiveEmpty: [], liveDone: [], ...JSON.parse(readFileSync(progressFile, 'utf8')) } : { archiveEmpty: [], liveDone: [] }
+const saveProgress = () => writeFileSync(progressFile, JSON.stringify(progress) + '\n')
+
 // ---- 1. the archive, one date at a time ----
 let archiveDays = 0
 for (let k = KEEP_DAYS; k >= 1 && !out(); k--) {
   const date = ymd(now.getTime() - k * 86400e3)
   const had = read(date)
-  if (had?.from.includes('archive')) continue
+  if (had?.from.includes('archive') || progress.archiveEmpty.includes(date)) continue
   const text = await getText(`${HY}/data/readings.csv?observedProperty=waterLevel&period=86400&date=${date}&_limit=20000`)
   await sleep(PAUSE_MS)
   const rows = text ? parseCsv(text) : []
@@ -75,7 +82,7 @@ for (let k = KEEP_DAYS; k >= 1 && !out(); k--) {
     n++
   }
   // The archive has nothing yet for its last few weeks: those days are left to the live part.
-  if (!n) continue
+  if (!n) { progress.archiveEmpty.push(date); saveProgress(); continue }
   day.from = [...new Set([...day.from, 'archive'])]
   write(day)
   archiveDays++
@@ -83,30 +90,18 @@ for (let k = KEEP_DAYS; k >= 1 && !out(); k--) {
 console.log(`Archive: ${archiveDays} days written.`)
 
 // ---- 2. the last four weeks from the live feed ----
-const doneFile = join(dir, 'backfill.json')
-if (existsSync(doneFile)) {
+// Three gauges at a time, saved every 100 gauges, so a run stopped part-way loses little.
+if (progress.done) {
   console.log('The live part was done before.')
 } else if (!out()) {
-  const since = new Date(now.getTime() - LIVE_DAYS * 86400e3).toISOString().slice(0, 19) + 'Z'
-  const perDay = new Map<string, Map<string, { h: (number | null)[]; u: number | null }>>()
-  let asked = 0, failed = 0
-  for (const g of gauges) {
-    if (out()) break
-    try {
-      const body = await getJson<{ items: { dateTime: string; value: unknown }[] }>(`${FM}/id/measures/${g.measure}/readings?since=${since}&_sorted&_limit=10000`)
-      const readings = (body?.items ?? []).filter((r) => typeof r.value === 'number').map((r) => [r.dateTime, r.value as number] as [string, number])
-      for (const [date, h] of hourlyAverages(readings)) {
-        const m = perDay.get(date) ?? new Map()
-        m.set(g.ref, { h: h.map((x) => (x === null ? null : mm(x))), u: usualOfReadings(readings, date) })
-        perDay.set(date, m)
-      }
-    } catch { failed++ }
-    asked++
-    if (asked % 250 === 0) console.log(`Live: ${asked} of ${gauges.length} (${failed} failed)`)
-    await sleep(PAUSE_MS)
-  }
-  if (asked === gauges.length) {
-    const today = ymd(now.getTime())
+  progress.since ??= new Date(now.getTime() - LIVE_DAYS * 86400e3).toISOString().slice(0, 19) + 'Z'
+  const today = ymd(now.getTime())
+  const doneSet = new Set(progress.liveDone)
+  const todo = gauges.filter((g) => !doneSet.has(g.ref))
+  let perDay = new Map<string, Map<string, { h: (number | null)[]; u: number | null }>>()
+  let batch: string[] = []
+  let failed = progress.liveFailed ?? 0
+  const flush = () => {
     for (const [date, m] of perDay) {
       if (date >= today) continue // today isn't over
       const day = read(date) ?? { date, made: now.toISOString(), from: [], gauges: {} }
@@ -117,8 +112,37 @@ if (existsSync(doneFile)) {
       day.from = [...new Set([...day.from, 'live'])]
       write(day)
     }
-    writeFileSync(doneFile, JSON.stringify({ done: now.toISOString(), gauges: asked, failed, days: perDay.size }) + '\n')
-    console.log(`Live: ${asked} gauges asked, ${failed} failed; ${perDay.size} days.`)
-  } else console.log(`Live: stopped after ${asked} of ${gauges.length}; run again to do it all.`)
+    progress.liveDone.push(...batch)
+    progress.liveFailed = failed
+    saveProgress()
+    perDay = new Map()
+    batch = []
+  }
+  let next = 0
+  await Promise.all([0, 1, 2].map(async () => {
+    while (next < todo.length && !out()) {
+      const g = todo[next++]
+      try {
+        const body = await getJson<{ items: { dateTime: string; value: unknown }[] }>(`${FM}/id/measures/${g.measure}/readings?since=${progress.since}&_sorted&_limit=10000`)
+        const readings = (body?.items ?? []).filter((r) => typeof r.value === 'number').map((r) => [r.dateTime, r.value as number] as [string, number])
+        for (const [date, h] of hourlyAverages(readings)) {
+          const m = perDay.get(date) ?? new Map()
+          m.set(g.ref, { h: h.map((x) => (x === null ? null : mm(x))), u: usualOfReadings(readings, date) })
+          perDay.set(date, m)
+        }
+      } catch { failed++ }
+      batch.push(g.ref)
+      if (batch.length >= 100) {
+        flush()
+        console.log(`Live: ${progress.liveDone.length} of ${gauges.length} (${failed} failed), ${((Date.now() - started) / 60000).toFixed(0)} minutes`)
+      }
+      await sleep(PAUSE_MS)
+    }
+  }))
+  flush()
+  if (progress.liveDone.length >= gauges.length) {
+    progress.done = now.toISOString()
+    saveProgress()
+    console.log(`Live: all ${gauges.length} gauges done, ${failed} failed.`)
+  } else console.log(`Live: ${progress.liveDone.length} of ${gauges.length} done; run again to carry on.`)
 }
-
