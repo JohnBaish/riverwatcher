@@ -88,6 +88,41 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-10-31 — the archive cleaned; today's hours; merged to `main` (branch `claude/inspiring-hypatia-60x279`)
+
+**John:** fix the "two zero points" fault; point 2 ends "No long record to compare."; 7 (a year ago
+at a held gauge: the level only) right; 8 keep the promise (every visitor loads the same files);
+9 yes (today's hours); the key's colours looked the wrong way round; then "merge please".
+
+**What:** `cleanDays` in `scripts/lib/history.ts` (SPEC §4.8): stuck stretches, stretches on
+another zero point than today's, and impossible figures are left out before a history is built
+(`stuckDays`, `steps`, `otherZero`, `plausibleBounds`; history files gain `otherZero` and
+`bounds`, the index `otherZero` and `droppedDays`; a gauge left "short" has its old file removed).
+`scripts/lib/pageData.ts`: `liveBand` and `historyFits` set aside a history that doesn't fit what
+the gauge reads now; day-file figures outside the plausible levels are left out. The collector
+writes `data/today.json` (`todayHours`, the hours so far, one line per gauge), and the charts'
+hourly parts end with it. The key's swatches use the chart's own shading. Checks 114 + 83.
+
+**Measured, to set the rules:** every gauge's archive daily figures fetched (2,108, none failed)
+and the rules run over them. The first impossible-figure limit (4 times out) would have removed
+real floods (Morpeth, September 25th 2012; Wakefield, Storm Christoph): real floods reach about
+12 times, every figure 20 times out was impossible, so 20 it is, plus loggers' stand-in values.
+The first step rule cut Melton Park's 18 good years for a two-year fault, and read stuck stretches
+as changes; fixed. Known limit: Melton Park's two years at -0.27 m (2021 to 2023) stay in its
+history (the step into them isn't sharp enough to find).
+
+**Rebuilt:** 215 gauges' histories (`build-history.ts` with `RW_ONLY`, run here, 30 minutes):
+210 ok, 5 now too short; records now real floods (Maidenhead 3.74 m in February 2014, Walton
+3.50 m in July 2007, Corbridge 5.76 m in Storm Desmond). Pushed to the data repo's `main`. 18
+gauges' whole archive is on another zero point; the page uses their typical range.
+
+**For John:** the chart's outer bands are paler (as agreed), so "very high" reads weaker than
+"high"; the key now matches the chart, and two ways to change it are offered.
+
+**Merged:** the branch fast-forwarded into `main` at John's word, so the collector writes
+`today.json` from its next run. `main` also carries the stage 3 page, not yet reviewed by John
+(nothing is visible: no Vercel project until stage 5).
+
 ### 2026-10-31 — cron-job.org set up; the key's expiry noted (notes only)
 
 John set up the hourly cron-job.org job (first run 6.10pm today); its GitHub access key expires

@@ -129,6 +129,21 @@ reading (Roe Bridge on the Brock has one day in 1919, then nothing for decades).
    gaps count** (John, October 31st, as Claude suggested): a gap of a year or more in the last
    five years, or one of three months or more that runs to the end of the record (99 gauges,
    kept as `gaps` in each history file). The exact wording to settle in stage 3.
+8. **Cleaning the archive** (stage 3, October 31st; Claude's rules, measured on every gauge's
+   archive): before a history is built, three kinds of bad figure are left out
+   (`cleanDays` in `scripts/lib/history.ts`). **Stuck stretches:** 30 or more days in a row the
+   same to the millimetre (192 gauges had some, often years at exactly 0 m). **Another zero
+   point:** at 31 gauges the archive's levels change their zero point (Maidenhead about 21 m
+   before 2010, 2.4 m after); stretches not on today's zero point are left out, and earlier
+   stretches that match it are kept. A change must jump by at least 0.5 m from one day to the
+   next and last (a wet winter, a flood, or a reservoir drawn down over weeks doesn't count).
+   **Impossible figures:** more than 20 times the gauge's ordinary range beyond it (real floods
+   reach about 12 times, as at Liversedge in Storm Ciara), or a logger's stand-in value (32.767,
+   0, -9.999 and the like) more than 4 times out. On the page, a history whose middle level
+   doesn't fit what the gauge reads now (the archive and the live feed on different zero
+   points, 18 gauges such as Kings Road Bridge) is set aside, and the gauge is judged by its
+   typical range; day-file figures outside the plausible levels are left out of the charts and
+   "a year ago".
 
 ## 5. Updates (Agreed: hourly)
 
