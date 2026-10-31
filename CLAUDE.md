@@ -113,7 +113,7 @@ Scope (decided by John):
   rivers (median four-week range 28 cm against 38 cm; 81% moved 10 cm or more; 11 flat, 19
   repeating one reading). Advice to John: keep them, prefer judged gauges in the nearest five,
   a plain line instead of the judgement, leave out the flat or stuck ones. **John agreed all of
-  it** (SPEC §3.7; `design/level-only-2026-10-31.md`, with the 30 that would be left out now).
+  it** (SPEC §3.7; `design/level-only-2026-10-31.md`, with the 24 that would be left out now).
 - **Run 2** (backfill, 02.56 to 04.57 UTC) stopped at its two-hour limit in the live part and,
   as that part only saved at the end, kept nothing. `backfill.ts` now saves every 100 gauges
   (three at a time) and carries on from `data/days/backfill.json`, which also remembers archive
