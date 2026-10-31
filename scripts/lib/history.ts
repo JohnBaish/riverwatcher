@@ -65,9 +65,16 @@ export const STEP_JUMP_M = 0.5
 /** A stuck gauge: this many days with figures in a row, each the same to the millimetre, are
  *  missing figures, not a level (Melton Park sat at -1.25 m for a year). */
 export const STUCK_DAYS = 30
-/** An impossible day: its usual level, highest or lowest lies more than SPIKE_SPANS times the
- *  gauge's ordinary range (its 1% to 99% usual levels) beyond that range. */
-export const SPIKE_SPANS = 4
+/** An impossible figure: more than SPIKE_SPANS times the gauge's ordinary range (its 1% to 99%
+ *  usual levels) beyond that range. Measured on every gauge's archive (October 31st): real
+ *  floods reach about 12 times (Liversedge in Storm Ciara, Chesterfield in Storm Babet), and
+ *  every figure 20 times out was impossible (Walton 32 m, Loughton 100 m). */
+export const SPIKE_SPANS = 20
+/** Loggers' stand-in values (the largest number some can store, and "no reading" markers):
+ *  impossible when more than SENTINEL_SPANS times the ordinary range out (Gloucester 32.767 m,
+ *  Reading 0 m, Penberth -9.999 m). */
+export const SENTINELS = [32.767, 99.99, 100, 9.999, 0, -1, -9.99, -9.999, -10]
+export const SENTINEL_SPANS = 4
 
 const medianOf = (v: number[]) => { const s = [...v].sort((a, b) => a - b); return s.length % 2 ? s[(s.length - 1) / 2] : (s[s.length / 2 - 1] + s[s.length / 2]) / 2 }
 const spreadOf = (v: number[]) => { const s = [...v].sort((a, b) => a - b); return quantile(s, 75) - quantile(s, 25) }
@@ -98,13 +105,14 @@ function lasting(u: number[], i: number): boolean {
   return d >= STEP_MIN_M && d >= STEP_SPREADS * Math.max(spreadOf(before), spreadOf(after))
 }
 
-/** The bounds outside which a day is impossible, from the usual levels: [low, high]. */
-export function plausibleBounds(days: Day[]): [number, number] {
+/** The bounds outside which a figure is impossible, from the usual levels: [low, high]. */
+export function plausibleBounds(days: Day[], spans = SPIKE_SPANS): [number, number] {
   const s = days.map(usual).sort((a, b) => a - b)
   const p1 = quantile(s, 1), p99 = quantile(s, 99)
   const span = Math.max(p99 - p1, 0.05)
-  return [p1 - SPIKE_SPANS * span, p99 + SPIKE_SPANS * span]
+  return [p1 - spans * span, p99 + spans * span]
 }
+const isSentinel = (v: number) => SENTINELS.some((x) => Math.abs(v - x) < 0.0005)
 
 /** The archive's highest and lowest levels with the days before the last change of zero point,
  *  and impossible figures, left out (applied to the separate highest and lowest figures too, so
@@ -133,7 +141,8 @@ export function cleanDays(highs: Map<string, number>, lows: Map<string, number>)
   const days = joinDays(h, l)
   if (days.length < 30) return { highs: h, lows: l, from, dropped: 0, bounds: null }
   const [lo, hi] = plausibleBounds(days)
-  const ok = (v: number) => v >= lo && v <= hi
+  const [slo, shi] = plausibleBounds(days, SENTINEL_SPANS)
+  const ok = (v: number) => v >= lo && v <= hi && !(isSentinel(v) && (v < slo || v > shi))
   const bad = new Set(days.filter((d) => !ok(usual(d))).map((d) => d.date))
   const keep = (m: Map<string, number>) => new Map([...m].filter(([d, v]) => !bad.has(d) && ok(v)))
   const h2 = keep(h), l2 = keep(l)
