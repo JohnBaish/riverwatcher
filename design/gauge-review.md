@@ -1,6 +1,6 @@
 # Riverwatcher: the gauge list, for review
 
-Made by `npm run gauges` on Friday, 30 October 2026, from the Environment Agency's live station list and archive, OS Open Rivers and OS Boundary-Line. The list itself is `data/gauges.json` in `JohnBaish/riverwatcher-data`.
+Made by `npm run gauges` on Saturday, 31 October 2026, from the Environment Agency's live station list and archive, OS Open Rivers and OS Boundary-Line. The list itself is `data/gauges.json` in `JohnBaish/riverwatcher-data`.
 
 ## In numbers
 
@@ -984,13 +984,51 @@ An archive station counts as the same gauge when it's within 1 km, or further aw
 
 ## 11. What each gauge has
 
-The history download (`npm run history`) hasn't been run yet, so this section only gives what the list itself says.
-
 | What it has | Gauges |
 | --- | --- |
 | Neither: the level only | 421 |
-| Archive history, not yet downloaded | 2109 |
+| History for the time of year | 1967 |
 | No archive history: the EA's typical range | 358 |
+| Archive history too short (less than three years): the EA's typical range instead | 101 |
+| Archive history too short, and no typical range: the level only | 41 |
+
+**Old history.** 33 gauges' archive levels stop more than two years ago, so their "time of year" rests on those years only (Twyford on the Loddon stops in 2011). For John: use them, or treat them as having no history?
+
+| Gauge | River | Record | Last day |
+| --- | --- | --- | --- |
+| Coalburn Beck | Coal Burn | 1992 | 2003-07-07 |
+| Wilfholme PS | River Hull | 1996 | 2003-08-10 |
+| Alma Weir | River Skell | 1985 | 2010-08-11 |
+| Twyford | River Loddon | 1995 | 2011-06-06 |
+| Lilford Park, Leigh | Atherton Lake Brook | 2004 | 2015-04-20 |
+| Lower Barnwell upstream | River Nene | 2010 | 2019-02-06 |
+| Crudgington | River Strine | 1987 | 2020-06-30 |
+| Gwithian | River Red | 2013 | 2020-11-11 |
+| Barcombe | River Ouse | 2008 | 2021-11-30 |
+| Addlestone | Addlestone Bourne | 1991 | 2021-12-01 |
+| Bramley | Cranleigh Waters | 1991 | 2021-12-01 |
+| Harlow Mill | River Stort | 2001 | 2021-12-01 |
+| Stokesley Downstream | River Leven | 2000 | 2021-12-01 |
+| Milton Lock | Cuckmere River | 2000 | 2022-02-15 |
+| Didsbury Basin Stenner Lane | River Mersey | 2013 | 2022-02-20 |
+| Sampford Brett | Doniford Stream | 2005 | 2022-04-21 |
+| Stogumber Escott Lane | Doniford Stream | 2019 | 2022-04-22 |
+| Broadeye Bridge | River Sow | 2001 | 2022-07-03 |
+| Wookey | River Axe | 1995 | 2022-12-02 |
+| Arthington | River Wharfe | 1991 | 2022-12-04 |
+| Bleach Green Weir | River Ehen | 1977 | 2022-12-06 |
+| Bessy Brook | Bessy Brook | 2011 | 2023-03-17 |
+| Knapp Mill | River Avon | 1995 | 2023-05-30 |
+| Stocks Reservoir Level | River Hodder | 1976 | 2023-06-20 |
+| Bow Bridge Abbey Road | Poaka Beck | 2011 | 2023-07-08 |
+| Burlington | River Worfe | 1999 | 2023-07-30 |
+| Caker Stream | Caker Stream | 1992 | 2023-10-11 |
+| Robertsbridge | River Rother | 2000 | 2023-10-17 |
+| Mitford | River Wansbeck | 1979 | 2023-10-20 |
+| Smithills Croft Road | Dean Brook | 2012 | 2023-11-07 |
+| Ellamsbridge Road, St Helens | Sutton Mill Brook | 2014 | 2023-11-11 |
+| North Hull National Avenue | Setting Dyke | 2006 | 2023-11-17 |
+| Broadmead Gates | Broadmead Cut | 2007 | 2023-12-11 |
 
 ## 12. Archive notes
 

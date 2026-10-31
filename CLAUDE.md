@@ -136,7 +136,12 @@ October 2026, Boundary-Line).
 purpose made them fail. `tsc -b`, lint and build clean. No page yet, so nothing in a
 browser.
 
-**Running:** the data repo's History workflow (run 1, started 20.18 UTC), both parts.
+**Run 1** of the data repo's History workflow (20.18 to 23.54 UTC, green): **history done**,
+1,967 gauges with a file and 142 too short (less than three years), none failed; 54 MB in all
+(about 27 KB each; SPEC §6.4 estimated 35 MB). Day files: the archive's 382 dates (September
+25th 2025 to October 11th 2026) in its two hours, about 19 seconds a date (6 measured here),
+so the live four weeks weren't reached; run 2 (backfill only) started October 31st. The review
+remade with the history: 33 gauges' archive levels stop more than two years ago (§11).
 
 ### 2026-10-30 — the prompt for stage 1 (notes only)
 
