@@ -196,6 +196,14 @@ export function riverSentence(gr: Group, c: Ctx): string {
   if (free.length) {
     const at = free.length === 1 ? atName(free[0]) : ''
     const also = highs.length ? `, and ${spanOf(highs.map(wordOf) as Word[])} at ${list(highs.map((g) => g.name))}` : ''
+    // Words next to each other read as a span ("normal to high"); further apart, each gauge is
+    // named, as a span like "very low to very high" reads oddly (John, October 31st, option C).
+    const steps = free.map((g) => ORDER.indexOf(wordOf(g)!))
+    if (Math.max(...steps) - Math.min(...steps) >= 2) {
+      const parts = ORDER.filter((w) => free.some((g) => wordOf(g) === w)).map((w) => `${w} at ${list(free.filter((g) => wordOf(g) === w).map((g) => g.name))}`)
+      const joined = parts.length < 2 ? parts.join('') : `${parts.slice(0, -1).join(', ')}${parts.some((x) => x.includes(' and ')) || parts.length > 2 ? ', and ' : ' and '}${parts[parts.length - 1]}`
+      return `${cap} is ${joined}, for ${toy}${also}.`
+    }
     return `${cap}${at} is ${spanOf(free.map(wordOf) as Word[])} for ${toy}${also}.`
   }
   if (highs.length) {

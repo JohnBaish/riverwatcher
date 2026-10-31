@@ -143,7 +143,11 @@ eq('the Kennet sentence', riverSentence(groups[1], c), "The Kennet is held stead
 eq('no record', riverSentence(groups[2], c), 'Some Brook has no long record to compare with here.')
 eq('one free-flowing gauge', riverSentence(groups[3], c), 'The Loddon at D is normal for late October.')
 const mixed = riverGroups([{ g: place('p', 'P', 'River Eden', 1, { j: { basis: 'history', word: 'normal', percent: 60 } }), miles: 1, extra: false }, { g: place('q', 'Q', 'River Eden', 2, { j: { basis: 'history', word: 'high', percent: 80 } }), miles: 2, extra: false }])
-eq('a span of words', riverSentence(mixed[0], c), 'The Eden is normal to high for late October.')
+eq('a span of words next to each other', riverSentence(mixed[0], c), 'The Eden is normal to high for late October.')
+const apart = riverGroups([{ g: place('t1', 'Team Valley', 'River Team', 1, { toSeaKm: 9, j: { basis: 'history', word: 'very low', percent: 9.9 } }), miles: 1, extra: false }, { g: place('t2', 'Gateshead St Omers Haugh', 'River Team', 2, { toSeaKm: 3, j: { basis: 'history', word: 'very high', percent: 100 } }), miles: 2, extra: false }])
+eq('words further apart: each gauge named (option C)', riverSentence(apart[0], c), 'The Team is very low at Team Valley and very high at Gateshead St Omers Haugh, for late October.')
+const three = riverGroups([1, 2, 3].map((k) => ({ g: place(`u${k}`, `U${k}`, 'River Ure', k, { toSeaKm: 10 - k, j: { basis: 'history' as const, word: (k === 3 ? 'high' : 'low') as 'high' | 'low', percent: k === 3 ? 80 : 20 } }), miles: k, extra: false })))
+eq('three gauges, two words apart', riverSentence(three[0], c), 'The Ure is low at U1 and U2, and high at U3, for late October.')
 const drain: Item[] = [{ g: place('r', 'North Drain', 'North Drain', 1, { held: 'drain', j: { basis: 'held', word: 'high' } }), miles: 1, extra: false }]
 eq('no "North Drain at North Drain"', riverSentence(riverGroups(drain)[0], c), 'North Drain is high for late October.')
 const pumped: Item[] = [{ g: place('s', 'Bradney', 'Kings Sedgemoor Drain', 1, { held: 'drain', j: { basis: 'held', word: null } }), miles: 1, extra: false }, { g: place('t', 'Dunball', 'Kings Sedgemoor Drain', 2, { held: 'drain', j: { basis: 'held', word: null } }), miles: 2, extra: false }]

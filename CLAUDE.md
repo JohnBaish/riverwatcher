@@ -88,6 +88,13 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-10-31 — the summary names gauges when their words are far apart (option C; branch, not merged)
+
+John chose C: a river's gauges keep the span when their words are next to each other ("normal to
+high"); two or more steps apart, each is named ("The Team is very low at Team Valley and very high
+at Gateshead St Omers Haugh, for late October."). `riverSentence` in `src/lib/view.ts`; SPEC §7.3;
+checks 114 + 85. NE30 and SW1A at 1200px and 390px, light and dark: no errors, no sideways scroll.
+
 ### 2026-10-31 — stage 3 approved; last checks (notes only)
 
 **John** tried the private page: "This looks great. Really good. I have no amends at this stage."
