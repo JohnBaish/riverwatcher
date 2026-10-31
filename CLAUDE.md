@@ -88,6 +88,15 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-10-31 — the postcode view as a private page (notes only)
+
+At John's request: the real build (from `main`, data at 7.10pm) published as a private page,
+https://claude.ai/artifact/4dtJG2SmggjVjhq4PgsvJt, for him to try. Made with
+`npx vite build --base ./`, the page's wrapper tags dropped (the artifact adds its own) and a
+preview-only line that opens a first visit on RG4. It doesn't update itself: rebuild and
+republish to show newer figures. Untested here: whether the artifact frame keeps the page's own
+`#postcode/RG4` addresses (if not, choosing a place still works through the box).
+
 ### 2026-10-31 — chart bands all at the same strength (option A)
 
 John chose A: the chart's five bands (and the key's swatches) at the same strength, so "very high"
