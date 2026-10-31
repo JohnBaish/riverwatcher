@@ -85,6 +85,11 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-10-31 — the prompt for stage 3 (notes only)
+
+`design/prompt-stage-3-2026-10-31.md`: what John pastes into a new thread to start stage 3 (this
+thread had grown very long). The stage 3 branch started here was empty and was removed.
+
 ### 2026-10-31 — stage 2: the collector (branch `stage-2-collector`)
 
 **John:** "please merge and continue" (stage 1 merged; stage 2 started).
