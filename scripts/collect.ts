@@ -27,12 +27,12 @@ const started = Date.now()
 const now = new Date()
 /** The day file's bulk download stops by this many minutes into the run (and tries again
  *  next hour), so the workflow's own limit can't cut a run short before it saves. */
-const DAY_FILE_MINUTES = Number(process.env.RW_DAY_MINUTES ?? 16)
+const DAY_FILE_MINUTES = Number(process.env.RW_DAY_MINUTES ?? 20)
 const KEEP_DAYS = 400
 const PAGE_ROWS = 10_000
 const log: Record<string, unknown> = { at: now.toISOString() }
 
-type Gauge = { ref: string; measure: string }
+type Gauge = { ref: string; measure: string; archive: string | null; typical: [number, number] | null }
 const { gauges } = JSON.parse(readFileSync(join(dataDir, 'gauges.json'), 'utf8')) as { gauges: Gauge[] }
 const byMeasure = new Map(gauges.map((g) => [g.measure, g.ref]))
 const ymd = (t: number) => new Date(t).toISOString().slice(0, 10)
@@ -79,12 +79,12 @@ const floods = floodsInForce(floodItems, areas)
 const lines: Record<string, LatestLine> = {}
 let silent = 0
 for (const g of gauges) {
-  const line = latestLine(state.samples[g.ref], latest.get(g.ref))
+  const line = latestLine(state.samples[g.ref], latest.get(g.ref), now)
   if (line) lines[g.ref] = line
   if (isSilent(latest.get(g.ref)?.time, now)) silent++
 }
 writeFileSync(join(dataDir, 'latest.json'), JSON.stringify({
-  note: 'Each gauge\'s latest reading (Riverwatcher, scripts/collect.ts): [level mm, time, average of the last 24 hours mm, change in 24 hours mm]. Levels in whole millimetres above the gauge\'s own zero. floods: warnings in force (level 1 severe, 2 warning, 3 alert).',
+  note: 'Each gauge\'s latest reading (Riverwatcher, scripts/collect.ts): [level mm, minutes between the reading and made, average of the last 24 hours mm, change in 24 hours mm]. Levels in whole millimetres above the gauge\'s own zero. floods: warnings in force (level 1 severe, 2 warning, 3 alert).',
   made: now.toISOString(),
   credit: 'This uses Environment Agency flood and river level data from the real-time data API (Beta).',
   gauges: lines,
@@ -133,9 +133,11 @@ if (!yDay?.from.includes('collector')) {
       for (const [ref, v] of Object.entries(d?.gauges ?? {})) for (const x of v.h ?? []) if (x !== null) (hours.get(ref) ?? hours.set(ref, []).get(ref)!).push(x)
     }
     const quiet: Record<string, string> = {}
-    for (const [ref, h] of hours) { const q = flatOrStuck(h); if (q) quiet[ref] = q }
+    // Only gauges with neither history nor a typical range (John, October 31st).
+    const levelOnly = new Set(gauges.filter((g) => !g.archive && !g.typical).map((g) => g.ref))
+    for (const [ref, h] of hours) { if (!levelOnly.has(ref)) continue; const q = flatOrStuck(h); if (q) quiet[ref] = q }
     writeFileSync(join(dataDir, 'quiet.json'), JSON.stringify({
-      note: 'Gauges left out as flat (no change of more than 2 cm in four weeks) or stuck (the same hourly figure more than 90% of the time), from the last 28 day files (SPEC §3.7).',
+      note: 'Gauges with neither history nor a typical range left out as flat (no change of more than 2 cm in four weeks) or stuck (the same hourly figure more than 90% of the time), from the last 28 day files (SPEC §3.7).',
       made: now.toISOString(), gauges: quiet,
     }) + '\n')
     log.quiet = Object.keys(quiet).length

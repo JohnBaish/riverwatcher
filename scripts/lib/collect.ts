@@ -37,12 +37,13 @@ export function addSamples(state: State, latest: Map<string, { time: string; val
   return { made: now.toISOString(), samples }
 }
 
-/** One gauge's line in latest.json: [level mm, time of reading, average of the last 24
- *  hours' samples mm (null with fewer than 12), change in 24 hours mm (null if there's no
- *  sample from 23 to 25 hours before)]. */
-export type LatestLine = [number, string, number | null, number | null]
+/** One gauge's line in latest.json: [level mm, minutes between the reading and the run,
+ *  average of the last 24 hours' samples mm (null with fewer than 12), change in 24 hours mm
+ *  (null if there's no sample from 23 to 25 hours before)]. Minutes rather than a date keep
+ *  the file small, as it's rewritten every hour. */
+export type LatestLine = [number, number, number | null, number | null]
 
-export function latestLine(samples: Record<string, number> | undefined, reading: { time: string; value: number } | undefined): LatestLine | null {
+export function latestLine(samples: Record<string, number> | undefined, reading: { time: string; value: number } | undefined, now: Date): LatestLine | null {
   if (!reading) return null
   const t = Date.parse(reading.time)
   const value = mm(reading.value)
@@ -50,7 +51,7 @@ export function latestLine(samples: Record<string, number> | undefined, reading:
   const last24 = hours.filter(([h]) => h > t - 24 * 3600e3 && h <= t).map(([, v]) => v)
   const mean = last24.length >= 12 ? Math.round(last24.reduce((a, b) => a + b, 0) / last24.length) : null
   const before = hours.filter(([h]) => Math.abs(h - (t - 24 * 3600e3)) <= 3600e3).sort((a, b) => Math.abs(a[0] - (t - 24 * 3600e3)) - Math.abs(b[0] - (t - 24 * 3600e3)))[0]
-  return [value, reading.time.replace(/:00(\.000)?Z$/, 'Z'), mean, before ? value - before[1] : null]
+  return [value, Math.max(0, Math.round((now.getTime() - t) / 60000)), mean, before ? value - before[1] : null]
 }
 
 export const isSilent = (time: string | null | undefined, now: Date) => !time || now.getTime() - Date.parse(time) > SILENT_HOURS * 3600e3

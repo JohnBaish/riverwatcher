@@ -22,8 +22,8 @@ concurrency:
 jobs:
   collect:
     runs-on: ubuntu-latest
-    # The collector stops its day-file download by 16 minutes in.
-    timeout-minutes: 25
+    # The collector stops its day-file download by 20 minutes in.
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v6
 

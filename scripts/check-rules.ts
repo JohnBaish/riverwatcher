@@ -163,8 +163,8 @@ eq('the last 24 hours\' average', average24([['2026-10-29T10:00:00Z', 9], ['2026
   eq('samples older than 48 hours go; a reading from the future is ignored', st.samples, { A: { '2026-10-30T11': 200, '2026-10-30T12': 210, '2026-10-31T12': 250 } })
   const full: Record<string, number> = {}
   for (let h = 0; h <= 24; h++) full[new Date(Date.parse('2026-10-30T12:00:00Z') + h * 3600e3).toISOString().slice(0, 13)] = 1000 + h * 10
-  eq('the latest line: level, time, 24-hour average, change in 24 hours', latestLine(full, { time: '2026-10-31T12:00:00Z', value: 1.24 }), [1240, '2026-10-31T12:00Z', 1125, 240])
-  eq('no average from too few samples, no change without a sample a day before', latestLine({ '2026-10-31T11': 5 }, { time: '2026-10-31T12:00:00Z', value: 0.005 }), [5, '2026-10-31T12:00Z', null, null])
+  eq('the latest line: level, minutes old, 24-hour average, change in 24 hours', latestLine(full, { time: '2026-10-31T12:00:00Z', value: 1.24 }, now), [1240, 10, 1125, 240])
+  eq('no average from too few samples, no change without a sample a day before', latestLine({ '2026-10-31T11': 5 }, { time: '2026-10-31T12:00:00Z', value: 0.005 }, now), [5, 10, null, null])
   check('silent after six hours', isSilent('2026-10-31T06:00:00Z', now) && !isSilent('2026-10-31T06:15:00Z', now) && isSilent(null, now))
   eq('flood warnings in force, most severe first, with their area\'s position', floodsInForce([
     { floodAreaID: 'x', severityLevel: 3, severity: 'Flood alert', description: 'River Eden' },
