@@ -197,7 +197,9 @@ with the switch).
 3. **Summary**, river by river (real figures, 4.15pm on October 30th): "Near RG4: the Thames is very high for late October at Sonning
    Lock, and held steady by locks and weirs elsewhere. The Kennet is held steady by a lock or weir
    here, and isn't high for late October. The Loddon at Twyford is high for late October." A
-   river whose gauges differ gets a span ("normal to high").
+   river whose gauges differ gets a span ("normal to high") when the words are next to each
+   other; further apart, each gauge is named: "The Team is very low at Team Valley and very high
+   at Gateshead St Omers Haugh, for late October." (John, October 31st, option C).
 4. **The nearest gauges, river by river:** the nearest five within 10 miles, grouped under each
    river's name (nearest river first), each river listed upstream to downstream, the nearest gauge
    marked "Nearest"; "The Kennet joins here" between the right gauges, and "Joins the Thames
