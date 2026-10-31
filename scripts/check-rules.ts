@@ -10,7 +10,7 @@ import {
   dropNearDuplicates, heldReason, isBackup, isLake, namesAgree, navigationHeads, riverKey, riverMeasure, shownName, tidyName, type Station,
 } from './lib/gauges.ts'
 import {
-  average24, buildHistory, dayOfYear, incompleteGaps, judge, joinDays, levelsFor, movement, percentBelow, readDailyCsv, recordStart, sinceYear, timeOfYear, wordFor,
+  average24, buildHistory, cleanDays, lastStep, dayOfYear, incompleteGaps, judge, joinDays, levelsFor, movement, percentBelow, readDailyCsv, recordStart, sinceYear, timeOfYear, wordFor,
   type Day, type History,
 } from './lib/history.ts'
 import { englishName, normRiver } from './lib/rivers.ts'
@@ -139,6 +139,44 @@ eq('the last 24 hours\' average', average24([['2026-10-29T10:00:00Z', 9], ['2026
   ]
   eq('two highs on one date: the higher; Suspect and Missing left out; completeness ignored', [...readDailyCsv(rows, Math.max)], [['2026-01-01', 0.7]])
   eq('a day needs both, even if its lowest is a little above its highest', joinDays(new Map([['a', 1], ['b', 2], ['c', 7.44]]), new Map([['a', 0.5], ['c', 7.443]])), [{ date: 'a', high: 1, low: 0.5 }, { date: 'c', high: 7.44, low: 7.443 }])
+}
+
+// ---- cleaning the archive: a change of zero point, impossible days ----
+{
+  // Six years of a made-up river: a seasonal swing of 0.6 m, a wet winter 0.8 m higher, a
+  // two-week flood to 3 m, and the first two years 20 m out (a different zero point).
+  const daysOf = (shift: (date: string, i: number) => number) => {
+    const out: Day[] = []
+    for (let i = 0; i < 6 * 365; i++) {
+      const date = new Date(Date.UTC(2015, 0, 1) + i * 86400e3).toISOString().slice(0, 10)
+      const base = 0.6 + 0.3 * Math.cos((2 * Math.PI * i) / 365) + 0.05 * Math.sin(i * 1.7) + shift(date, i)
+      out.push({ date, high: base + 0.1, low: base - 0.1 })
+    }
+    return out
+  }
+  const maps = (days: Day[]) => [new Map(days.map((d) => [d.date, d.high])), new Map(days.map((d) => [d.date, d.low]))] as const
+  const wet = (date: string) => (date >= '2019-11-01' && date < '2020-03-01' ? 0.8 : 0)
+  const flood = (date: string) => (date >= '2018-02-01' && date < '2018-02-15' ? 2.4 : 0)
+  const plain = daysOf((d) => wet(d) + flood(d))
+  eq('no change of zero point in a wet winter and a flood', lastStep(plain), null)
+  const [ph, pl] = maps(plain)
+  const c0 = cleanDays(ph, pl)
+  eq('the flood and the wet winter are kept', [c0.from, c0.dropped], [null, 0])
+  const shifted = daysOf((d) => (d < '2017-01-01' ? 20 : 0) + wet(d) + flood(d))
+  eq('a change of zero point found', lastStep(shifted), '2017-01-01')
+  const [sh, sl] = maps(shifted)
+  const c1 = cleanDays(sh, sl)
+  eq('the days before it left out', [c1.from, [...c1.highs.keys()][0], c1.dropped], ['2017-01-01', '2017-01-01', 0])
+  const twice = daysOf((d) => (d < '2016-06-01' ? 4 : d < '2018-06-01' ? 2 : 0))
+  eq('two changes: the last one counts', lastStep(twice), '2018-06-01')
+  const [th, tl] = maps(plain)
+  th.set('2019-02-28', 32.01)
+  tl.set('2016-05-05', -9)
+  const c2 = cleanDays(th, tl)
+  eq('impossible days left out (Walton\'s 32 m)', [c2.highs.has('2019-02-28'), c2.lows.has('2019-02-28'), c2.lows.has('2016-05-05'), c2.dropped], [false, false, false, 2])
+  check('the flood\'s highest kept', c2.highs.get('2018-02-10')! > 2.9)
+  const h = buildHistory('T', 'T', joinDays(c2.highs, c2.lows), '2026-10-30', { highs: c2.highs, lows: c2.lows })!
+  check('the record is the flood, not the impossible day', h.record.high.date >= '2018-02-01' && h.record.high.date < '2018-02-15', JSON.stringify(h.record.high))
 }
 
 // ---- day files ----

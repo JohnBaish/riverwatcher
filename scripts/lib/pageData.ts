@@ -83,6 +83,26 @@ export function pageGauge(g: GaugeLine, line: LatestLine | null, h: History | nu
   }
 }
 
+/** The band a believable level falls in, from what a gauge reads now: its lowest and highest
+ *  recent levels widened by LIVE_SPANS times their spread (at least LIVE_MIN_MM). Generous: it
+ *  catches a different zero point (metres or tens of metres out), not a flood. */
+export const LIVE_SPANS = 4
+export const LIVE_MIN_MM = 200
+export function liveBand(values: number[]): [number, number] {
+  const lo = Math.min(...values), hi = Math.max(...values)
+  const span = Math.max(hi - lo, LIVE_MIN_MM)
+  return [lo - LIVE_SPANS * span, hi + LIVE_SPANS * span]
+}
+/** A history fits when the middle of its levels for the time of year lies within the band. */
+export function historyFits(h: History, band: [number, number]): boolean {
+  const mids = (h.table ?? []).filter((r): r is number[] => !!r).map((r) => r[20])
+  if (!mids.length) return true
+  const m = mids.sort((a, b) => a - b)[Math.floor(mids.length / 2)]
+  return m >= band[0] && m <= band[1]
+}
+/** Gauges whose history was set aside by `historyFits` in the last build (for the notes). */
+export const unfitting: string[] = []
+
 export type PageData = { meta: PageMeta; gauges: PageGauge[]; hours: PageHours; hours42: PageHours; daily: PageDaily }
 
 /** The files the parts are made from, for the plugin to watch. */
@@ -106,10 +126,32 @@ export function pageData(dir = dataDir()): PageData {
     const f = join(dir, 'history', `${g.ref}.json`)
     if (existsSync(f)) histories.set(g.ref, JSON.parse(readFileSync(f, 'utf8')) as History)
   }
+  // The level each gauge reads now, from the day files with hourly figures (the live feed,
+  // always in the gauge's current zero point): the band a figure must fall in to be believed.
+  const recent = dayFiles.slice(-42).map((f) => read<DayFile>(join('days', f)))
+  const bands = new Map<string, [number, number]>()
+  for (const g of gauges) {
+    const v = recent.flatMap((f) => f.gauges[g.ref]?.h ?? []).filter((x): x is number => x !== null)
+    const line = latest.gauges[g.ref]
+    if (line) v.push(line[0])
+    if (v.length) bands.set(g.ref, liveBand(v))
+  }
+  // A history whose levels don't fit what the gauge reads now (the archive and the live feed
+  // use different zero points) isn't used: the gauge is judged by its typical range instead.
+  for (const [ref, h] of histories) {
+    const band = bands.get(ref)
+    if (band && !historyFits(h, band)) { histories.delete(ref); unfitting.push(ref) }
+  }
   const ago = day(yearBefore(date))
+  // A day file's figure outside the band (or outside the history's plausible levels) is left out.
+  const fits = (ref: string, v: number | null | undefined): number | null => {
+    if (v === null || v === undefined) return null
+    const b = histories.get(ref)?.bounds ?? bands.get(ref)
+    return b && (v < b[0] || v > b[1]) ? null : v
+  }
 
   const pageGauges = gauges.map((g) =>
-    pageGauge(g, latest.gauges[g.ref] ?? null, histories.get(g.ref) ?? null, !!quiet[g.ref], date, ago?.gauges[g.ref]?.u ?? null))
+    pageGauge(g, latest.gauges[g.ref] ?? null, histories.get(g.ref) ?? null, !!quiet[g.ref], date, fits(g.ref, ago?.gauges[g.ref]?.u)))
 
   const doy = dayOfYear(date)
   const lastFile = dayFiles[dayFiles.length - 1].slice(0, 10)
@@ -126,7 +168,7 @@ export function pageData(dir = dataDir()): PageData {
         const d = f.gauges[x.ref]
         if (d?.h) return d.h
         const u = Array<number | null>(24).fill(null)
-        if (d?.u !== undefined && d.u !== null) u[12] = d.u
+        u[12] = fits(x.ref, d?.u)
         return u
       })
       if (v.some((y) => y !== null)) g[x.ref] = deltas(v)
@@ -153,7 +195,7 @@ export function pageData(dir = dataDir()): PageData {
   const yearFiles = yearDays.map((d) => day(d) ?? { date: d, gauges: {} })
   const daily: PageDaily['g'] = {}
   for (const g of gauges) {
-    const v = yearFiles.map((f) => f.gauges[g.ref]?.u ?? null)
+    const v = yearFiles.map((f) => fits(g.ref, f.gauges[g.ref]?.u))
     if (v.some((x) => x !== null)) daily[g.ref] = deltas(v)
   }
 

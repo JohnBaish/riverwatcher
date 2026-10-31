@@ -14,10 +14,10 @@
 // 15-minute readings, a year at a time: each UTC day's highest and lowest (`filledFrom` in
 // the index says from when). RW_FILL=1 does only those gauges, even if made recently.
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { HY, getText, parseCsv, sleep } from './lib/ea.ts'
-import { RECENT_DAYS_LEFT_OUT, buildHistory, joinDays, readDailyCsv } from './lib/history.ts'
+import { RECENT_DAYS_LEFT_OUT, buildHistory, cleanDays, joinDays, readDailyCsv } from './lib/history.ts'
 import { daysFromReadings } from './lib/days.ts'
 
 const dataDir = process.argv[2] ?? '../riverwatcher-data/data'
@@ -33,7 +33,7 @@ const { gauges } = JSON.parse(readFileSync(join(dataDir, 'gauges.json'), 'utf8')
 const dir = join(dataDir, 'history')
 mkdirSync(dir, { recursive: true })
 const indexFile = join(dir, 'index.json')
-type Entry = { status: 'ok' | 'short' | 'failed'; made: string; fromYear?: number; years?: number; lastDay?: string; days?: number; note?: string; filledFrom?: string; filledDays?: number; fillTried?: string; gaps?: { from: string; to: string | null }[] }
+type Entry = { status: 'ok' | 'short' | 'failed'; zeroFrom?: string; droppedDays?: number; made: string; fromYear?: number; years?: number; lastDay?: string; days?: number; note?: string; filledFrom?: string; filledDays?: number; fillTried?: string; gaps?: { from: string; to: string | null }[] }
 const index: Record<string, Entry> = existsSync(indexFile) ? JSON.parse(readFileSync(indexFile, 'utf8')).gauges : {}
 const fresh = (e: Entry | undefined) => e && e.status !== 'failed' && Date.parse(today) - Date.parse(e.made) < REFRESH_DAYS * 86400e3
 
@@ -49,7 +49,7 @@ const todo = gauges.filter((g) => g.archive && (fill ? needsFill(index[g.ref]) :
 console.log(`${gauges.filter((g) => g.archive).length} gauges with archive history; ${todo.length} to do.`)
 
 const save = () => writeFileSync(indexFile, JSON.stringify({
-  note: 'Each gauge\'s history file (scripts/build-history.ts): ok, short (less than three years of history: no file), or failed (try again). fromYear: the first year of its record; years: years with most of their days; lastDay: the latest day used; days: days with both a highest and lowest level; filledFrom, filledDays: days worked out from the 15-minute readings where the daily figures stop early.',
+  note: 'Each gauge\'s history file (scripts/build-history.ts): ok, short (less than three years of history: no file), or failed (try again). fromYear: the first year of its record; years: years with most of their days; lastDay: the latest day used; days: days with both a highest and lowest level; filledFrom, filledDays: days worked out from the 15-minute readings where the daily figures stop early; zeroFrom: where the archive changed its zero point, the first day used; droppedDays: impossible days left out.',
   made: new Date().toISOString(),
   credit: 'This uses Environment Agency flood and river level data from the real-time data API (Beta).',
   gauges: Object.fromEntries(Object.entries(index).sort(([a], [b]) => a.localeCompare(b))),
@@ -94,13 +94,20 @@ for (const g of todo) {
         }
       }
     }
-    const days = joinDays(highs, lows)
-    const h = buildHistory(g.ref, g.archive!, days, today, { highs, lows })
+    // Only the days since the archive last changed its zero point, without impossible days.
+    const clean = cleanDays(highs, lows)
+    const days = joinDays(clean.highs, clean.lows)
+    const h = buildHistory(g.ref, g.archive!, days, today, { highs: clean.highs, lows: clean.lows })
+    const cleaned = { ...(clean.from ? { zeroFrom: clean.from } : {}), ...(clean.dropped ? { droppedDays: clean.dropped } : {}) }
     if (h) {
+      if (clean.from) h.zeroFrom = clean.from
+      if (clean.bounds) h.bounds = [Math.round(clean.bounds[0] * 1000), Math.round(clean.bounds[1] * 1000)]
       writeFileSync(join(dir, `${g.ref}.json`), JSON.stringify(h) + '\n')
-      index[g.ref] = { status: 'ok', made: today, fromYear: h.fromYear, years: h.years, lastDay: h.lastDay, days: days.length, ...(h.gaps ? { gaps: h.gaps } : {}), ...(filledDays ? { filledFrom, filledDays } : {}), ...(fillTried ? { fillTried } : {}) }
+      index[g.ref] = { status: 'ok', made: today, fromYear: h.fromYear, years: h.years, lastDay: h.lastDay, days: days.length, ...(h.gaps ? { gaps: h.gaps } : {}), ...(filledDays ? { filledFrom, filledDays } : {}), ...(fillTried ? { fillTried } : {}), ...cleaned }
     } else {
-      index[g.ref] = { status: 'short', made: today, days: days.length, ...(days.length ? { note: `${days[0].date} to ${days[days.length - 1].date}` } : {}), ...(filledDays ? { filledFrom, filledDays } : {}), ...(fillTried ? { fillTried } : {}) }
+      // An older file, made before the cleaning, mustn't be left behind.
+      rmSync(join(dir, `${g.ref}.json`), { force: true })
+      index[g.ref] = { status: 'short', made: today, days: days.length, ...(days.length ? { note: `${days[0].date} to ${days[days.length - 1].date}` } : {}), ...(filledDays ? { filledFrom, filledDays } : {}), ...(fillTried ? { fillTried } : {}), ...cleaned }
     }
   } catch (e) {
     failed++

@@ -10,7 +10,8 @@ import {
   changeText, chip, comparisons, figureLine, heldNote, joinsBetween, nearestGauges, readingTime, riverGroups, riverSentence, shortChange, summary, theRiver,
   type Ctx, type Item,
 } from '../src/lib/view.ts'
-import { deltas, ukDate, yearBefore } from './lib/pageData.ts'
+import { deltas, historyFits, liveBand, ukDate, yearBefore } from './lib/pageData.ts'
+import type { History } from './lib/history.ts'
 
 let passed = 0
 const failures: string[] = []
@@ -54,6 +55,13 @@ const bands: [number, number, number, number][] = [[0, 10, 20, 30], [100, 110, 1
 eq('a band read between steps', bandAt(bands, 0, 2, false), [40, 50, 60, 70])
 eq('a band on a step', bandAt(bands, 0, 5, false), [100, 110, 120, 130])
 eq('the whole table wraps round the year', bandAt(bands, 0, 365 + 5, true), [100, 110, 120, 130])
+
+// ---- a history in a different zero point from the live gauge ----
+eq('the live band: recent levels widened', liveBand([300, 500]), [-500, 1300])
+eq('a steady gauge still gets room', liveBand([68900, 68950]), [68100, 69750])
+const hist = (mid: number) => ({ table: [Array.from({ length: 41 }, (_, i) => mid - 200 + i * 10)] }) as unknown as History
+eq('a history that fits', historyFits(hist(400), liveBand([300, 500])), true)
+eq("Kings Road Bridge: the archive at 0.1 m, the gauge at 68.9 m", historyFits(hist(110), liveBand([68900, 68950])), false)
 
 // ---- sentences, on made-up gauges ----
 const c: Ctx = { made: '2026-10-31T10:04:00Z', date: '2026-10-31' }

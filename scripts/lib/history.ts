@@ -44,6 +44,80 @@ export function joinDays(highs: Map<string, number>, lows: Map<string, number>):
 
 export const usual = (d: Day) => (d.high + d.low) / 2
 
+// ---- cleaning the archive's figures (stage 3, October 31st) ----
+//
+// At some gauges the archive's levels change their zero point partway through (Maidenhead
+// reads about 21 m before 2010 and 2.4 m after; Burton Bradstock changes twice), and at
+// others a single day is impossible (Walton, 32 m in 2019 on a river that reads 0.3 m).
+// `cleanDays` keeps only the days since the last change of zero point, and leaves out the
+// impossible days, before the history is built.
+
+/** A change of zero point: the level steps by at least STEP_MIN_M from one day to the next
+ *  (the medians of the STEP_WINDOW days with figures either side) and stays there (the
+ *  medians of up to a year either side differ by as much, and by STEP_SPREADS times the
+ *  ordinary spread of either year, so a wet winter or a flood doesn't count). */
+export const STEP_WINDOW = 30
+export const STEP_MIN_M = 1
+export const STEP_SPREADS = 4
+/** An impossible day: its usual level, highest or lowest lies more than SPIKE_SPANS times the
+ *  gauge's ordinary range (its 1% to 99% usual levels) beyond that range. */
+export const SPIKE_SPANS = 4
+
+const medianOf = (v: number[]) => { const s = [...v].sort((a, b) => a - b); return s.length % 2 ? s[(s.length - 1) / 2] : (s[s.length / 2 - 1] + s[s.length / 2]) / 2 }
+const spreadOf = (v: number[]) => { const s = [...v].sort((a, b) => a - b); return quantile(s, 75) - quantile(s, 25) }
+
+/** The first day of the last stretch with one zero point, or null if there's no change. */
+export function lastStep(days: Day[]): string | null {
+  const u = days.map(usual)
+  // Within a stretch of days where the medians either side differ enough, the step is the day
+  // with the biggest jump from the day before.
+  let best: { i: number; jump: number } | null = null
+  let found: number | null = null
+  for (let i = STEP_WINDOW; i <= u.length - STEP_WINDOW; i++) {
+    const d = Math.abs(medianOf(u.slice(i, i + STEP_WINDOW)) - medianOf(u.slice(i - STEP_WINDOW, i)))
+    if (d >= STEP_MIN_M) {
+      const jump = Math.abs(u[i] - u[i - 1])
+      if (!best || jump > best.jump) best = { i, jump }
+    } else if (best) {
+      if (lasting(u, best.i)) found = best.i
+      best = null
+    }
+  }
+  if (best && lasting(u, best.i)) found = best.i
+  return found === null ? null : days[found].date
+}
+function lasting(u: number[], i: number): boolean {
+  const before = u.slice(Math.max(0, i - 365), i), after = u.slice(i, i + 365)
+  const d = Math.abs(medianOf(after) - medianOf(before))
+  return d >= STEP_MIN_M && d >= STEP_SPREADS * Math.max(spreadOf(before), spreadOf(after))
+}
+
+/** The bounds outside which a day is impossible, from the usual levels: [low, high]. */
+export function plausibleBounds(days: Day[]): [number, number] {
+  const s = days.map(usual).sort((a, b) => a - b)
+  const p1 = quantile(s, 1), p99 = quantile(s, 99)
+  const span = Math.max(p99 - p1, 0.05)
+  return [p1 - SPIKE_SPANS * span, p99 + SPIKE_SPANS * span]
+}
+
+/** The archive's highest and lowest levels with the days before the last change of zero point,
+ *  and impossible figures, left out (applied to the separate highest and lowest figures too, so
+ *  the records are right). */
+export function cleanDays(highs: Map<string, number>, lows: Map<string, number>): { highs: Map<string, number>; lows: Map<string, number>; from: string | null; dropped: number; bounds: [number, number] | null } {
+  const from = lastStep(joinDays(highs, lows))
+  const after = (m: Map<string, number>) => new Map([...m].filter(([d]) => !from || d >= from))
+  const h = after(highs), l = after(lows)
+  const days = joinDays(h, l)
+  if (days.length < 30) return { highs: h, lows: l, from, dropped: 0, bounds: null }
+  const [lo, hi] = plausibleBounds(days)
+  const ok = (v: number) => v >= lo && v <= hi
+  const bad = new Set(days.filter((d) => !ok(usual(d))).map((d) => d.date))
+  const keep = (m: Map<string, number>) => new Map([...m].filter(([d, v]) => !bad.has(d) && ok(v)))
+  const h2 = keep(h), l2 = keep(l)
+  const dropped = new Set([...[...h].filter(([d]) => !h2.has(d)), ...[...l].filter(([d]) => !l2.has(d))].map(([d]) => d)).size
+  return { highs: h2, lows: l2, from, dropped, bounds: [lo, hi] }
+}
+
 /** Day of a 365-day year, 0 to 364 (February 29th counts as February 28th). */
 export function dayOfYear(date: string): number {
   const [, m, d] = date.split('-').map(Number)
@@ -93,6 +167,10 @@ export type History = {
   /** Gaps that make the history incomplete (see `incompleteGaps`): from the first missing
    *  week to the first week with records again, or to null if the record stops. */
   gaps?: { from: string; to: string | null }[]
+  /** Where the archive changed its zero point, the first day used (`cleanDays`). */
+  zeroFrom?: string
+  /** The plausible levels (mm, `plausibleBounds`): figures outside them were left out. */
+  bounds?: [number, number]
 }
 
 /** "History incomplete" (John, October 31st; SPEC §4.7): a gap of a year or more in the last
