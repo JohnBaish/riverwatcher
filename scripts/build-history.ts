@@ -70,7 +70,9 @@ for (const g of todo) {
     const highs = readDailyCsv(await csv('max'), Math.max)
     const lows = readDailyCsv(await csv('min'), Math.min)
     // Fill in after the last daily figure from the 15-minute readings, a year at a time.
-    const last = [...highs.keys()].filter((d) => lows.has(d)).sort().pop()
+    // The last day with both figures before the cutoff (a few gauges' daily figures stop for
+    // months, then start again this autumn).
+    const last = [...highs.keys()].filter((d) => d < cutoff && lows.has(d)).sort().pop()
     let filledFrom: string | undefined, filledDays = 0, fillTried: string | undefined
     if (!last || Date.parse(cutoff) - Date.parse(last) > FILL_AFTER_DAYS * 86400e3) {
       fillTried = today

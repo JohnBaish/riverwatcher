@@ -439,7 +439,7 @@ if (!hist) {
   p()
   if (hist) {
     const old = out.filter((g) => hist[g.ref]?.status === 'ok' && hist[g.ref].lastDay! < `${now.getUTCFullYear() - 2}`)
-    p(`**Old history.** ${n(old.length)} gauges' archive levels stop more than two years ago, so their "time of year" rests on those years only (Twyford on the Loddon stops in 2011). For John: use them, or treat them as having no history?`)
+    p(`**Old history.** ${n(old.length)} gauges' archive records (daily figures and 15-minute readings) stop more than two years ago, so their "time of year" rests on the years before. Decided (John, October 31st): they say "History incomplete" and name the gap.`)
     p()
     p(row(['Gauge', 'River', 'Record', 'Last day']))
     p(row(['---', '---', '---', '---']))

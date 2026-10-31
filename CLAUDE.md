@@ -119,6 +119,17 @@ Scope (decided by John):
   (three at a time) and carries on from `data/days/backfill.json`, which also remembers archive
   dates that had nothing yet (to be asked again by the monthly top-up). Trial: two runs on five
   gauges, the second doing nothing again. Run 3 (fill) started 04.57; a backfill run queued.
+- **Run 3** (fill, 04.57 to 05.57 UTC): 405 gauges filled, 344,846 days; history now 2,097
+  gauges (was 1,967), 11 too short (was 142). **Run 4** (backfill, 05.58 to 07.39): the live
+  four weeks for all 2,888 gauges, none failed; 401 day files, 18 MB; history 56 MB. Then 18
+  gauges whose daily figures stop for months and start again this autumn were filled from
+  their last daily figure before the cutoff (run here): little came back, as their 15-minute
+  readings have the same gaps.
+- **Gaps measured** (weeks with no records, before September 1st 2026): 1,124 of 2,097 gauges
+  have a gap of three months or more somewhere, mostly long ago; within the last five years,
+  433 (three months or more), 250 (six), 87 (a year); 38 reach the present. Only Wilfholme,
+  Didsbury and Knapp Mill stop more than two years ago. "History incomplete" needs a
+  definition from John (SPEC §4.7).
 
 ### 2026-10-30 — stage 1: the gauge list, the history and the backfill (branch `stage-1-gauges`)
 
