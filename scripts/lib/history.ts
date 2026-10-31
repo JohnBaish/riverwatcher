@@ -59,6 +59,12 @@ export const usual = (d: Day) => (d.high + d.low) / 2
 export const STEP_WINDOW = 30
 export const STEP_MIN_M = 1
 export const STEP_SPREADS = 4
+/** The day of the step itself must jump by at least this much: a change of zero point happens
+ *  at once (a reservoir drawn down over weeks, or a river managed differently, doesn't count). */
+export const STEP_JUMP_M = 0.5
+/** A stuck gauge: this many days with figures in a row, each the same to the millimetre, are
+ *  missing figures, not a level (Melton Park sat at -1.25 m for a year). */
+export const STUCK_DAYS = 30
 /** An impossible day: its usual level, highest or lowest lies more than SPIKE_SPANS times the
  *  gauge's ordinary range (its 1% to 99% usual levels) beyond that range. */
 export const SPIKE_SPANS = 4
@@ -79,11 +85,11 @@ export function lastStep(days: Day[]): string | null {
       const jump = Math.abs(u[i] - u[i - 1])
       if (!best || jump > best.jump) best = { i, jump }
     } else if (best) {
-      if (lasting(u, best.i)) found = best.i
+      if (best.jump >= STEP_JUMP_M && lasting(u, best.i)) found = best.i
       best = null
     }
   }
-  if (best && lasting(u, best.i)) found = best.i
+  if (best && best.jump >= STEP_JUMP_M && lasting(u, best.i)) found = best.i
   return found === null ? null : days[found].date
 }
 function lasting(u: number[], i: number): boolean {
@@ -103,7 +109,24 @@ export function plausibleBounds(days: Day[]): [number, number] {
 /** The archive's highest and lowest levels with the days before the last change of zero point,
  *  and impossible figures, left out (applied to the separate highest and lowest figures too, so
  *  the records are right). */
+/** The days in stuck stretches (`STUCK_DAYS`). */
+export function stuckDays(days: Day[]): Set<string> {
+  const out = new Set<string>()
+  let start = 0
+  for (let i = 1; i <= days.length; i++) {
+    const same = i < days.length && Math.round(days[i].high * 1000) === Math.round(days[i - 1].high * 1000) && Math.round(days[i].low * 1000) === Math.round(days[i - 1].low * 1000)
+    if (same) continue
+    if (i - start >= STUCK_DAYS) for (let k = start; k < i; k++) out.add(days[k].date)
+    start = i
+  }
+  return out
+}
+
 export function cleanDays(highs: Map<string, number>, lows: Map<string, number>): { highs: Map<string, number>; lows: Map<string, number>; from: string | null; dropped: number; bounds: [number, number] | null } {
+  const stuck = stuckDays(joinDays(highs, lows))
+  const unstuck = (m: Map<string, number>) => new Map([...m].filter(([d]) => !stuck.has(d)))
+  highs = unstuck(highs)
+  lows = unstuck(lows)
   const from = lastStep(joinDays(highs, lows))
   const after = (m: Map<string, number>) => new Map([...m].filter(([d]) => !from || d >= from))
   const h = after(highs), l = after(lows)
@@ -114,7 +137,7 @@ export function cleanDays(highs: Map<string, number>, lows: Map<string, number>)
   const bad = new Set(days.filter((d) => !ok(usual(d))).map((d) => d.date))
   const keep = (m: Map<string, number>) => new Map([...m].filter(([d, v]) => !bad.has(d) && ok(v)))
   const h2 = keep(h), l2 = keep(l)
-  const dropped = new Set([...[...h].filter(([d]) => !h2.has(d)), ...[...l].filter(([d]) => !l2.has(d))].map(([d]) => d)).size
+  const dropped = stuck.size + new Set([...[...h].filter(([d]) => !h2.has(d)), ...[...l].filter(([d]) => !l2.has(d))].map(([d]) => d)).size
   return { highs: h2, lows: l2, from, dropped, bounds: [lo, hi] }
 }
 
