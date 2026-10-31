@@ -1,9 +1,11 @@
-// A placeholder until stage 3 builds the page (PLAN.md).
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import './styles/organic.css'
+import './styles/global.css'
+import App from './App.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <p>Riverwatcher is being built.</p>
+    <App />
   </StrictMode>,
 )

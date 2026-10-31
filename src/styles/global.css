@@ -1,0 +1,289 @@
+/* App-level additions to organic.css: Hindcaster's global.css (the shared part of
+   clockwheel's, HOUSE-STYLE §1, and its page parts: top bar, strip, summary card, chooser,
+   footer, dark mode and the switch), trimmed to what Riverwatcher uses, then Riverwatcher's
+   own parts, from the agreed design (design/mockups/options.html, option B revised). */
+
+.mono { font-variant-numeric: tabular-nums; }
+
+/* Hidden on screen, shown only in a printed page — the opposite of
+   [data-noprint]. */
+.print-only { display: none; }
+
+body { margin: 0; background: var(--color-bg); }
+
+.nav { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-3) var(--space-6); background: var(--color-surface); }
+.col { max-width: 1100px; margin: 0 auto; }
+.screen { padding: 0 var(--space-6) var(--space-6); }
+.page-head { padding: var(--space-6) 0 var(--space-4); }
+.page-head h2 { margin: 2px 0 0; }
+.muted { color: var(--color-neutral-700); }
+.small { font-size: 12.5px; }
+
+.roundup { padding: var(--space-6); margin-bottom: var(--space-6); }
+.roundup p { margin: 0 0 var(--space-2); font-size: 17px; line-height: 1.5; }
+.roundup p:last-child { margin-bottom: 0; }
+.roundup b { font-weight: 700; }
+.warn { color: var(--color-accent-700); font-weight: 600; }
+
+.section-head { display: flex; align-items: baseline; gap: var(--space-2); flex-wrap: wrap; margin: 0 0 var(--space-2); }
+.section-head h3 { margin: 0; font-size: 20px; }
+.badge { font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em; padding: 3px 9px; }
+.badge-final { background: var(--color-accent-2-100); color: var(--color-accent-2-800); }
+.badge-incomplete { background: var(--color-accent-100); color: var(--color-accent-800); }
+
+.figures { width: 100%; table-layout: fixed; }
+.figures td, .figures th { vertical-align: top; }
+/* The source lines in the same style as the notes (John, 20 October, option C: his
+   judgement on the Met Office terms' "prominent" acknowledgement, clause 2.6). */
+.data-credit { margin: var(--space-2) 0 0; font-size: 12.5px; color: var(--color-neutral-700); }
+/* Each source in its own section, with where it comes from at the foot (John, 18 October). */
+.source { margin-bottom: var(--space-8); }
+.source .rain { margin: 0; }
+.data-credit-top { margin: 0 0 var(--space-2); }
+.clock-note { margin: 0 0 var(--space-2); }
+.about { padding: var(--space-6); margin-top: var(--space-6); }
+.about h3 { margin: 0 0 var(--space-3); font-size: 20px; }
+.about p { margin: 0 0 var(--space-2); font-size: 14px; }
+.footer-notice { margin-top: 64px; padding-top: var(--space-3); border-top: 1px solid var(--color-divider); font-size: 12px; line-height: 1.6; color: var(--color-neutral-700); text-align: center; }
+
+@media (max-width: 720px) {
+  .nav { padding: var(--space-3) var(--space-4); }
+  .screen { padding: 0 var(--space-4) var(--space-6); }
+  .roundup { padding: var(--space-4); }
+  .roundup p { font-size: 16px; }
+  .about { padding: var(--space-4); }
+  .about dl { grid-template-columns: 1fr; gap: 0; }
+  .about dd { margin-bottom: var(--space-2); }
+}
+
+@media print {
+  @page { size: A4 portrait; margin: 12mm; }
+  html, body { background: #fff; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  [data-noprint] { display: none !important; }
+  .print-only { display: block; }
+  /* Printing a view (fresh look 3.6, John, 21 October): no top bar or buttons (marked
+     data-noprint), and each row, card and heading kept in one piece. A whole table isn't
+     kept together, or a long one jumps to the next page and leaves a gap. */
+  tr, td { break-inside: avoid; }
+  thead { display: table-header-group; }
+  .card, .roundup, .b-row { break-inside: avoid; }
+  h2, h3, .section-head, details summary { break-after: avoid; }
+}
+
+/* The national views (stage 6; from the stage 5 mock-ups): the heading strip, the gauge
+   lists, the area summaries and the chooser. */
+.strip { display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; padding: var(--space-3) var(--space-6); margin: var(--space-6) 0 0; }
+.strip h2 { margin: 0; font-size: 22px; text-transform: uppercase; letter-spacing: 0.02em; }
+.bar { height: 6px; border-radius: 3px; background: var(--color-accent-300); margin-top: 6px; min-width: 2px; }
+.gauges-table td, .gauges-table th { vertical-align: top; }
+.gauge-list .item { display: flex; justify-content: space-between; gap: var(--space-3); padding: 10px 0; border-top: 1px solid var(--color-divider); }
+.gauge-list .item:first-child { border-top: 0; }
+.gauge-list .right { text-align: right; flex: none; width: 120px; }
+.gauge-list .bar { margin-left: auto; }
+.rain-summary { padding: var(--space-4) var(--space-6); margin: 0 0 var(--space-3); }
+.rain-summary .trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3); }
+details.all-stations, details.all-gauges { margin-top: var(--space-4); }
+details summary { cursor: pointer; font-weight: 600; margin-bottom: var(--space-3); }
+/* At least 44px to tap on a phone (HOUSE-STYLE §6; fresh look 3.7). */
+@media (max-width: 720px) {
+  details summary { padding: 11px 0; margin-bottom: var(--space-1); }
+}
+.stale-note { margin: 4px 0 0; }
+@media (max-width: 720px) {
+  .strip, .rain-summary { padding: var(--space-4); }
+  .strip h2 { font-size: 18px; }
+}
+.gauges-intro { margin-bottom: 8px; }
+.rain-line { margin: 8px 0 0; }
+.loading { padding: var(--space-6) 0; }
+.load-failed, .not-found { padding: var(--space-4) var(--space-6); margin: var(--space-6) 0 0; display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-3); }
+.load-failed p, .not-found p { margin: 0; }
+.nav-brand { color: inherit; text-decoration: none; }
+.chooser-head { padding: var(--space-6) 0 var(--space-4); }
+.chooser-head p { margin: 0; }
+.chooser-head h2 { margin: 2px 0 0; }
+.chooser-about { margin: var(--space-6) 0 0; }
+@media (min-width: 721px) { .chooser-about { text-align: justify; } }
+.choose { display: grid; grid-template-columns: 1.2fr 1.2fr 0.8fr; gap: var(--space-4); align-items: stretch; }
+.choose .card { padding: var(--space-6); gap: var(--space-3); margin: 0; }
+.choose h3 { margin: 0; font-size: 20px; }
+.choose-row { display: flex; gap: var(--space-2); align-items: center; }
+.choose-row .input { flex: 1; min-width: 0; }
+.choose-areas { display: flex; flex-direction: column; gap: var(--space-3); }
+.choose select.input { appearance: auto; width: 100%; }
+.choose-error { font-size: 13px; color: var(--color-accent-800); font-weight: 600; margin-top: 4px; }
+@media (max-width: 720px) {
+  .choose { grid-template-columns: 1fr; }
+  .choose .card, .load-failed, .not-found { padding: var(--space-4); }
+}
+/* Text in typing boxes and lists is 16px on phones, or an iPhone zooms in when one is
+   tapped and doesn't zoom back out (HOUSE-STYLE §6; John, 20 October). */
+@media (max-width: 720px) {
+  .input, .plain-input { font-size: 16px; }
+}
+
+/* Touch screens wider than a phone (an iPad, an iPhone Duo opened out) get the
+   computer layout, but are tapped like a phone, so their boxes are 16px too
+   (John, 22 October 2026). */
+@media (pointer: coarse) {
+  .input, .plain-input { font-size: 16px; }
+}
+
+/* Dark mode (John, 23 October): follows the device unless the visitor switches (John, 29 October; src/lib/theme.ts). The
+   same tokens as organic.css, given dark values; the ramp steps the page uses are mapped so
+   muted text, warnings, badges and the year-ago chart stay readable (contrast checked: body
+   text 11.2:1, grey notes 6.1:1, terracotta 5.6:1 on the background). Lightened a step
+   from the first version, which John found very dark (23 October, option B). Screen only, so a
+   printed page is always light. */
+@media screen {
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --color-bg: #2a2723;
+    --color-surface: #37332e;
+    --color-text: #e8dfcf;
+    --color-accent: #dd8a56;
+    --color-divider: color-mix(in srgb, #e8dfcf 16%, transparent);
+    --color-neutral-100: #423d36;
+    --color-neutral-200: #4a443c;
+    --color-neutral-300: #5a544b;
+    --color-neutral-400: #6a6358;
+    --color-neutral-700: #b0a593;
+    --color-neutral-800: #e3d9c7;
+    --color-accent-100: #4a2a14;
+    --color-accent-300: #b2622d;
+    --color-accent-600: #e8935d;
+    --color-accent-700: #f2a573;
+    --color-accent-800: #ffc6a5;
+    --color-accent-2-100: #2f3a20;
+    --color-accent-2-800: #d4e4b8;
+    --shadow-sm: 0 0 0 1px color-mix(in srgb, #e8dfcf 6%, transparent), 0 1px 2px #0006;
+    --shadow-md: 0 0 0 1px color-mix(in srgb, #e8dfcf 7%, transparent), 0 3px 10px #0008;
+    --shadow-lg: 0 0 0 1px color-mix(in srgb, #e8dfcf 8%, transparent), 0 12px 32px #000a;
+    /* Riverwatcher's judgement colours in dark mode (the agreed design; validated). */
+    --j-vlow: #eaa070; --j-low: #9c5a30; --j-normal: #6a6358; --j-high: #46739e; --j-vhigh: #93bde3;
+    --j-ink-strong: #201e1d; --j-ink-soft: #f5ead8;
+    --alert-bg: #4a2a14; --alert-edge: #dd8a56;
+  }
+  /* Finer text smoothing in dark mode: Macs draw light text on a dark page with heavy, soft edges,
+     most of all the Caprasimo headings (John, October 30th 2026; HOUSE-STYLE §2). Only macOS
+     browsers use it; light mode is left as it is. */
+  :root[data-theme="dark"] body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+}
+
+.nav-right { display: flex; align-items: center; gap: var(--space-3); min-width: 0; }
+.theme-switch { display: inline-flex; align-items: center; gap: 8px; flex: none; background: none; border: 0; padding: 4px 0; cursor: pointer; color: var(--color-neutral-700); font: inherit; }
+.theme-switch:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; border-radius: 999px; }
+.theme-switch-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; }
+.theme-switch-track { position: relative; width: 46px; height: 26px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 18%, transparent); transition: background 0.2s; }
+.theme-switch-knob { position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: var(--color-bg); box-shadow: 0 1px 3px #0004; display: grid; place-items: center; color: var(--color-accent); transition: transform 0.2s; }
+.theme-switch[aria-checked="true"] .theme-switch-track { background: var(--color-accent); }
+.theme-switch[aria-checked="true"] .theme-switch-knob { transform: translateX(20px); }
+.theme-switch svg { width: 12px; height: 12px; display: block; }
+@media (prefers-reduced-motion: reduce) {
+  .theme-switch-track, .theme-switch-knob { transition: none; }
+}
+@media (max-width: 720px) {
+  .theme-switch { min-height: 44px; }
+  .theme-switch-label { display: none; }
+  .nav-right { gap: var(--space-2); }
+}
+
+/* ---- Riverwatcher (the agreed design, option B revised) ---- */
+/* Judgement: low water terracotta, high water blue, normal a neutral grey, always with its
+   word (validated with the dataviz checker, light and dark; dark values above). */
+:root {
+  --j-vlow: #8c491a; --j-low: #d1824c; --j-normal: #c0b6a5; --j-high: #6d98c2; --j-vhigh: #2c5885;
+  --j-ink-strong: #fff8ee; --j-ink-soft: #201e1d;
+  --alert-bg: #fff2eb; --alert-edge: #c67139;
+}
+.nowrap { white-space: nowrap; }
+.jchip { display: inline-flex; align-items: center; font-size: 13px; font-weight: 700; padding: 3px 11px; border-radius: 999px; white-space: nowrap; }
+.jchip.very-low { background: var(--j-vlow); color: var(--j-ink-strong); }
+.jchip.low { background: var(--j-low); color: var(--j-ink-soft); }
+.jchip.normal { background: var(--j-normal); color: var(--j-ink-soft); }
+.jchip.high { background: var(--j-high); color: var(--j-ink-soft); }
+.jchip.very-high { background: var(--j-vhigh); color: var(--j-ink-strong); }
+.jchip.held { background: transparent; color: var(--color-text); border: 1.5px solid var(--color-neutral-700); font-weight: 600; }
+.jchip.range { background: transparent; color: var(--color-text); border: 1.5px dashed var(--color-neutral-700); font-weight: 600; }
+/* Gauges with no judgement get a plain line instead (SPEC §3.7). */
+.jplain { font-size: 13px; color: var(--color-neutral-700); font-style: italic; }
+.headline { margin: 0; }
+.figure { font-size: 15px; margin: 6px 0 0; }
+.figure b { font-size: 20px; }
+.gname { margin: 0; font-size: 19px; }
+.gsub { display: block; font-size: 13px; color: var(--color-neutral-700); }
+.detail-head { margin: 8px 0 var(--space-3); }
+.held-note { font-size: 13px; margin: 4px 0 0; color: var(--color-neutral-700); }
+.cmp { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; font-size: 14px; align-content: start; }
+.cmp li { padding-top: 6px; border-top: 1px solid var(--color-divider); }
+.cmp .k { display: block; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-neutral-700); font-weight: 600; }
+.periods { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+.periods button { font: inherit; font-size: 13px; color: var(--color-text); background: transparent; border: 1px solid var(--color-divider); padding: 5px 11px; border-radius: 999px; cursor: pointer; }
+.periods button[aria-pressed="true"] { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-bg); }
+.periods button:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.periods-row { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; margin: 0 0 var(--space-3); }
+.periods-label { font-size: 13px; }
+.chart-wait { min-height: 230px; margin: 0; }
+.chart { width: 100%; height: auto; display: block; touch-action: pan-y; }
+.chart .grid { stroke: var(--color-divider); stroke-width: 1; }
+.chart .axis-t { font-size: 11px; fill: var(--color-neutral-700); font-family: var(--font-body); }
+/* The zones in the five judgement colours (John, October 30th), the outer two paler. */
+.chart .z { opacity: 0.3; }
+.chart .z-vlow, .chart .z-vhigh { opacity: 0.14; }
+.chart .z-vlow { fill: var(--j-vlow); } .chart .z-low { fill: var(--j-low); } .chart .z-normal { fill: var(--j-normal); } .chart .z-high { fill: var(--j-high); } .chart .z-vhigh { fill: var(--j-vhigh); }
+.chart .typ { stroke: var(--color-neutral-700); stroke-dasharray: 4 3; stroke-width: 1.2; fill: none; }
+.chart .line { fill: none; stroke: var(--color-text); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.chart .end { fill: var(--color-accent); stroke: var(--color-surface); stroke-width: 2; }
+.chart .cross { stroke: var(--color-neutral-700); stroke-width: 1; }
+.chart .hdot { fill: var(--color-text); stroke: var(--color-surface); stroke-width: 2; }
+.chart-wrap { position: relative; }
+.tip { position: absolute; pointer-events: none; background: var(--color-text); color: var(--color-bg); font-size: 12px; padding: 4px 8px; border-radius: 8px; white-space: nowrap; transform: translate(-50%, -110%); }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--color-neutral-700); margin-top: 4px; }
+.legend i { display: inline-block; width: 18px; height: 10px; border-radius: 3px; vertical-align: -1px; margin-right: 5px; }
+.legend .li-line { height: 2px; background: var(--color-text); vertical-align: 3px; }
+.legend .li-typ { height: 0; border-top: 1.5px dashed var(--color-neutral-700); vertical-align: 3px; border-radius: 0; }
+.legend .lz { opacity: 0.55; }
+.lz-vlow { background: var(--j-vlow); } .lz-low { background: var(--j-low); } .lz-normal { background: var(--j-normal); } .lz-high { background: var(--j-high); } .lz-vhigh { background: var(--j-vhigh); }
+.river-group { padding: var(--space-4) var(--space-6); margin-bottom: var(--space-3); }
+.river-group h4 { margin: 0; font-size: 19px; }
+.river-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin-bottom: 4px; }
+.river-head .note { margin: 0; }
+.r-table { table-layout: fixed; width: 100%; }
+.r-table col.c1 { width: 27%; } .r-table col.c2 { width: 25%; } .r-table col.c3 { width: 11%; } .r-table col.c4 { width: 14%; } .r-table col.c5 { width: 11%; } .r-table col.c6 { width: 12%; }
+.r-table td, .r-table th { vertical-align: top; }
+.r-table tbody tr { cursor: pointer; }
+.r-table tbody tr:focus-visible { outline: 2px solid var(--color-accent); outline-offset: -2px; }
+.r-table tbody tr[aria-selected="true"] { background: color-mix(in srgb, var(--color-accent) 12%, transparent); }
+.r-table tbody tr[aria-selected="true"] td:first-child { box-shadow: inset 3px 0 0 var(--color-accent); }
+.r-table tr.joins td { cursor: default; padding: 4px var(--space-2); font-size: 12.5px; color: var(--color-neutral-700); font-style: italic; }
+.r-table tr.joins:hover { background: none; }
+/* "Nearest" is a small label in the body font: Caprasimo has no bold (HOUSE-STYLE §3). */
+.nearest { font-family: var(--font-body); font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-accent-700); margin-left: 6px; }
+.spark { width: 120px; max-width: 100%; height: 32px; display: block; }
+.spark path { fill: none; stroke: var(--color-text); stroke-width: 1.5; }
+.b-rows { display: flex; flex-direction: column; }
+.b-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; padding: 12px 10px; border-top: 1px solid var(--color-divider); cursor: pointer; background: none; border-left: 3px solid transparent; border-right: 0; border-bottom: 0; text-align: left; font: inherit; color: inherit; width: 100%; }
+.b-row[aria-pressed="true"] { background: color-mix(in srgb, var(--color-accent) 12%, transparent); border-left-color: var(--color-accent); }
+.b-row .gname { font-size: 17px; }
+.b-chip { display: block; margin-top: 6px; }
+.b-fig { text-align: right; }
+.b-fig .note { display: block; }
+.b-join { font-size: 12.5px; color: var(--color-neutral-700); font-style: italic; padding: 4px 10px; border-top: 1px solid var(--color-divider); }
+.b-detail { padding: var(--space-6); margin-top: var(--space-4); display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); gap: var(--space-6); }
+.detail-anchor { scroll-margin-top: var(--space-4); }
+.warnings { display: grid; gap: var(--space-3); margin-bottom: var(--space-6); }
+.alert { background: var(--alert-bg); border: 1.5px solid var(--alert-edge); padding: var(--space-4) var(--space-6); }
+.alert h4 { margin: 0; font-size: 18px; }
+.alert p { margin: 0; }
+.alert .sev { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-accent-800); }
+.not-service { font-size: 13px; color: var(--color-neutral-700); margin: 0; }
+.credits { margin: 0 0 var(--space-3); }
+@media (max-width: 720px) {
+  .river-group { padding: var(--space-2) var(--space-3); }
+  .river-head { padding: var(--space-2) 10px 4px; }
+  .b-detail { grid-template-columns: 1fr; padding: var(--space-4); gap: var(--space-4); }
+  .periods button { min-height: 44px; padding: 5px 14px; }
+}
+.b-detail-one { grid-template-columns: minmax(0, 1fr); }
+.b-detail-one > div { max-width: 760px; }

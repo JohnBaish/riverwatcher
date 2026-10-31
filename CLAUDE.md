@@ -72,7 +72,10 @@ Key points:
 - `npm run history [<data>]` and `npm run backfill [<data>]`: `data/history/` and
   `data/days/`, resumable; run by the data repo's History workflow ("Run workflow",
   choose the code branch).
-- `npm run check` (`scripts/check-rules.ts`): the rules, with real history fixtures in
+- **The page (stage 3):** `src/` as Hindcaster's; figures from the data repo at build time
+  (`scripts/lib/pageData.ts`, served as parts by `vite.config.ts`); view rules in
+  `src/lib/view.ts`; `npm run dev` / `build` need the data repo beside this one (or `RW_DATA`).
+- `npm run check` (`scripts/check-rules.ts`, then `scripts/check-page.ts`): the rules, with real history fixtures in
   `design/fixtures/history/`, and the gauge list's rivers when the data repo is beside
   this one.
 
@@ -84,6 +87,47 @@ Scope (decided by John):
 - Flood warnings in the first version, if easy (they look it: finding 11).
 
 ## Log
+
+### 2026-10-31 — stage 3.1: the postcode view built, for John to look at (branch `claude/inspiring-hypatia-60x279`, not merged)
+
+**John:** start stage 3 (`design/prompt-stage-3-2026-10-31.md`): show the agreed design rebuilt
+with the app's own parts and the real data before wiring anything in.
+
+**What:** the page, from Hindcaster's parts (top bar, strip with Change, date, summary card,
+chooser, footer, dark mode following the device, the safety net; `organic.css`, `theme.ts`,
+`ThemeSwitch.tsx`, `responsive.ts`, `words.ts`, `route.ts` copied) and Lightreader's
+`outcodes.json`. `scripts/lib/pageData.ts` makes the figures at build time from the data repo
+(`RW_DATA`, or `../riverwatcher-data/data`), judging every gauge with `history.ts`'s `judge`,
+`sinceYear` and `levelsFor`; `vite.config.ts` serves them as parts (as Hindcaster's): `meta`
+built in; `gauges`, `hours` (two weeks hourly), `hours42` and `daily` loaded when needed
+(`src/lib/load.ts`). The view's rules and sentences in `src/lib/view.ts` (the nearest five,
+river groups and joins, chips, figure line, comparisons, summary), the chart's figures in
+`series.ts`, the chart in `components/Chart.tsx`, the view in `PostcodeView.tsx`.
+`npm run check` now also runs `scripts/check-page.ts` (79 checks, including every postcode
+district's sentences for "undefined", "null" or "NaN").
+
+**Drafted for John (not agreed):** "Held steady by pumping" (drains); the drain line under the
+figures; "No long record to compare with" (a plain line, for gauges with no history or range);
+"No reading since Friday 2.04pm"; "History incomplete: No records from May 2023 to May 2024.";
+"There are no river gauges within 10 miles of TR21."; three sentences in "About these figures";
+a year ago at a held gauge gives the level only (the held rule), not "normal".
+
+**Found:** (1) 12 gauges' histories mix two zero points (Kings Road Bridge reads 68.9 m, its
+history includes days near 0 m; Maidenhead's 90% level is 22 m), so their judgements are wrong:
+a stage 1 fault to fix before launch. (2) The charts stop at midnight UTC and jump to the latest
+reading, as today's hourly figures aren't in the data repo (the collector keeps them in its cache).
+(3) Sizes: every visitor loading the same files means about 1 MB compressed for the first view
+(gauges 203 KB, two weeks hourly 821 KB), 1.6 MB more for six weeks, 1.75 MB for 10 weeks or
+more. Per-gauge files would be about 20 KB but tell the server which gauges were looked at.
+Question for John.
+
+**Verified:** `npx tsc -b`, lint (no warnings), `npm run check` (100 + 79), build. Chromium
+against `vite preview`, RG4, CA12, TA8, TR21 and LA22 at 1200px and 390px with touch, light and
+dark (20 views): no errors, no sideways scroll, both fonts loaded. Also: the periods (six weeks,
+10 weeks, a year), the tooltip, choosing another gauge, the period kept after a reload, the
+chooser (a word, a Welsh postcode, TR21), a returning visitor. Pictures
+`design/previews/stage3-*.png`. **Couldn't check:** a real phone; a flood warning (none in
+force today).
 
 ### 2026-10-31 — the prompt for stage 3 (notes only)
 
