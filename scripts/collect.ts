@@ -19,7 +19,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync
 import { dirname, join } from 'node:path'
 import { FM, getJson, getText, lastPart, parseCsv, sleep } from './lib/ea.ts'
 import { hourlyAverages, usualOfReadings } from './lib/days.ts'
-import { addSamples, flatOrStuck, floodsInForce, isSilent, latestLine, mm, readingsByMeasure, type LatestLine, type State } from './lib/collect.ts'
+import { addSamples, flatOrStuck, floodsInForce, isSilent, latestLine, mm, todayHours, readingsByMeasure, type LatestLine, type State } from './lib/collect.ts'
 
 const dataDir = process.argv[2] ?? '../riverwatcher-data/data'
 const stateFile = process.argv[3] ?? join(dataDir, '..', 'state', 'recent.json')
@@ -91,6 +91,11 @@ writeFileSync(join(dataDir, 'latest.json'), JSON.stringify({
   floods,
 }) + '\n')
 Object.assign(log, { readings: latest.size, gauges: Object.keys(lines).length, silent, floods: floods.length, newAreas })
+
+// ---- 3a. today.json: today's hours so far, for the charts (one line per gauge) ----
+const today = ymd(now.getTime())
+const todayLines = gauges.map((g) => [g.ref, todayHours(state!.samples[g.ref], today, now.getUTCHours() + 1)] as const).filter(([, h]) => h.some((x) => x !== null))
+writeFileSync(join(dataDir, 'today.json'), `{"note":"Today's hours so far (UTC): each gauge's sample for each hour, mm (scripts/collect.ts). Replaced by the day file after midnight.","date":"${today}","made":"${now.toISOString()}","gauges":{\n${todayLines.map(([ref, h]) => `${JSON.stringify(ref)}:${JSON.stringify(h)}`).join(',\n')}\n}}\n`)
 
 // ---- 4. once a day: yesterday's day file ----
 const daysDir = join(dataDir, 'days')

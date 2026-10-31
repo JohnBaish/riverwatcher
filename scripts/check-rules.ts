@@ -10,12 +10,12 @@ import {
   dropNearDuplicates, heldReason, isBackup, isLake, namesAgree, navigationHeads, riverKey, riverMeasure, shownName, tidyName, type Station,
 } from './lib/gauges.ts'
 import {
-  average24, buildHistory, cleanDays, lastStep, dayOfYear, incompleteGaps, judge, joinDays, levelsFor, movement, percentBelow, readDailyCsv, recordStart, sinceYear, timeOfYear, wordFor,
+  average24, buildHistory, cleanDays, lastStep, otherZero, dayOfYear, incompleteGaps, judge, joinDays, levelsFor, movement, percentBelow, readDailyCsv, recordStart, sinceYear, timeOfYear, wordFor,
   type Day, type History,
 } from './lib/history.ts'
 import { englishName, normRiver } from './lib/rivers.ts'
 import { daysFromReadings, hourlyAverages, usualOfReadings } from './lib/days.ts'
-import { addSamples, flatOrStuck, floodsInForce, isSilent, latestLine, readingsByMeasure } from './lib/collect.ts'
+import { todayHours, addSamples, flatOrStuck, floodsInForce, isSilent, latestLine, readingsByMeasure } from './lib/collect.ts'
 
 let passed = 0
 const failures: string[] = []
@@ -161,18 +161,20 @@ eq('the last 24 hours\' average', average24([['2026-10-29T10:00:00Z', 9], ['2026
   eq('no change of zero point in a wet winter and a flood', lastStep(plain), null)
   const [ph, pl] = maps(plain)
   const c0 = cleanDays(ph, pl)
-  eq('the flood and the wet winter are kept', [c0.from, c0.dropped], [null, 0])
+  eq('the flood and the wet winter are kept', [c0.other, c0.dropped], [[], 0])
   const shifted = daysOf((d) => (d < '2017-01-01' ? 20 : 0) + wet(d) + flood(d))
   eq('a change of zero point found', lastStep(shifted), '2017-01-01')
   const [sh, sl] = maps(shifted)
   const c1 = cleanDays(sh, sl)
-  eq('the days before it left out', [c1.from, [...c1.highs.keys()][0], c1.dropped], ['2017-01-01', '2017-01-01', 0])
+  eq('the days before it left out', [c1.other, [...c1.highs.keys()][0], c1.dropped], [[{ from: '2015-01-01', to: '2016-12-31' }], '2017-01-01', 0])
   const twice = daysOf((d) => (d < '2016-06-01' ? 4 : d < '2018-06-01' ? 2 : 0))
   eq('two changes: the last one counts', lastStep(twice), '2018-06-01')
+  const away = daysOf((d) => (d >= '2017-06-01' && d < '2019-03-01' ? -3 : 0))
+  eq('a stretch away and back: only it is left out (Melton Park)', otherZero(away), [{ from: '2017-06-01', to: '2019-02-28' }])
   const stuckAt = daysOf((d) => (d >= '2019-01-01' && d < '2020-01-01' ? NaN : 0)).map((d) => (Number.isNaN(d.high) ? { ...d, high: -1.25, low: -1.25 } : d))
   const [kh, kl] = maps(stuckAt)
   const c3 = cleanDays(kh, kl)
-  eq('a stuck year is missing figures, not a change of zero point', [c3.from, c3.highs.has('2019-06-01'), c3.highs.has('2018-06-01'), c3.highs.has('2020-06-01')], [null, false, true, true])
+  eq('a stuck year is missing figures, not a change of zero point', [c3.other.length ? c3.other : null, c3.highs.has('2019-06-01'), c3.highs.has('2018-06-01'), c3.highs.has('2020-06-01')], [null, false, true, true])
   const slow = daysOf((d, i) => (d >= '2018-01-01' ? Math.max(-1.5, -(i - 1096) * 0.03) : 0))
   eq('a level drawn down over weeks is not a change of zero point', lastStep(slow), null)
   const [th, tl] = maps(plain)
@@ -263,6 +265,8 @@ eq('Keswick Campsite: the highest for the time of year since 2025', sinceYear(fi
 eq('Reading: highest on record 7.54 m on January 7th 2024', fixture('2200TH').record.high, { value: 7540, date: '2024-01-07' })
 eq('Greta Bridge: highest on record December 5th 2015 (Storm Desmond)', fixture('750832').record.high.date, '2015-12-05')
 eq('Twyford: the archive\'s levels stop in 2011', fixture('2490TH').lastDay.slice(0, 4), '2011')
+
+eq("today's hours so far", todayHours({ '2026-10-31T00': 500, '2026-10-31T02': 510, '2026-10-30T23': 1 }, '2026-10-31', 3), [500, null, 510])
 
 // ---- the gauge list's rivers, if it's here ----
 const listFile = new URL('../../riverwatcher-data/data/gauges.json', import.meta.url)

@@ -77,7 +77,7 @@ eq('chip: held', chip(g({ held: 'name', j: { basis: 'held', word: null } }), c),
 eq('chip: held but high', chip(g({ held: 'thames', j: { basis: 'held', word: 'high' } }), c), { text: 'High for late October', kind: 'high' })
 eq('chip: a drain', chip(g({ held: 'drain', j: { basis: 'held', word: null } }), c), { text: 'Held steady by pumping', kind: 'held' })
 eq('chip: the typical range', chip(g({ j: { basis: 'typical', word: 'above' } }), c), { text: 'Above its usual range', kind: 'range' })
-eq('chip: no record (a plain line)', chip(g({ j: { basis: 'none' } }), c), { text: 'No long record to compare with', kind: 'plain' })
+eq('chip: no record (a plain line)', chip(g({ j: { basis: 'none' } }), c), { text: 'No long record to compare.', kind: 'plain' })
 eq('chip: silent since yesterday', chip(g({ now: { v: 1210, age: 60 * 20, mean: null, ch: null } }), c), { text: 'No reading since Friday 2.04pm', kind: 'plain' })
 eq('reading time today', readingTime(c.made, 20, c.date), '9.44am')
 eq('figure line', figureLine(base, c), '1.21 m at 9.44am. Down 5 cm in the last 24 hours.')

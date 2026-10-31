@@ -33,7 +33,7 @@ const { gauges } = JSON.parse(readFileSync(join(dataDir, 'gauges.json'), 'utf8')
 const dir = join(dataDir, 'history')
 mkdirSync(dir, { recursive: true })
 const indexFile = join(dir, 'index.json')
-type Entry = { status: 'ok' | 'short' | 'failed'; zeroFrom?: string; droppedDays?: number; made: string; fromYear?: number; years?: number; lastDay?: string; days?: number; note?: string; filledFrom?: string; filledDays?: number; fillTried?: string; gaps?: { from: string; to: string | null }[] }
+type Entry = { status: 'ok' | 'short' | 'failed'; otherZero?: { from: string; to: string }[]; droppedDays?: number; made: string; fromYear?: number; years?: number; lastDay?: string; days?: number; note?: string; filledFrom?: string; filledDays?: number; fillTried?: string; gaps?: { from: string; to: string | null }[] }
 const index: Record<string, Entry> = existsSync(indexFile) ? JSON.parse(readFileSync(indexFile, 'utf8')).gauges : {}
 const fresh = (e: Entry | undefined) => e && e.status !== 'failed' && Date.parse(today) - Date.parse(e.made) < REFRESH_DAYS * 86400e3
 
@@ -49,7 +49,7 @@ const todo = gauges.filter((g) => g.archive && (fill ? needsFill(index[g.ref]) :
 console.log(`${gauges.filter((g) => g.archive).length} gauges with archive history; ${todo.length} to do.`)
 
 const save = () => writeFileSync(indexFile, JSON.stringify({
-  note: 'Each gauge\'s history file (scripts/build-history.ts): ok, short (less than three years of history: no file), or failed (try again). fromYear: the first year of its record; years: years with most of their days; lastDay: the latest day used; days: days with both a highest and lowest level; filledFrom, filledDays: days worked out from the 15-minute readings where the daily figures stop early; zeroFrom: where the archive changed its zero point, the first day used; droppedDays: impossible days left out.',
+  note: 'Each gauge\'s history file (scripts/build-history.ts): ok, short (less than three years of history: no file), or failed (try again). fromYear: the first year of its record; years: years with most of their days; lastDay: the latest day used; days: days with both a highest and lowest level; filledFrom, filledDays: days worked out from the 15-minute readings where the daily figures stop early; otherZero: stretches on another zero point than today\'s, left out; droppedDays: stuck days and impossible figures left out;.',
   made: new Date().toISOString(),
   credit: 'This uses Environment Agency flood and river level data from the real-time data API (Beta).',
   gauges: Object.fromEntries(Object.entries(index).sort(([a], [b]) => a.localeCompare(b))),
@@ -94,13 +94,13 @@ for (const g of todo) {
         }
       }
     }
-    // Only the days since the archive last changed its zero point, without impossible days.
+    // Without stretches on another zero point, stuck stretches or impossible figures.
     const clean = cleanDays(highs, lows)
     const days = joinDays(clean.highs, clean.lows)
     const h = buildHistory(g.ref, g.archive!, days, today, { highs: clean.highs, lows: clean.lows })
-    const cleaned = { ...(clean.from ? { zeroFrom: clean.from } : {}), ...(clean.dropped ? { droppedDays: clean.dropped } : {}) }
+    const cleaned = { ...(clean.other.length ? { otherZero: clean.other } : {}), ...(clean.dropped ? { droppedDays: clean.dropped } : {}) }
     if (h) {
-      if (clean.from) h.zeroFrom = clean.from
+      if (clean.other.length) h.otherZero = clean.other
       if (clean.bounds) h.bounds = [Math.round(clean.bounds[0] * 1000), Math.round(clean.bounds[1] * 1000)]
       writeFileSync(join(dir, `${g.ref}.json`), JSON.stringify(h) + '\n')
       index[g.ref] = { status: 'ok', made: today, fromYear: h.fromYear, years: h.years, lastDay: h.lastDay, days: days.length, ...(h.gaps ? { gaps: h.gaps } : {}), ...(filledDays ? { filledFrom, filledDays } : {}), ...(fillTried ? { fillTried } : {}), ...cleaned }

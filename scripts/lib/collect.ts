@@ -54,6 +54,13 @@ export function latestLine(samples: Record<string, number> | undefined, reading:
   return [value, Math.max(0, Math.round((now.getTime() - t) / 60000)), mean, before ? value - before[1] : null]
 }
 
+/** Today's hours so far (SPEC §7.6: the charts run up to the latest reading): for a UTC date,
+ *  a figure (mm) for each hour so far, each the hour's sample (the newest reading in that hour), null where there's
+ *  none. Written to data/today.json each hour, one line per gauge, so git keeps each change small. */
+export function todayHours(samples: Record<string, number> | undefined, date: string, hours = 24): (number | null)[] {
+  return Array.from({ length: hours }, (_, h) => samples?.[`${date}T${String(h).padStart(2, '0')}`] ?? null)
+}
+
 export const isSilent = (time: string | null | undefined, now: Date) => !time || now.getTime() - Date.parse(time) > SILENT_HOURS * 3600e3
 
 /** Flood warnings in force (`/id/floods`): severity 1 severe flood warning, 2 flood warning,

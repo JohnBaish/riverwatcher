@@ -106,7 +106,7 @@ export function chip(g: PageGauge, c: Ctx): Chip {
   if (j.basis === 'history') return { text: `${capital(j.word)} for ${toy}`, kind: kindOf(j.word) }
   if (j.basis === 'held') return j.word ? { text: `${capital(j.word)} for ${toy}`, kind: kindOf(j.word) } : { text: `Held steady by ${heldBy(g)}`, kind: 'held' }
   if (j.basis === 'typical') return { text: `${capital(j.word)} its usual range`, kind: 'range' }
-  return { text: 'No long record to compare with', kind: 'plain' }
+  return { text: 'No long record to compare.', kind: 'plain' }
 }
 
 /** When a reading was: "4.15pm", or "Thursday 4.15pm" before today. `made` is when the

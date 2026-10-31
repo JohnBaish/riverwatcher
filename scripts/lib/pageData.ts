@@ -106,7 +106,7 @@ export const unfitting: string[] = []
 export type PageData = { meta: PageMeta; gauges: PageGauge[]; hours: PageHours; hours42: PageHours; daily: PageDaily }
 
 /** The files the parts are made from, for the plugin to watch. */
-export const SOURCES = ['gauges.json', 'latest.json', 'quiet.json']
+export const SOURCES = ['gauges.json', 'latest.json', 'quiet.json', 'today.json']
 
 /** Hourly figures for the charts: two weeks (the default period) in one part, six weeks in
  *  another, loaded only when four or six weeks are chosen. Longer periods use the daily part. */
@@ -154,18 +154,24 @@ export function pageData(dir = dataDir()): PageData {
     pageGauge(g, latest.gauges[g.ref] ?? null, histories.get(g.ref) ?? null, !!quiet[g.ref], date, fits(g.ref, ago?.gauges[g.ref]?.u)))
 
   const doy = dayOfYear(date)
-  const lastFile = dayFiles[dayFiles.length - 1].slice(0, 10)
+  // Today's hours so far (data/today.json, from the collector), after the last day file.
+  const todayFile = existsSync(join(dir, 'today.json')) ? read<{ date: string; gauges: Record<string, (number | null)[]> }>('today.json') : null
+  const lastDay = dayFiles[dayFiles.length - 1].slice(0, 10)
+  const withToday = todayFile && todayFile.date === addDays(lastDay, 1)
+  const lastFile = withToday ? todayFile.date : lastDay
   /** The last `n` whole UTC days of hourly figures, and the band steps covering them and a
    *  week either side. */
   const hourPart = (n: number): PageHours => {
     const dates = Array.from({ length: n }, (_, i) => addDays(lastFile, i - n + 1))
-    const files = dates.map((d) => day(d) ?? { date: d, gauges: {} })
+    const files = dates.map((d) => (withToday && d === todayFile.date
+      ? { date: d, gauges: Object.fromEntries(Object.entries(todayFile.gauges).map(([ref, h]) => [ref, { h: [...h, ...Array<null>(24 - h.length).fill(null)] }])) }
+      : day(d) ?? { date: d, gauges: {} }))
     const g: PageHours['g'] = {}
     for (const x of gauges) {
       // A day with no hourly figures (before the collector started, the archive gives only
       // each day's highest and lowest) shows its usual level at midday, so the line carries on.
       const v = files.flatMap((f) => {
-        const d = f.gauges[x.ref]
+        const d = f.gauges[x.ref] as { u?: number | null; h?: (number | null)[] } | undefined
         if (d?.h) return d.h
         const u = Array<number | null>(24).fill(null)
         u[12] = fits(x.ref, d?.u)

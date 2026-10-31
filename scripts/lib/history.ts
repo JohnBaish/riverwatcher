@@ -49,8 +49,8 @@ export const usual = (d: Day) => (d.high + d.low) / 2
 // At some gauges the archive's levels change their zero point partway through (Maidenhead
 // reads about 21 m before 2010 and 2.4 m after; Burton Bradstock changes twice), and at
 // others a single day is impossible (Walton, 32 m in 2019 on a river that reads 0.3 m).
-// `cleanDays` keeps only the days since the last change of zero point, and leaves out the
-// impossible days, before the history is built.
+// `cleanDays` leaves out the stretches on another zero point than today's, stuck stretches and
+// impossible figures, before the history is built.
 
 /** A change of zero point: the level steps by at least STEP_MIN_M from one day to the next
  *  (the medians of the STEP_WINDOW days with figures either side) and stays there (the
@@ -79,25 +79,46 @@ export const SENTINEL_SPANS = 4
 const medianOf = (v: number[]) => { const s = [...v].sort((a, b) => a - b); return s.length % 2 ? s[(s.length - 1) / 2] : (s[s.length / 2 - 1] + s[s.length / 2]) / 2 }
 const spreadOf = (v: number[]) => { const s = [...v].sort((a, b) => a - b); return quantile(s, 75) - quantile(s, 25) }
 
-/** The first day of the last stretch with one zero point, or null if there's no change. */
-export function lastStep(days: Day[]): string | null {
+/** Every change of zero point: the index of each step's first day. */
+export function steps(days: Day[]): number[] {
   const u = days.map(usual)
   // Within a stretch of days where the medians either side differ enough, the step is the day
   // with the biggest jump from the day before.
   let best: { i: number; jump: number } | null = null
-  let found: number | null = null
+  const found: number[] = []
+  const settle = () => { if (best && best.jump >= STEP_JUMP_M && lasting(u, best.i)) found.push(best.i); best = null }
   for (let i = STEP_WINDOW; i <= u.length - STEP_WINDOW; i++) {
     const d = Math.abs(medianOf(u.slice(i, i + STEP_WINDOW)) - medianOf(u.slice(i - STEP_WINDOW, i)))
     if (d >= STEP_MIN_M) {
       const jump = Math.abs(u[i] - u[i - 1])
       if (!best || jump > best.jump) best = { i, jump }
-    } else if (best) {
-      if (best.jump >= STEP_JUMP_M && lasting(u, best.i)) found = best.i
-      best = null
-    }
+    } else settle()
   }
-  if (best && best.jump >= STEP_JUMP_M && lasting(u, best.i)) found = best.i
-  return found === null ? null : days[found].date
+  settle()
+  return found
+}
+
+/** The first day of the last stretch with one zero point, or null if there's no change. */
+export function lastStep(days: Day[]): string | null {
+  const s = steps(days)
+  return s.length ? days[s[s.length - 1]].date : null
+}
+
+/** The stretches whose level doesn't match the current one (the stretch after the last step):
+ *  each from its first day to the day before the next stretch. Earlier stretches on the same
+ *  zero point are kept (Melton Park read 0.83 m to 2021, -0.27 m for two years, then 0.83 m
+ *  again: only the two years go). */
+export function otherZero(days: Day[]): { from: string; to: string }[] {
+  const s = steps(days)
+  if (!s.length) return []
+  const bounds = [0, ...s, days.length]
+  const med = (a: number, b: number) => medianOf(days.slice(a, b).map(usual))
+  const now = med(bounds[bounds.length - 2], days.length)
+  const out: { from: string; to: string }[] = []
+  for (let k = 0; k < bounds.length - 2; k++) {
+    if (Math.abs(med(bounds[k], bounds[k + 1]) - now) >= STEP_MIN_M) out.push({ from: days[bounds[k]].date, to: days[bounds[k + 1] - 1].date })
+  }
+  return out
 }
 function lasting(u: number[], i: number): boolean {
   const before = u.slice(Math.max(0, i - 365), i), after = u.slice(i, i + 365)
@@ -130,16 +151,18 @@ export function stuckDays(days: Day[]): Set<string> {
   return out
 }
 
-export function cleanDays(highs: Map<string, number>, lows: Map<string, number>): { highs: Map<string, number>; lows: Map<string, number>; from: string | null; dropped: number; bounds: [number, number] | null } {
+export function cleanDays(highs: Map<string, number>, lows: Map<string, number>): { highs: Map<string, number>; lows: Map<string, number>; other: { from: string; to: string }[]; dropped: number; bounds: [number, number] | null } {
   const stuck = stuckDays(joinDays(highs, lows))
   const unstuck = (m: Map<string, number>) => new Map([...m].filter(([d]) => !stuck.has(d)))
   highs = unstuck(highs)
   lows = unstuck(lows)
-  const from = lastStep(joinDays(highs, lows))
-  const after = (m: Map<string, number>) => new Map([...m].filter(([d]) => !from || d >= from))
+  const other = otherZero(joinDays(highs, lows))
+  // The ends cover days with only a highest or a lowest figure too.
+  const outside = (d: string) => other.some((o, k) => d >= (k === 0 && o.from === joinDays(highs, lows)[0].date ? '' : o.from) && d <= o.to)
+  const after = (m: Map<string, number>) => new Map([...m].filter(([d]) => !outside(d)))
   const h = after(highs), l = after(lows)
   const days = joinDays(h, l)
-  if (days.length < 30) return { highs: h, lows: l, from, dropped: 0, bounds: null }
+  if (days.length < 30) return { highs: h, lows: l, other, dropped: 0, bounds: null }
   const [lo, hi] = plausibleBounds(days)
   const [slo, shi] = plausibleBounds(days, SENTINEL_SPANS)
   const ok = (v: number) => v >= lo && v <= hi && !(isSentinel(v) && (v < slo || v > shi))
@@ -147,7 +170,7 @@ export function cleanDays(highs: Map<string, number>, lows: Map<string, number>)
   const keep = (m: Map<string, number>) => new Map([...m].filter(([d, v]) => !bad.has(d) && ok(v)))
   const h2 = keep(h), l2 = keep(l)
   const dropped = stuck.size + new Set([...[...h].filter(([d]) => !h2.has(d)), ...[...l].filter(([d]) => !l2.has(d))].map(([d]) => d)).size
-  return { highs: h2, lows: l2, from, dropped, bounds: [lo, hi] }
+  return { highs: h2, lows: l2, other, dropped, bounds: [lo, hi] }
 }
 
 /** Day of a 365-day year, 0 to 364 (February 29th counts as February 28th). */
@@ -199,8 +222,8 @@ export type History = {
   /** Gaps that make the history incomplete (see `incompleteGaps`): from the first missing
    *  week to the first week with records again, or to null if the record stops. */
   gaps?: { from: string; to: string | null }[]
-  /** Where the archive changed its zero point, the first day used (`cleanDays`). */
-  zeroFrom?: string
+  /** Stretches on another zero point than today's, left out (`cleanDays`). */
+  otherZero?: { from: string; to: string }[]
   /** The plausible levels (mm, `plausibleBounds`): figures outside them were left out. */
   bounds?: [number, number]
 }
