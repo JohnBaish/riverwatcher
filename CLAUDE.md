@@ -88,7 +88,12 @@ Scope (decided by John):
 
 ## Log
 
-### 2026-10-31 — the summary names gauges when their words are far apart (option C; branch, not merged)
+### 2026-10-31 — the prompt for stage 4; option C merged (notes only)
+
+John said merge (option C, fast-forward, checks 114 + 85 first) and to start stage 4 tomorrow in a
+new thread: `design/prompt-stage-4-2026-10-31.md` is what he pastes in.
+
+### 2026-10-31 — the summary names gauges when their words are far apart (option C; merged)
 
 John chose C: a river's gauges keep the span when their words are next to each other ("normal to
 high"); two or more steps apart, each is named ("The Team is very low at Team Valley and very high
