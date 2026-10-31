@@ -102,7 +102,7 @@ Scope (decided by John):
   checked to October 2026, 6 partly; Wilfholme, Didsbury and Knapp Mill have neither since
   2003, 2022 and 2023). Proposed to John: work out the missing days from the 15-minute readings.
 
- (branch `stage-1-gauges`)
+### 2026-10-30 — stage 1: the gauge list, the history and the backfill (branch `stage-1-gauges`)
 
 **John** agreed the spec and created `JohnBaish/riverwatcher-data`; start stage 1.
 
