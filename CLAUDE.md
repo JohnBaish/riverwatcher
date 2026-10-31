@@ -85,6 +85,32 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-10-31 — stage 2: the collector (branch `stage-2-collector`)
+
+**John:** "please merge and continue" (stage 1 merged; stage 2 started).
+
+**What:** `scripts/collect.ts` and its rules in `scripts/lib/collect.ts` (checks 100). Every
+hour: every gauge's latest reading (one request), the flood warnings (one, plus one per new
+flood area, kept in `data/flood-areas.json`), `data/latest.json` ([level, minutes old, 24-hour
+average, change], mm). The hourly samples for the last 48 hours are kept in GitHub's Actions
+cache, not git; if lost, they're rebuilt from the day files. Once a day, after UTC midnight:
+yesterday's day file from the EA's bulk list (38 pages of 10,000, about 12 minutes; the
+all-gauges list takes a date, not `since`), `data/quiet.json` (flat or stuck, only gauges with
+no history or range, as John decided), day files older than 400 days removed. `data/runs/`
+logs each run. The workflows are drafted in `design/workflows/`: `collect.yml` is in the data
+repo (no schedule; started by cron-job.org or by hand); `monthly.yml` (a schedule) waits for
+John. `design/cron-job-org-steps.md`: John's steps.
+
+**Found on the way:** `latest.json` was 122 KB with dates (SPEC §6.1 estimated 35 KB); minutes
+before the run bring it to 72 KB (26 KB compressed). The flat test first took in lock gauges
+(86); limited to gauges with no history or range: 23.
+
+**Verified:** a trial here against the real EA, then two runs in GitHub Actions (code from this
+branch): run 1, 12 minutes, no cache, made the October 30th day file from 374,490 readings
+(2,885 gauges), quiet 23, one old day file removed; run 2, 4 seconds, the cache found. Every
+gauge's line in `latest.json`; 19 to 23 silent; no flood warnings in force this morning, so
+that part is untested against a real warning.
+
 ### 2026-10-31 — Twyford, Barnwell and Scots Float; the archive's gaps (branch `stage-1-gauges`)
 
 **John** asked about the gauges whose history stops early.
