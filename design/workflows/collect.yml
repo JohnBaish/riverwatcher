@@ -1,0 +1,69 @@
+# Riverwatcher's hourly collector (SPEC §5; PLAN stage 2). Started by cron-job.org through
+# GitHub's API every hour (or by hand, "Run workflow"); no GitHub schedule. The code comes from
+# JohnBaish/riverwatcher (public, so no key is needed); the data is written here. The hourly
+# samples are kept in GitHub's Actions cache between runs, not in git. The run just after
+# midnight (UTC) also makes yesterday's day file, which takes about 12 minutes.
+name: Collect
+
+on:
+  workflow_dispatch:
+    inputs:
+      code:
+        description: 'Branch of JohnBaish/riverwatcher to run'
+        default: main
+
+permissions:
+  contents: write
+
+concurrency:
+  group: data
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    # The collector stops its day-file download by 16 minutes in.
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/checkout@v6
+        with:
+          repository: JohnBaish/riverwatcher
+          ref: ${{ inputs.code || 'main' }}
+          path: code
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: The hourly samples from the last run
+        uses: actions/cache/restore@v4
+        with:
+          path: state
+          key: state-${{ github.run_id }}
+          restore-keys: state-
+
+      - name: Collect
+        run: cd code && node scripts/collect.ts ../data ../state/recent.json
+
+      - name: Keep the hourly samples for the next run
+        if: ${{ !cancelled() }}
+        uses: actions/cache/save@v4
+        with:
+          path: state
+          key: state-${{ github.run_id }}
+
+      - name: Commit
+        if: ${{ !cancelled() }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data
+          if git diff --cached --quiet; then
+            echo 'Nothing new to commit.'
+            exit 0
+          fi
+          git commit -q -m "Data: $(date -u +'%Y-%m-%d %H:%M') UTC"
+          git pull --rebase origin "$GITHUB_REF_NAME"
+          git push origin "HEAD:$GITHUB_REF_NAME"

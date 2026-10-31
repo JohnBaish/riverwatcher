@@ -1,0 +1,71 @@
+# Riverwatcher's monthly top-up (SPEC §5; PLAN stage 2.2): the gauge list rebuilt (with fresh
+# downloads of OS Open Rivers and OS Boundary-Line, not kept), then every gauge's history
+# topped up from the EA archive, gaps filled from its 15-minute readings, and the "History
+# incomplete" gaps worked out. About three hours. On the 3rd of each month, and by hand.
+name: Monthly
+
+on:
+  schedule:
+    - cron: '23 2 3 * *'  # 02:23 UTC on the 3rd of each month
+  workflow_dispatch:
+    inputs:
+      code:
+        description: 'Branch of JohnBaish/riverwatcher to run'
+        default: main
+
+permissions:
+  contents: write
+
+concurrency:
+  group: data
+  cancel-in-progress: false
+
+jobs:
+  monthly:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/checkout@v6
+        with:
+          repository: JohnBaish/riverwatcher
+          ref: ${{ inputs.code || 'main' }}
+          path: code
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Download OS Open Rivers and Boundary-Line
+        run: |
+          curl -sSfL -o /tmp/rivers.zip 'https://api.os.uk/downloads/v1/products/OpenRivers/downloads?area=GB&format=ESRI%C2%AE+Shapefile&redirect'
+          curl -sSfL -o /tmp/bl.zip 'https://api.os.uk/downloads/v1/products/BoundaryLine/downloads?area=GB&format=ESRI%C2%AE+Shapefile&redirect'
+          unzip -q /tmp/rivers.zip -d /tmp/rivers || true
+          unzip -q /tmp/bl.zip -d /tmp/bl || true
+          rm /tmp/rivers.zip /tmp/bl.zip
+          ls /tmp/rivers/data/WatercourseLink.shp /tmp/bl/Data/GB/high_water_polyline.shp
+
+      - name: The gauge list
+        run: cd code && node scripts/build-gauges.ts /tmp/rivers/data /tmp/bl ../data
+
+      - name: The history, topped up (two archive requests a gauge)
+        run: cd code && RW_MINUTES=200 node scripts/build-history.ts ../data
+
+      - name: Gaps filled from the 15-minute readings
+        if: ${{ !cancelled() }}
+        run: cd code && RW_FILL=1 RW_MINUTES=60 node scripts/build-history.ts ../data && node scripts/add-gaps.ts ../data
+
+      - name: Commit
+        if: ${{ !cancelled() }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data
+          if git diff --cached --quiet; then
+            echo 'Nothing new to commit.'
+            exit 0
+          fi
+          git commit -q -m "Monthly: $(date -u +'%Y-%m-%d') UTC"
+          git pull --rebase origin "$GITHUB_REF_NAME"
+          git push origin "HEAD:$GITHUB_REF_NAME"

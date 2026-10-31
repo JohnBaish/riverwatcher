@@ -15,6 +15,7 @@ import {
 } from './lib/history.ts'
 import { englishName, normRiver } from './lib/rivers.ts'
 import { daysFromReadings, hourlyAverages, usualOfReadings } from './lib/days.ts'
+import { addSamples, flatOrStuck, floodsInForce, isSilent, latestLine, readingsByMeasure } from './lib/collect.ts'
 
 let passed = 0
 const failures: string[] = []
@@ -153,6 +154,34 @@ eq('the last 24 hours\' average', average24([['2026-10-29T10:00:00Z', 9], ['2026
   rows.push({ dateTime: '2026-10-25T12:00:00', value: '9', quality: 'Suspect' })
   eq('a day from the archive\'s 15-minute readings, Suspect left out', [...daysFromReadings(rows)], [['2026-10-25', { high: 2, low: 0.5 }]])
   eq('and not from less than half a day', daysFromReadings(rows.slice(0, 40)).size, 0)
+}
+
+// ---- the collector ----
+{
+  const now = new Date('2026-10-31T12:10:00Z')
+  const st = addSamples({ made: '', samples: { A: { '2026-10-29T08': 100, '2026-10-30T11': 200, '2026-10-30T12': 210 } } }, new Map([['A', { time: '2026-10-31T12:00:00Z', value: 0.25 }], ['B', { time: '2026-10-31T13:00:00Z', value: 1 }]]), now)
+  eq('samples older than 48 hours go; a reading from the future is ignored', st.samples, { A: { '2026-10-30T11': 200, '2026-10-30T12': 210, '2026-10-31T12': 250 } })
+  const full: Record<string, number> = {}
+  for (let h = 0; h <= 24; h++) full[new Date(Date.parse('2026-10-30T12:00:00Z') + h * 3600e3).toISOString().slice(0, 13)] = 1000 + h * 10
+  eq('the latest line: level, time, 24-hour average, change in 24 hours', latestLine(full, { time: '2026-10-31T12:00:00Z', value: 1.24 }), [1240, '2026-10-31T12:00Z', 1125, 240])
+  eq('no average from too few samples, no change without a sample a day before', latestLine({ '2026-10-31T11': 5 }, { time: '2026-10-31T12:00:00Z', value: 0.005 }), [5, '2026-10-31T12:00Z', null, null])
+  check('silent after six hours', isSilent('2026-10-31T06:00:00Z', now) && !isSilent('2026-10-31T06:15:00Z', now) && isSilent(null, now))
+  eq('flood warnings in force, most severe first, with their area\'s position', floodsInForce([
+    { floodAreaID: 'x', severityLevel: 3, severity: 'Flood alert', description: 'River Eden' },
+    { floodAreaID: 'y', severityLevel: 4, severity: 'Warning no longer in force', description: 'Old' },
+    { floodAreaID: 'z', severityLevel: 2, severity: 'Flood warning', description: 'Keswick' },
+  ], { z: [54.6, -3.1] }).map((f) => [f.area, f.level, f.lat]), [['Keswick', 2, 54.6], ['River Eden', 3, null]])
+  const week = (f: (i: number) => number) => Array.from({ length: 24 * 28 }, (_, i) => f(i))
+  eq('flat: no change of more than 2 cm in four weeks', flatOrStuck(week((i) => 500 + (i % 3) * 5)), 'flat')
+  eq('stuck: the same figure nearly every hour', flatOrStuck(week((i) => (i % 20 === 0 ? 900 : 500))), 'stuck')
+  eq('a river that moves is neither', flatOrStuck(week((i) => 500 + Math.round(200 * Math.sin(i / 30)))), null)
+  eq('too few hours to say', flatOrStuck([1, 1, 1]), null)
+  eq('a day\'s readings by measure, repeats once', [...readingsByMeasure([
+    { dateTime: '2026-10-30T00:00:00Z', measure: 'http://x/id/measures/M1', value: '0.5' },
+    { dateTime: '2026-10-30T00:00:00Z', measure: 'http://x/id/measures/M1', value: '0.5' },
+    { dateTime: '2026-10-30T00:15:00Z', measure: 'http://x/id/measures/M2', value: '1' },
+    { dateTime: '2026-10-30T00:30:00Z', measure: 'http://x/id/measures/M1', value: '' },
+  ], new Set(['M1']))], [['M1', [['2026-10-30T00:00:00Z', 0.5]]]])
 }
 
 // ---- real gauges, against the agreed mock-up (4.41pm, October 30th 2026, worked out day
