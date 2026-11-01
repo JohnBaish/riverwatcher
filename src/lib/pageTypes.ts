@@ -51,6 +51,9 @@ export type PageGauge = {
   /** "The highest (lowest) for the time of year since [year]", only when high or low and
    *  not held: the year, or 0 for "since records began". */
   since: { way: 'highest' | 'lowest'; year: number } | null
+  /** The same year for a held gauge that's high, worked out only so the area views can rank
+   *  it (John, November 1st: never shown at a held gauge). Null otherwise. */
+  heldSince: number | null
   /** The usual level on the same date a year ago, and its word (null where not said). */
   yearAgo: { v: number; word: Word | null } | null
   record: { v: number; date: string } | null

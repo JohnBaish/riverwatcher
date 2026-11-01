@@ -112,8 +112,8 @@ function Area({ kind, name, os }: { kind: AreaKind; name: string; os?: string })
           const floods = areaFloods(meta.floods, all, inArea)
           const wide = kind !== 'county'
           const shownFloods = wide ? floods.slice(0, FLOODS_SHOWN) : floods
-          const top = ends(gauges, TOP)
-          const ranked = byRank(gauges)
+          const top = ends(gauges, TOP, meta.date)
+          const ranked = byRank(gauges, meta.date)
           const rankable = ranked.filter((g) => rankOf(g) !== null)
           const highest = rankable.slice(0, 10)
           const lowest = rankable.filter((g) => g.j.basis === 'history').reverse().slice(0, 10)

@@ -88,6 +88,21 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-01 — "the most unusual" ranked by how long since (branch `stage-4-areas`, not merged)
+
+**John** asked how the larger areas chose "the most unusual", and suggested counting the longest time
+periods. **Found:** ranking by the percentage alone tied 173 of England's 1,751 ranked gauges at 0% or
+100%, settled alphabetically (England's "Lowest" was Zoons Court, Wightwick, Wickham…), and short records
+reach the extremes far more often (37% of gauges with less than five years, 5% of those with 40 or more).
+**John chose B, and yes for held gauges:** `yearsUnusual` in `src/lib/area.ts` (years since it was last this
+high or low; the whole record when "since records began"), used by `byRank` and `ends`; the percentage only
+settles ties. `heldSince` in `PageGauge` (`pageData.ts`): the same year for a held gauge that's high, for
+ranking only, never shown. The line under each gauge now says what it's ranked by ("The lowest for the time
+of year since records began in 1967."). SPEC §8.3. Now: England's lowest Stourton (1967), Colliers Land
+Bridge (1969), Auckley (1972); highest Staines Ash (1996), Parsons Street (2004), Tidworth Manor Bridge
+(2010). **Verified:** checks 114 + 110 (new: the years, John's tie case), lint; the same 28-view browser sweep
+and the click-through: no errors, no sideways scroll. Private page republished.
+
 ### 2026-11-01 — stage 4: the area views and the full chooser, for John to look at (branch `stage-4-areas`, not merged)
 
 **John:** start stage 4 (`design/prompt-stage-4-2026-10-31.md`); show before wiring in.

@@ -10,7 +10,7 @@ import {
   changeText, chip, comparisons, figureLine, heldNote, joinsBetween, nearestGauges, readingTime, riverGroups, riverSentence, shortChange, summary, theRiver,
   type Ctx, type Item,
 } from '../src/lib/view.ts'
-import { areaFloods, areaGauges, areaSummary, byRank, ends, inProse, rankLine, rankOf } from '../src/lib/area.ts'
+import { areaFloods, areaGauges, areaSummary, byRank, ends, inProse, rankLine, rankOf, yearsUnusual } from '../src/lib/area.ts'
 import { deltas, historyFits, liveBand, ukDate, yearBefore } from './lib/pageData.ts'
 import type { History } from './lib/history.ts'
 
@@ -69,7 +69,7 @@ const c: Ctx = { made: '2026-10-31T10:04:00Z', date: '2026-10-31' }
 const base: PageGauge = {
   ref: 'X', name: 'Weston', river: 'River Test', lat: 51, long: -1, held: null, lake: false, toSeaKm: 50, joins: null, county: null, region: null, quiet: false,
   now: { v: 1210, age: 20, mean: 1200, ch: -50 }, j: { basis: 'history', word: 'normal', percent: 55.2 }, fromYear: 2002,
-  since: null, yearAgo: { v: 840, word: 'normal' }, record: { v: 5350, date: '2015-12-05' }, gaps: [], typical: null, span: [800, 2000],
+  since: null, heldSince: null, yearAgo: { v: 840, word: 'normal' }, record: { v: 5350, date: '2015-12-05' }, gaps: [], typical: null, span: [800, 2000],
 }
 const g = (o: Partial<PageGauge>): PageGauge => ({ ...base, ...o })
 eq('chip: normal', chip(base, c), { text: 'Normal for late October', kind: 'normal' })
@@ -165,16 +165,21 @@ eq('no gauges', summary('TR21', [], c), 'There are no river gauges within 10 mil
 const ag = (ref: string, o: Partial<PageGauge>) => g({ ref, name: ref, county: 'Berkshire', region: 'South East England', ...o })
 const hj = (word: 'very low' | 'low' | 'normal' | 'high' | 'very high', percent: number) => ({ j: { basis: 'history' as const, word, percent } })
 const area = [
-  ag('A', hj('very high', 97)), ag('B', hj('high', 80)), ag('C', hj('normal', 50)), ag('D', hj('normal', 60)), ag('E', hj('low', 20)),
-  ag('F', { held: 'name', j: { basis: 'held', word: null } }), ag('G', { held: 'thames', j: { basis: 'held', word: 'very high', percent: 99 } }),
+  ag('A', { ...hj('very high', 97), since: { way: 'highest', year: 2020 } }), ag('B', { ...hj('high', 80), since: { way: 'highest', year: 0 } }),
+  ag('C', hj('normal', 50)), ag('D', hj('normal', 60)), ag('E', { ...hj('low', 20), since: { way: 'lowest', year: 2010 } }),
+  ag('F', { held: 'name', j: { basis: 'held', word: null } }), ag('G', { held: 'thames', j: { basis: 'held', word: 'very high', percent: 99 }, heldSince: 2014 }),
   ag('H', { j: { basis: 'typical', word: 'within' } }), ag('I', { now: { v: 1, age: 600, mean: null, ch: null } }),
   ag('Q', { quiet: true }), ag('W', { county: 'Wiltshire', region: 'South West England' }), ag('Z', { county: null, region: null }),
 ]
 eq('area: a county leaves out quiet gauges and other counties', areaGauges(area, 'county', 'Berkshire').map((x) => x.ref), ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'])
 eq('area: England leaves out the gauges over the border', areaGauges(area, 'england').map((x) => x.ref).includes('Z'), false)
 eq('area: held steady and silent gauges are not ranked', [rankOf(area[5]), rankOf(area[8])], [null, null])
-eq('area: highest first, a high held gauge among them', byRank(areaGauges(area, 'county', 'Berkshire')).map((x) => x.ref), ['G', 'A', 'B', 'D', 'C', 'E', 'H', 'F', 'I'])
-eq('area: the most unusual, held gauges only high', ends(areaGauges(area, 'county', 'Berkshire'), 3), { high: [area[6], area[0], area[1]], low: [area[4]] })
+eq('area: years since it was last this high (records began in 2002)', [yearsUnusual(area[1], c.date), yearsUnusual(area[0], c.date), yearsUnusual(area[6], c.date), yearsUnusual(area[2], c.date)], [24, 6, 12, null])
+eq('area: the longest since first, a high held gauge among them', byRank(areaGauges(area, 'county', 'Berkshire'), c.date).map((x) => x.ref), ['B', 'G', 'A', 'D', 'C', 'E', 'H', 'F', 'I'])
+eq('area: the most unusual, held gauges only high', ends(areaGauges(area, 'county', 'Berkshire'), 3, c.date), { high: [area[1], area[6], area[0]], low: [area[4]] })
+// The fault John spotted: 0% everywhere, settled by the alphabet. Now the longer record wins.
+const lows = [ag('Zoons', { ...hj('very low', 0), fromYear: 2022, since: { way: 'lowest', year: 0 } }), ag('Stourton', { ...hj('very low', 0), fromYear: 1967, since: { way: 'lowest', year: 0 } }), ag('Mid', { ...hj('very low', 3), since: { way: 'lowest', year: 2001 } })]
+eq('area: lowest since 1967 before lowest since 2001 before lowest since 2022', ends(lows, 3, c.date).low.map((x) => x.ref), ['Stourton', 'Mid', 'Zoons'])
 eq('area: the summary', areaSummary('Berkshire', areaGauges(area, 'county', 'Berkshire'), c),
   ['Rivers in Berkshire are mostly normal or high for late October.', 'Three of the six gauges with long records are high or very high, and one is low or very low.',
     "One is held steady by a lock or weir, so it's only counted when high.", 'One more has no long record to compare.', 'One has sent no reading for more than six hours.'])
@@ -193,7 +198,8 @@ eq('area: more low than high is not "normal or high"', areaSummary('Devon', [ag(
 eq('area: on the Isle of Wight', areaSummary('Isle of Wight', [ag('a', hj('low', 20))], c)[0], 'The one river gauge on the Isle of Wight with a long record is low for late October.')
 eq('area: thousands with a comma', areaSummary('England', Array.from({ length: 1001 }, (_, i) => ag(`n${i}`, hj('normal', 50))), c)[1], 'None of the 1,001 gauges with long records is high or low.')
 eq('area: "the" in a sentence', [inProse('Isle of Wight'), inProse('Berkshire')], ['the Isle of Wight', 'Berkshire'])
-eq('area: the rank line', rankLine(area[0], c), 'Higher than on 97% of late October days since 2002.')
+eq('area: the rank line', rankLine(area[0], c), 'The highest for the time of year since 2020.')
+eq('area: the rank line, since records began', rankLine(area[1], c), 'The highest for the time of year since records began in 2002.')
 eq('area: the rank line, held', rankLine(area[6], c), "Held by a lock or weir, so it's only counted when high.")
 const fl = (lat: number, long: number) => ({ id: 'f', area: 'X', severity: 'Flood alert', lat, long, raised: null, changed: null }) as unknown as Parameters<typeof areaFloods>[0][number]
 eq('area: a flood warning goes with its nearest gauge', areaFloods([fl(51, -1.01)], area, (x) => x.county === 'Berkshire').length, 1)

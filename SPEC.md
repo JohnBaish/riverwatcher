@@ -242,6 +242,14 @@ its word; each arm checked with the dataviz validator in light and dark.
    unusual high and low gauges, Hindcaster-style (held gauges only on the high side), then every
    gauge folded away, highest for the time of year first. For a region or England, the ten highest
    and ten lowest instead of every gauge (Agreed, as Hindcaster).
+3. **"The most unusual"** (Agreed, John, November 1st, option B): ranked by how long it has been
+   since the gauge was last as high (or low) for the time of year: its "since" year, or its whole
+   record when it's the highest (lowest) since records began. The percentage only settles ties.
+   So a gauge at its lowest since 1967 comes before one at its lowest since 2022, and short records
+   don't crowd out long ones (ranking by the percentage alone tied 173 gauges at 0% or 100% and
+   settled them alphabetically). Each gauge's line says what it's ranked by: "The lowest for the
+   time of year since records began in 1967." Held gauges that are high are ranked by the same
+   year, worked out for ranking only and never shown (John: yes).
 
 ## 9. "About these figures" (Proposed: Claude's draft with John's changes of October 30th)
 

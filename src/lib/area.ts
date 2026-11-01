@@ -28,32 +28,60 @@ export function rankOf(g: PageGauge): number | null {
   return null
 }
 
-/** Highest for the time of year first; then gauges with no ranking: those within or outside
- *  the EA's typical range (above, within, below), held steady, no long record, silent. */
-export function byRank(gauges: PageGauge[]): PageGauge[] {
+/** How long it has been since the gauge was last as high (or low) for the time of year, in
+ *  years: from its "since" year, or its whole record when it's the highest (lowest) since
+ *  records began. This is what "the most unusual" means in an area (John, November 1st,
+ *  option B): a gauge at its lowest since 1967 comes before one at its lowest since 2022,
+ *  so short records don't crowd out long ones. Null for a gauge that isn't high or low. */
+export function yearsUnusual(g: PageGauge, date: string): number | null {
+  if (isSilent(g) || !g.fromYear) return null
+  const thisYear = Number(date.slice(0, 4))
+  const year = g.since ? g.since.year : g.heldSince
+  if (year === null) return null
+  return thisYear - (year === 0 ? g.fromYear : year)
+}
+
+const side = (g: PageGauge): 'high' | 'low' | null => {
+  const w = g.j.basis === 'history' || g.j.basis === 'held' ? g.j.word : null
+  return w === 'high' || w === 'very high' ? 'high' : w === 'low' || w === 'very low' ? (g.j.basis === 'history' ? 'low' : null) : null
+}
+
+/** Highest for the time of year first: the high gauges, most unusual first (`yearsUnusual`,
+ *  then the percentage); then the rest by percentage; then the low gauges, least unusual
+ *  first, so the most unusual low gauge is last. After them, gauges with no ranking: those
+ *  outside or within the EA's typical range (above, within, below), held steady, no long
+ *  record, silent. */
+export function byRank(gauges: PageGauge[], date: string): PageGauge[] {
   const later = (g: PageGauge) => {
     if (isSilent(g)) return 5
     if (g.j.basis === 'typical') return g.j.word === 'above' ? 0 : g.j.word === 'within' ? 1 : 2
     if (heldSteady(g)) return 3
     return 4
   }
+  const band = (g: PageGauge) => (side(g) === 'high' ? 0 : side(g) === 'low' ? 2 : 1)
+  const years = (g: PageGauge) => yearsUnusual(g, date) ?? 0
   return [...gauges].sort((a, b) => {
     const ra = rankOf(a), rb = rankOf(b)
-    if (ra !== null && rb !== null) return rb - ra || a.name.localeCompare(b.name)
+    if (ra !== null && rb !== null) {
+      const ba = band(a), bb = band(b)
+      if (ba !== bb) return ba - bb
+      if (ba === 0 && years(a) !== years(b)) return years(b) - years(a)
+      if (ba === 2 && years(a) !== years(b)) return years(a) - years(b)
+      return rb - ra || a.name.localeCompare(b.name)
+    }
     if (ra !== null) return -1
     if (rb !== null) return 1
     return later(a) - later(b) || a.name.localeCompare(b.name)
   })
 }
 
-/** The most unusual high and low gauges: the `n` highest for the time of year (held gauges
- *  included when high) and the `n` lowest (free-flowing only), each only when it really is
- *  high or low. */
-export function ends(gauges: PageGauge[], n: number): { high: PageGauge[]; low: PageGauge[] } {
-  const ranked = byRank(gauges).filter((g) => rankOf(g) !== null)
-  const word = (g: PageGauge) => (g.j.basis === 'history' || g.j.basis === 'held' ? g.j.word : null)
-  const high = ranked.filter((g) => word(g) === 'high' || word(g) === 'very high').slice(0, n)
-  const low = ranked.filter((g) => g.j.basis === 'history' && (g.j.word === 'low' || g.j.word === 'very low')).reverse().slice(0, n)
+/** The most unusual high and low gauges: the `n` high gauges (held gauges included) and the
+ *  `n` low gauges (free-flowing only) that are the longest since they were last this high or
+ *  low (`yearsUnusual`). */
+export function ends(gauges: PageGauge[], n: number, date: string): { high: PageGauge[]; low: PageGauge[] } {
+  const ranked = byRank(gauges, date).filter((g) => rankOf(g) !== null)
+  const high = ranked.filter((g) => side(g) === 'high').slice(0, n)
+  const low = ranked.filter((g) => side(g) === 'low').reverse().slice(0, n)
   return { high, low }
 }
 
@@ -140,17 +168,14 @@ export function areaSummary(name: string, gauges: PageGauge[], c: Ctx): string[]
   return out
 }
 
-/** "Higher than on 98% of late October days since 1995." for a ranked gauge (as the postcode
- *  view's comparison), and "High for late October, though held by a lock or weir." for a
- *  held one. */
+/** The line under a gauge in "the most unusual": what it's ranked by, "The lowest for the time
+ *  of year since records began in 1967." or "The highest for the time of year since 2014.";
+ *  for a held gauge, why only its highs count (its "since" year isn't shown, SPEC §4.6). */
 export function rankLine(g: PageGauge, c: Ctx): string | null {
-  const toy = timeOfYear(c.date)
+  void c
   if (g.j.basis === 'held') return g.j.word ? `Held by ${g.held === 'drain' ? 'pumping' : 'a lock or weir'}, so it's only counted when high.` : null
-  if (g.j.basis !== 'history' || !g.fromYear) return null
-  const p = g.j.percent
-  if (p >= 99.5) return `Higher than on any ${toy} day since ${g.fromYear}.`
-  if (p <= 0.5) return `Lower than on any ${toy} day since ${g.fromYear}.`
-  return p >= 50 ? `Higher than on ${Math.round(p)}% of ${toy} days since ${g.fromYear}.` : `Lower than on ${Math.round(100 - p)}% of ${toy} days since ${g.fromYear}.`
+  if (!g.since || isSilent(g)) return null
+  return g.since.year ? `The ${g.since.way} for the time of year since ${g.since.year}.` : `The ${g.since.way} for the time of year since records began in ${g.fromYear}.`
 }
 
 /** The flood warnings in an area: those whose flood area's middle is nearest to a gauge in it

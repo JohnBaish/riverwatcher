@@ -65,6 +65,8 @@ export function pageGauge(g: GaugeLine, line: LatestLine | null, h: History | nu
   const since = h && level !== null && !held && (isHigh(word) || isLow(word))
     ? (() => { const way = isHigh(word) ? 'highest' as const : 'lowest' as const; return { way, year: sinceYear(h, date, metresOf(level), way) ?? 0 } })()
     : null
+  // A held gauge that's high: the same "since" year, for ranking in the area views only.
+  const heldSince = h && level !== null && held && j.basis === 'held' && j.word ? sinceYear(h, date, metresOf(level), 'highest') ?? 0 : null
   let yearAgo: PageGauge['yearAgo'] = null
   if (yearAgoLevel !== null) {
     const then = yearBefore(date)
@@ -81,7 +83,7 @@ export function pageGauge(g: GaugeLine, line: LatestLine | null, h: History | nu
     ref: g.ref, name: g.name, river: g.river, lat: g.lat, long: g.long, held: g.held, lake: g.lake,
     toSeaKm: g.toSeaKm, joins: g.joins, county: g.county, region: g.region ?? null, quiet,
     now: line ? { v: line[0], age: line[1], mean: line[2], ch: line[3] } : null,
-    j, fromYear: h?.fromYear ?? null, since, yearAgo,
+    j, fromYear: h?.fromYear ?? null, since, heldSince, yearAgo,
     record: h ? { v: h.record.high.value, date: h.record.high.date } : null,
     gaps: h?.gaps ?? [],
     typical: g.typical ? [Math.round(g.typical[0] * 1000), Math.round(g.typical[1] * 1000)] : null,
