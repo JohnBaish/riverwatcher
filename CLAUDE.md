@@ -88,6 +88,39 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-01 — stage 4: the area views and the full chooser, for John to look at (branch `stage-4-areas`, not merged)
+
+**John:** start stage 4 (`design/prompt-stage-4-2026-10-31.md`); show before wiring in.
+
+**What:** the chooser, as Hindcaster's (postcode box, a county list, a region list, England;
+`AreaList` with its keyboard rule), and `src/components/AreaView.tsx` for `#county/<slug>`,
+`#region/<slug>` and `#england`, built from the postcode view's parts (`Waiting`, `JChip`,
+`Spark`, `Detail`, now exported from `PostcodeView.tsx`; `FloodList` split out of `Floods`). Rules in
+`src/lib/area.ts`: which gauges count (county or region from `gauges.json`; quiet ones out; the
+nine over the borders only in postcode views), the ranking (held gauges only when high, using a
+percentage now kept for them in `pageData.ts` for ranking only), the three most unusual high and low,
+the summary, the rank line, and flood warnings in an area (each warning goes with its nearest gauge).
+A county lists every gauge folded away, highest first; a region or England the ten highest and ten
+lowest. Tapping any gauge shows it in detail below. `meta` gains the 47 counties with gauges (City of
+London has none) and nine regions, north to south. Numbers of 1,000 or more get a comma.
+
+**Drafted for John (not agreed):** the summary ("Most rivers in Berkshire are low or very low for early
+November. Eight of the 35 gauges with long records are high or very high, and 18 are low or very low.
+17 are held steady by locks or weirs, so they're only counted when high. Three more have no long record
+to compare."), its variants ("mostly normal or low", "mixed", one gauge, none with a long record, silent
+gauges), the headings ("The most unusual for the time of year", Highest, Lowest), "Held by a lock or
+weir, so it's only counted when high.", the kicker, the folded labels, the chooser's England line, and
+the flood rule. Found on the way: "mostly normal or high" hid Devon's 45 low gauges (47 normal, two
+high), so it's only said when more are high than low.
+
+**Verified:** `npx tsc -b`, lint (no warnings), `npm run check` (114 + 107; new: the area rules, every
+county, region and England with no "undefined", "null" or "NaN"). Chromium against `vite preview`: the
+chooser, Berkshire, Rutland, the Isle of Wight, South East England, England and an unknown county at 1200px
+and 390px with touch, light and dark (28 views): no errors, no sideways scroll, fonts loaded; choosing from
+the list, opening the full list, choosing a gauge, and reopening on the last choice. Private page:
+https://claude.ai/artifact/HPLho3yo9oYxEjb2tNDgNd (data at 3.10pm, made as stage 3's). Pictures
+`design/previews/stage4-*.png`. **Couldn't check:** a real phone; a flood warning (none in force).
+
 ### 2026-11-01 — "Delete merged branches" workflow (straight to `main`)
 
 A "Delete merged branches" workflow (`.github/workflows/tidy-branches.yml`, Run workflow only, nothing scheduled): deletes only branches fully merged into `main`, never `main`, and only if a branch hasn't moved since it was checked; "Only list" (ticked by default) changes nothing; named unmerged branches can be added, each kept as an `archive/<name>` tag first. Added because cloud sessions can't delete branches (John: automate it, with no danger to the websites; the sites build from `main`, and deletions made by the job start no other workflows). Tested against a pretend GitHub here: the trial changed nothing; the real run deleted the merged branch and the named one (kept as a tag), and refused `main`. House style re-copied from clockwheel (§10 mentions it).

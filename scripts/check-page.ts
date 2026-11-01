@@ -10,6 +10,7 @@ import {
   changeText, chip, comparisons, figureLine, heldNote, joinsBetween, nearestGauges, readingTime, riverGroups, riverSentence, shortChange, summary, theRiver,
   type Ctx, type Item,
 } from '../src/lib/view.ts'
+import { areaFloods, areaGauges, areaSummary, byRank, ends, inProse, rankLine, rankOf } from '../src/lib/area.ts'
 import { deltas, historyFits, liveBand, ukDate, yearBefore } from './lib/pageData.ts'
 import type { History } from './lib/history.ts'
 
@@ -66,7 +67,7 @@ eq("Kings Road Bridge: the archive at 0.1 m, the gauge at 68.9 m", historyFits(h
 // ---- sentences, on made-up gauges ----
 const c: Ctx = { made: '2026-10-31T10:04:00Z', date: '2026-10-31' }
 const base: PageGauge = {
-  ref: 'X', name: 'Weston', river: 'River Test', lat: 51, long: -1, held: null, lake: false, toSeaKm: 50, joins: null, county: null, quiet: false,
+  ref: 'X', name: 'Weston', river: 'River Test', lat: 51, long: -1, held: null, lake: false, toSeaKm: 50, joins: null, county: null, region: null, quiet: false,
   now: { v: 1210, age: 20, mean: 1200, ch: -50 }, j: { basis: 'history', word: 'normal', percent: 55.2 }, fromYear: 2002,
   since: null, yearAgo: { v: 840, word: 'normal' }, record: { v: 5350, date: '2015-12-05' }, gaps: [], typical: null, span: [800, 2000],
 }
@@ -160,6 +161,43 @@ eq('the summary', summary('RG4', groups.slice(0, 2), c), "Near RG4: the Thames i
 eq('a summary starting with a name', summary('TA8', riverGroups(drain), c), 'Near TA8: North Drain is high for late October.')
 eq('no gauges', summary('TR21', [], c), 'There are no river gauges within 10 miles of TR21.')
 
+// ---- the area views (stage 4), on made-up gauges ----
+const ag = (ref: string, o: Partial<PageGauge>) => g({ ref, name: ref, county: 'Berkshire', region: 'South East England', ...o })
+const hj = (word: 'very low' | 'low' | 'normal' | 'high' | 'very high', percent: number) => ({ j: { basis: 'history' as const, word, percent } })
+const area = [
+  ag('A', hj('very high', 97)), ag('B', hj('high', 80)), ag('C', hj('normal', 50)), ag('D', hj('normal', 60)), ag('E', hj('low', 20)),
+  ag('F', { held: 'name', j: { basis: 'held', word: null } }), ag('G', { held: 'thames', j: { basis: 'held', word: 'very high', percent: 99 } }),
+  ag('H', { j: { basis: 'typical', word: 'within' } }), ag('I', { now: { v: 1, age: 600, mean: null, ch: null } }),
+  ag('Q', { quiet: true }), ag('W', { county: 'Wiltshire', region: 'South West England' }), ag('Z', { county: null, region: null }),
+]
+eq('area: a county leaves out quiet gauges and other counties', areaGauges(area, 'county', 'Berkshire').map((x) => x.ref), ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'])
+eq('area: England leaves out the gauges over the border', areaGauges(area, 'england').map((x) => x.ref).includes('Z'), false)
+eq('area: held steady and silent gauges are not ranked', [rankOf(area[5]), rankOf(area[8])], [null, null])
+eq('area: highest first, a high held gauge among them', byRank(areaGauges(area, 'county', 'Berkshire')).map((x) => x.ref), ['G', 'A', 'B', 'D', 'C', 'E', 'H', 'F', 'I'])
+eq('area: the most unusual, held gauges only high', ends(areaGauges(area, 'county', 'Berkshire'), 3), { high: [area[6], area[0], area[1]], low: [area[4]] })
+eq('area: the summary', areaSummary('Berkshire', areaGauges(area, 'county', 'Berkshire'), c),
+  ['Rivers in Berkshire are mostly normal or high for late October.', 'Three of the six gauges with long records are high or very high, and one is low or very low.',
+    "One is held steady by a lock or weir, so it's only counted when high.", 'One more has no long record to compare.', 'One has sent no reading for more than six hours.'])
+eq('area: most normal', areaSummary('Berkshire', [ag('a', hj('normal', 50)), ag('b', hj('normal', 40)), ag('c', hj('high', 80))], c),
+  ['Most rivers in Berkshire are normal for late October.', 'One of the three gauges with long records is high or very high, and none is low.'])
+eq('area: none high or low', areaSummary('West Midlands', [ag('a', hj('normal', 50)), ag('b', hj('normal', 40))], c),
+  ['Most rivers in the West Midlands are normal for late October.', 'None of the two gauges with long records is high or low.'])
+eq('area: one gauge', areaSummary('Rutland', [ag('a', hj('low', 20))], c), ['The one river gauge in Rutland with a long record is low for late October.'])
+eq('area: none with a long record', areaSummary('Bristol', [ag('a', { j: { basis: 'typical', word: 'within' } })], c),
+  ['The one river gauge in Bristol has no long record to compare with late October.'])
+eq('area: none with a long record, four', areaSummary('Rutland', [1, 2, 3, 4].map((i) => ag(`r${i}`, { j: { basis: 'none' } })), c),
+  ['None of the four river gauges in Rutland has a long record to compare with late October.'])
+eq('area: no gauges', areaSummary('Bristol', [], c), ["There are no river gauges in Bristol in Riverwatcher's list."])
+eq('area: more low than high is not "normal or high"', areaSummary('Devon', [ag('a', hj('normal', 50)), ag('b', hj('normal', 50)), ag('c', hj('low', 20)), ag('d', hj('high', 80)), ag('e', hj('low', 15))], c)[0],
+  'Rivers in Devon are mostly normal or low for late October.')
+eq('area: on the Isle of Wight', areaSummary('Isle of Wight', [ag('a', hj('low', 20))], c)[0], 'The one river gauge on the Isle of Wight with a long record is low for late October.')
+eq('area: thousands with a comma', areaSummary('England', Array.from({ length: 1001 }, (_, i) => ag(`n${i}`, hj('normal', 50))), c)[1], 'None of the 1,001 gauges with long records is high or low.')
+eq('area: "the" in a sentence', [inProse('Isle of Wight'), inProse('Berkshire')], ['the Isle of Wight', 'Berkshire'])
+eq('area: the rank line', rankLine(area[0], c), 'Higher than on 97% of late October days since 2002.')
+eq('area: the rank line, held', rankLine(area[6], c), "Held by a lock or weir, so it's only counted when high.")
+const fl = (lat: number, long: number) => ({ id: 'f', area: 'X', severity: 'Flood alert', lat, long, raised: null, changed: null }) as unknown as Parameters<typeof areaFloods>[0][number]
+eq('area: a flood warning goes with its nearest gauge', areaFloods([fl(51, -1.01)], area, (x) => x.county === 'Berkshire').length, 1)
+
 // ---- real postcodes, when the data repo is beside this one ----
 const dataDir = new URL('../../riverwatcher-data/data/', import.meta.url)
 if (existsSync(new URL('gauges.json', dataDir))) {
@@ -186,6 +224,22 @@ if (existsSync(new URL('gauges.json', dataDir))) {
     if (texts.some((t) => /undefined|null|NaN/.test(t))) bad++
   }
   eq('every district: no "undefined", "null" or "NaN"', bad, 0)
+
+  // Every county and region, and England: the summary and every gauge's lines make sense.
+  const actx = { made: p.meta.made, date: p.meta.date }
+  let badArea = 0
+  const views: [string, ReturnType<typeof areaGauges>][] = [
+    ...p.meta.counties.map((a) => [a.name, areaGauges(p.gauges, 'county', a.os)] as [string, ReturnType<typeof areaGauges>]),
+    ...p.meta.regions.map((a) => [a.name, areaGauges(p.gauges, 'region', a.os)] as [string, ReturnType<typeof areaGauges>]),
+    ['England', areaGauges(p.gauges, 'england')],
+  ]
+  for (const [name, gs] of views) {
+    const texts = [...areaSummary(name, gs, actx), ...gs.map((x) => rankLine(x, actx) ?? '')]
+    if (texts.some((t) => /undefined|null|NaN/.test(t))) badArea++
+  }
+  eq('every area: no "undefined", "null" or "NaN"', badArea, 0)
+  eq('47 counties with gauges, nine regions', [p.meta.counties.length, p.meta.regions.length], [47, 9])
+  eq('England counts every gauge with a region', areaGauges(p.gauges, 'england').length, p.gauges.filter((x) => x.region && !x.quiet).length)
 }
 
 console.log(`${passed} passed${failures.length ? `, ${failures.length} failed:\n  ${failures.join('\n  ')}` : ''}`)

@@ -287,3 +287,18 @@ details summary { cursor: pointer; font-weight: 600; margin-bottom: var(--space-
 }
 .b-detail-one { grid-template-columns: minmax(0, 1fr); }
 .b-detail-one > div { max-width: 760px; }
+
+/* The area views (stage 4): the most unusual high and low gauges, side by side. */
+.ends { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+.end-card { padding: var(--space-4) var(--space-6); margin: 0; }
+.end-list { list-style: none; margin: var(--space-2) 0 0; padding: 0; display: flex; flex-direction: column; }
+.end-item { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; text-align: left; font: inherit; color: inherit; background: none; border: 0; border-top: 1px solid var(--color-divider); border-left: 3px solid transparent; padding: 10px 10px; cursor: pointer; }
+.end-list li:first-child .end-item { border-top: 0; }
+.end-item[aria-pressed="true"] { background: color-mix(in srgb, var(--color-accent) 12%, transparent); border-left-color: var(--color-accent); }
+.end-item .gname { font-family: var(--font-heading); font-size: 17px; }
+.end-item .b-chip { margin: 4px 0 2px; }
+.a-table col.c1 { width: 34%; } .a-table col.c2 { width: 28%; } .a-table col.c3 { width: 12%; } .a-table col.c4 { width: 14%; } .a-table col.c6 { width: 12%; }
+@media (max-width: 720px) {
+  .ends { grid-template-columns: 1fr; }
+  .end-card { padding: var(--space-3) var(--space-4); }
+}

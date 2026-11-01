@@ -3,8 +3,8 @@
 
 const NUMBERS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine']
 
-/** 2 → "two", 12 → "12". */
-export const numberWord = (n: number): string => (Number.isInteger(n) && n >= 0 && n <= 9 ? NUMBERS[n] : String(n))
+/** 2 → "two", 12 → "12", 1751 → "1,751". */
+export const numberWord = (n: number): string => (Number.isInteger(n) && n >= 0 && n <= 9 ? NUMBERS[n] : n.toLocaleString('en-GB'))
 
 /** "one hour", "three hours", "12 hours": a count of something, inside a sentence.
  *  One is plain "one hour", not "the only hour", which would read as if it were the

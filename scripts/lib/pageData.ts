@@ -15,7 +15,7 @@ export const dataDir = () => resolve(process.env.RW_DATA ?? resolve(import.meta.
 
 type GaugeLine = {
   ref: string; name: string; river: string | null; lat: number; long: number; typical: [number, number] | null
-  held: HeldReason | null; lake: boolean; toSeaKm: number | null; joins: { river: string; toSeaKm: number } | null; county: string | null
+  held: HeldReason | null; lake: boolean; toSeaKm: number | null; joins: { river: string; toSeaKm: number } | null; county: string | null; region: string | null
 }
 type DayFile = { date: string; gauges: Record<string, { u?: number | null; h?: (number | null)[] }> }
 
@@ -54,6 +54,12 @@ export function pageGauge(g: GaugeLine, line: LatestLine | null, h: History | nu
   if (level !== null) {
     const r = judge(metresOf(level), date, h, g.typical, held)
     j = r.basis === 'history' ? { basis: 'history', word: r.word, percent: Math.round(r.percent * 10) / 10 } : r
+    // A held gauge that's high keeps its percentage too, only so the area views can rank it
+    // among the highest (SPEC §8.2: held gauges only on the high side).
+    if (j.basis === 'held' && j.word && h) {
+      const levels = levelsFor(h, dayOfYear(date))
+      if (levels) j = { ...j, percent: Math.round(percentBelow(levels, metresOf(level)) * 10) / 10 }
+    }
   }
   const word = j.basis === 'history' ? j.word : null
   const since = h && level !== null && !held && (isHigh(word) || isLow(word))
@@ -73,7 +79,7 @@ export function pageGauge(g: GaugeLine, line: LatestLine | null, h: History | nu
     : g.typical ? [Math.round(g.typical[0] * 1000), Math.round(g.typical[1] * 1000)] : null
   return {
     ref: g.ref, name: g.name, river: g.river, lat: g.lat, long: g.long, held: g.held, lake: g.lake,
-    toSeaKm: g.toSeaKm, joins: g.joins, county: g.county, quiet,
+    toSeaKm: g.toSeaKm, joins: g.joins, county: g.county, region: g.region ?? null, quiet,
     now: line ? { v: line[0], age: line[1], mean: line[2], ch: line[3] } : null,
     j, fromYear: h?.fromYear ?? null, since, yearAgo,
     record: h ? { v: h.record.high.value, date: h.record.high.date } : null,
@@ -102,6 +108,12 @@ export function historyFits(h: History, band: [number, number]): boolean {
 }
 /** Gauges whose history was set aside by `historyFits` in the last build (for the notes). */
 export const unfitting: string[] = []
+
+export const slugOf = (name: string) => name.toLowerCase().replace(/['’]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+/** "West Midlands", not "West Midlands ceremonial county" (as Hindcaster's). */
+export const shownCounty = (name: string) => name.replace(/ ceremonial county$/, '')
+/** The regions north to south, as Hindcaster's chooser. */
+export const REGION_ORDER = ['North East England', 'North West England', 'Yorkshire and the Humber', 'East Midlands', 'West Midlands region', 'East of England', 'Greater London', 'South East England', 'South West England']
 
 export type PageData = { meta: PageMeta; gauges: PageGauge[]; hours: PageHours; hours42: PageHours; daily: PageDaily }
 
@@ -206,7 +218,13 @@ export function pageData(dir = dataDir()): PageData {
   }
 
   return {
-    meta: { made: latest.made, date, floods: latest.floods ?? [] },
+    meta: {
+      made: latest.made, date, floods: latest.floods ?? [],
+      counties: [...new Set(gauges.map((g) => g.county).filter((c): c is string => !!c))]
+        .map((os) => ({ name: shownCounty(os), slug: slugOf(shownCounty(os)), os })).sort((a, b) => a.name.localeCompare(b.name)),
+      regions: [...new Set(gauges.map((g) => g.region).filter((r): r is string => !!r))]
+        .sort((a, b) => REGION_ORDER.indexOf(a) - REGION_ORDER.indexOf(b)).map((os) => ({ name: os, slug: slugOf(os), os })),
+    },
     gauges: pageGauges,
     hours: hourPart(HOURS_DAYS),
     hours42: hourPart(42),

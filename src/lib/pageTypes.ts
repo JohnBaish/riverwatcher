@@ -13,13 +13,19 @@ export type PageMeta = {
   /** The UK date the figures are for (YYYY-MM-DD). */
   date: string
   floods: Flood[]
+  /** The chooser's lists (stage 4): every county with a gauge, alphabetical, and the nine
+   *  regions north to south. `os` is the name in gauges.json; `name` the one shown. */
+  counties: AreaChoice[]
+  regions: AreaChoice[]
 }
+
+export type AreaChoice = { name: string; slug: string; os: string }
 
 /** How a gauge's level compares (SPEC §4), worked out at build time with history.ts's
  *  `judge` from the average of the last 24 hours. */
 export type PageJudgement =
   | { basis: 'history'; word: Word; percent: number }
-  | { basis: 'held'; word: 'high' | 'very high' | null }
+  | { basis: 'held'; word: 'high' | 'very high' | null; percent?: number }
   | { basis: 'typical'; word: 'below' | 'within' | 'above' }
   | { basis: 'none' }
 
@@ -34,6 +40,7 @@ export type PageGauge = {
   toSeaKm: number | null
   joins: { river: string; toSeaKm: number } | null
   county: string | null
+  region: string | null
   /** Flat or stuck, with no history or range: left out (SPEC §3.7). */
   quiet: boolean
   /** The latest reading: level, and minutes between it and `made`; null if none. */

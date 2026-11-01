@@ -11,10 +11,12 @@ import { useIsNarrow } from '../lib/responsive.ts'
 import { bandDays, hourly, PERIODS, points, type Point, type Weeks } from '../lib/series.ts'
 import {
   chip, comparisons, figureLine, heldNote, isSilent, joinsBetween, NEAR_MILES, nearestGauges, readingTime, riverGroups, shortChange, summary,
-  type Ctx, type Group, type Item,
+  changeFigure, type Ctx, type Group, type Item,
 } from '../lib/view.ts'
 import { Chart, Key } from './Chart.tsx'
 import { saveChoice } from '../lib/route.ts'
+import { numberWord } from '../lib/words.ts'
+import type { Flood } from '../../scripts/lib/collect.ts'
 
 const ctx: Ctx = { made: meta.made, date: meta.date }
 const WEEKS_KEY = 'riverwatcher.weeks'
@@ -28,7 +30,7 @@ function savedWeeks(): Weeks {
   }
 }
 
-function Waiting<T>({ loaded, children }: { loaded: Loaded<T>; children: (value: T) => React.ReactNode }) {
+export function Waiting<T>({ loaded, children }: { loaded: Loaded<T>; children: (value: T) => React.ReactNode }) {
   if (loaded.state === 'ready') return <>{children(loaded.value)}</>
   if (loaded.state === 'loading') return <p className="muted loading">Loading the river levels…</p>
   return (
@@ -39,7 +41,7 @@ function Waiting<T>({ loaded, children }: { loaded: Loaded<T>; children: (value:
   )
 }
 
-function JChip({ g }: { g: PageGauge }) {
+export function JChip({ g }: { g: PageGauge }) {
   const c = chip(g, ctx)
   if (c.kind === 'plain') return <span className="jplain">{c.text}</span>
   return <span className={`jchip ${c.kind}`}>{c.text}</span>
@@ -50,7 +52,7 @@ const timeOf = (g: PageGauge) => (g.now ? readingTime(meta.made, g.now.age, meta
 const latestPoint = (g: PageGauge): Point | null => (g.now ? [Date.parse(meta.made) - g.now.age * 60000, g.now.v] : null)
 
 /** The two-week line in each row. */
-function Spark({ g, pts }: { g: PageGauge; pts: Point[] }) {
+export function Spark({ g, pts }: { g: PageGauge; pts: Point[] }) {
   if (!pts.length) return null
   const W = 120, H = 32, t1 = Date.parse(meta.made), t0 = t1 - 14 * 86400e3
   const all = [...pts, ...(latestPoint(g) ? [latestPoint(g)!] : [])]
@@ -63,7 +65,11 @@ function Spark({ g, pts }: { g: PageGauge; pts: Point[] }) {
 }
 
 function Floods({ at }: { at: [number, number] }) {
-  const near = meta.floods.filter((f) => f.lat !== null && f.long !== null && milesBetween(at, [f.lat, f.long]) <= NEAR_MILES)
+  return <FloodList floods={meta.floods.filter((f) => f.lat !== null && f.long !== null && milesBetween(at, [f.lat, f.long]) <= NEAR_MILES)} />
+}
+
+/** The flood warnings given (SPEC §7.2); nothing when there are none. */
+export function FloodList({ floods: near, more = 0 }: { floods: Flood[]; more?: number }) {
   if (!near.length) return null
   return (
     <section className="warnings">
@@ -82,6 +88,7 @@ function Floods({ at }: { at: [number, number] }) {
           </div>
         )
       })}
+      {more > 0 && <p className="note">And {numberWord(more)} more in force here: see GOV.UK's Check for flooding.</p>}
       <p className="not-service">Riverwatcher isn't a flood warning service. For warnings, see GOV.UK's Check for flooding or call Floodline on <span className="nowrap">0345 988 1188</span>.</p>
     </section>
   )
@@ -138,8 +145,6 @@ function GroupCard({ gr, code, nearest, selected, onSelect, narrow, spark }: { g
   )
 }
 
-/** "up 1 cm" under "Steady" (SPEC §7.4: "Steady", with the figure). */
-const changeFigure = (ch: number) => { const cm = Math.round(ch / 10); return cm > 0 ? `up ${cm} cm` : cm < 0 ? `down ${-cm} cm` : 'no change' }
 
 /** The chart and its key, from the part the period needs (keyed by it, so a new part
  *  starts afresh). */
@@ -153,8 +158,9 @@ function ChartBlock({ part, g, weeks, narrow }: { part: 'hours' | 'hours42' | 'd
   return <><Chart g={g} weeks={weeks} made={meta.made} pts={pts} bands={bands} latest={latestPoint(g)} narrow={narrow} /><Key g={g} narrow={narrow} hasBands={bands.length > 0} /></>
 }
 
-function Detail({ it, narrow }: { it: Item; narrow: boolean }) {
-  const g = it.g
+/** The chosen gauge in detail. `sub` is the line under its name (river and distance, or
+ *  river and county in an area view). */
+export function Detail({ g, sub, narrow }: { g: PageGauge; sub: string; narrow: boolean }) {
   const [weeks, setWeeks] = useState<Weeks>(savedWeeks)
   const part = hourly(weeks) ? (weeks <= 2 ? 'hours' : 'hours42') : 'daily'
   const choose = (w: Weeks) => {
@@ -168,7 +174,7 @@ function Detail({ it, narrow }: { it: Item; narrow: boolean }) {
     <div className={`card b-detail${cmp.length ? '' : ' b-detail-one'}`} id="detail">
       <div>
         <h4 className="gname">{g.name}</h4>
-        <div className="gsub">{[g.river, milesText(it.miles)].filter(Boolean).join(' · ')}</div>
+        <div className="gsub">{sub}</div>
         <div className="detail-head">
           <p className="headline"><JChip g={g} /></p>
           {fig && (() => { const m = /^\d+\.\d\d m/.exec(fig)?.[0]; return <p className="figure">{m ? <><b className="mono">{m}</b>{fig.slice(m.length)}</> : fig}</p> })()}
@@ -240,7 +246,7 @@ export function PostcodeView({ code }: { code: string }) {
               <section className="source">
                 <div className="section-head"><h3>The nearest gauges, river by river</h3><span className="note">{narrow ? 'Tap' : 'Choose'} one to see it in detail.</span></div>
                 {groups.map((gr) => <GroupCard key={gr.name} gr={gr} code={code} nearest={nearest} selected={chosen.g.ref} onSelect={select} narrow={narrow} spark={spark} />)}
-                <div ref={detail} className="detail-anchor"><Detail key={chosen.g.ref} it={chosen} narrow={narrow} /></div>
+                <div ref={detail} className="detail-anchor"><Detail key={chosen.g.ref} g={chosen.g} sub={[chosen.g.river, milesText(chosen.miles)].filter(Boolean).join(' · ')} narrow={narrow} /></div>
                 <p className="data-credit">This uses Environment Agency flood and river level data from the real-time data API (Beta).</p>
               </section>
             </>

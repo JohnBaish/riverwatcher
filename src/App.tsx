@@ -5,10 +5,11 @@ import { hashOf, parseHash, savedChoice, type Route } from './lib/route.ts'
 import { AboutFigures, Credits } from './components/About.tsx'
 import { Chooser } from './components/Chooser.tsx'
 import { PostcodeView } from './components/PostcodeView.tsx'
+import { AreaView } from './components/AreaView.tsx'
 import { ThemeSwitch } from './components/ThemeSwitch.tsx'
 
-// Stage 3: the chooser's postcode box and the postcode view (SPEC §7, §8.1). Each has its own
-// address after "#" (#choose, #postcode/RG4), never sent to the server. A returning visitor
+// The chooser, the postcode view and the county, region and England views (SPEC §7, §8). Each
+// has its own address after "#" (#choose, #postcode/RG4, #county/berkshire), never sent to the server. A returning visitor
 // opens on their last choice, kept on their own device (src/lib/route.ts).
 
 function startingRoute(): Route {
@@ -57,9 +58,12 @@ export default function App() {
       </nav>
       <main className="col screen">
         <SafetyNet key={hashOf(route)}>
-          {route.kind === 'postcode' ? <PostcodeView key={route.code} code={route.code} /> : <Chooser />}
+          {route.kind === 'postcode' ? <PostcodeView key={route.code} code={route.code} />
+            : route.kind === 'county' || route.kind === 'region' ? <AreaView kind={route.kind} slug={route.slug} />
+            : route.kind === 'england' ? <AreaView kind="england" />
+            : <Chooser />}
         </SafetyNet>
-        {route.kind === 'postcode' && <AboutFigures />}
+        {route.kind !== 'choose' && <AboutFigures />}
         <footer className="footer-notice" data-noprint>
           <Credits />
           Riverwatcher is a free-to-use personal project by John Baish. More free tools at{' '}

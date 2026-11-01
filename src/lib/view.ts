@@ -129,6 +129,8 @@ export function changeText(ch: number | null): string | null {
   const dir = cm > 0 ? `up ${cm} cm` : cm < 0 ? `down ${-cm} cm` : 'no change'
   return Math.abs(ch) < 20 ? `Steady: ${dir}` : capital(dir)
 }
+/** "up 1 cm" under "Steady" (SPEC §7.4: "Steady", with the figure). */
+export const changeFigure = (ch: number) => { const cm = Math.round(ch / 10); return cm > 0 ? `up ${cm} cm` : cm < 0 ? `down ${-cm} cm` : 'no change' }
 /** The table's "Last 24 hours": "Steady", "Up 3 cm". */
 export const shortChange = (ch: number | null) => (ch === null ? null : Math.abs(ch) < 20 ? 'Steady' : changeText(ch))
 
