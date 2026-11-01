@@ -16,7 +16,7 @@ Read these first, in this order:
    John's answers. Then `design/content-answers-2026-10-30.md`: the main page's
    content, as agreed so far.
 3. `HOUSE-STYLE.md`: the shared look and ways of working. Copied from
-   clockwheel on 2026-10-30 (commit `674122d`; last re-copied 2026-11-01 at `a6cb099`), with `SEO-HANDOVER.md`,
+   clockwheel on 2026-10-30 (commit `674122d`; last re-copied 2026-11-01 at `5086657`), with `SEO-HANDOVER.md`,
    `.claude/skills/fresh-look/` and `.gitignore`. Clockwheel holds the master
    copies; if they change, re-copy them and note it here.
 4. The tracker: `projects/riverwatcher.md` in `JohnBaish/baish.net-directory`.
@@ -87,6 +87,12 @@ Scope (decided by John):
 - Flood warnings in the first version, if easy (they look it: finding 11).
 
 ## Log
+
+### 2026-11-01 — house style re-copied: sessions delete merged branches themselves (notes only, straight to `main`)
+
+From clockwheel `5086657`: §10 now asks a session to run the "Delete merged branches" workflow itself after a merge (trial run
+first, then the real run, then check the branches are gone and log it), rather than listing branches for John (John). No app code
+changed.
 
 ### 2026-11-01 — "Delete merged branches" workflow (straight to `main`)
 
