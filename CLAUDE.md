@@ -16,7 +16,7 @@ Read these first, in this order:
    John's answers. Then `design/content-answers-2026-10-30.md`: the main page's
    content, as agreed so far.
 3. `HOUSE-STYLE.md`: the shared look and ways of working. Copied from
-   clockwheel on 2026-10-30 (commit `674122d`; re-copied 2026-10-31 at `9edeea5`), with `SEO-HANDOVER.md`,
+   clockwheel on 2026-10-30 (commit `674122d`; last re-copied 2026-11-01 at `a6cb099`), with `SEO-HANDOVER.md`,
    `.claude/skills/fresh-look/` and `.gitignore`. Clockwheel holds the master
    copies; if they change, re-copy them and note it here.
 4. The tracker: `projects/riverwatcher.md` in `JohnBaish/baish.net-directory`.
@@ -87,6 +87,14 @@ Scope (decided by John):
 - Flood warnings in the first version, if easy (they look it: finding 11).
 
 ## Log
+
+### 2026-11-01 — house style re-copied (notes only, straight to `main`)
+
+From clockwheel `a6cb099` (was `9edeea5`). New since then: §10 asks sessions to delete a branch as soon as it's merged,
+keep unmerged ones only for work worth returning to, tag dead unmerged work before deleting, check with full history,
+and list branches for John to delete, as cloud sessions can't (John); and the October 31st to November 1st changes from
+the Refueller session (§1 and §16 describe the baish.net overview in two parts; §15 lists Lightreader's 24-hour times).
+No app code changed.
 
 ### 2026-10-31 — the prompt for stage 4; option C merged (notes only)
 

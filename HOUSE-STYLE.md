@@ -36,7 +36,7 @@ Backtimer — long, and mostly about those apps. Read it only for the
 | `public/favicon*.svg` | Favicon style to adapt (see §7). |
 | `design/og-clockmaker.html` | Link-preview image source; use it as the template for a new tool (see §7). |
 | `SEO-HANDOVER.md` | How search (titles, descriptions, canonical, robots.txt/sitemap, visible text, Search Console) was done, with a checklist for each new tool (see §12). |
-| `design/overview/` | The baish.net overview PDF: every site described, with screenshots, for discussing themes and ideas in other chats; its source and a script that rebuilds it. Lives here only, not copied (see §16). |
+| `design/overview/` | The baish.net overview, for discussing themes and ideas in other chats: the words in `baish-net-overview.md`, the screenshots in `baish-net-pictures-<date>.pdf`, and a script that remakes the pictures. Lives here only, not copied (see §16). |
 | `HOUSE-STYLE.md` and `.claude/skills/fresh-look/` | This file, and the "fresh look" review procedure with its PDF template and script (see §11). Copy both into every project, new or existing. |
 
 Dependencies these rely on: `@fontsource/caprasimo`, `@fontsource/figtree`,
@@ -453,6 +453,19 @@ and add its tags. Nothing else needs fixing or remaking first.
 - After every push, ask GitHub what it holds (`git ls-remote origin <branch>`)
   rather than trusting "sent": a push from the wrong place can report
   success and send nothing (2026-10-22).
+- **Tidy branches as you go** (John, 2026-11-01). Delete a branch as soon
+  as it's merged into `main`: its commits stay in `main`'s history, so
+  nothing is lost. Keep an unmerged branch only while it holds work worth
+  returning to (parked or in progress), and say in the project's notes
+  that it exists and what's in it. For dead unmerged work, tag it
+  (`archive/<branch>`) before deleting, so its commits survive. Before
+  calling a branch merged, check with full history: cloud copies are often
+  shallow (`git rev-parse --is-shallow-repository`; if `true`, run
+  `git fetch --unshallow origin`), and a shallow copy makes merged
+  branches look unmerged. **Cloud sessions can't delete branches or push
+  tags** (GitHub refuses with 403, seen 2026-11-01), so at the end of a
+  stage list the branches to delete for John, with their repo, rather than
+  leaving them to pile up.
 
 **Preview servers (Claude's checks):** start `vite preview` directly with
 `node node_modules/vite/bin/vite.js preview --port <n> --strictPort` (not
@@ -600,9 +613,10 @@ John decides wording; these are his standing preferences, from Hindcaster
   use a full stop between hours and minutes, the British way: "5.50am",
   "9.15pm"; on the hour "3pm", "midday", "midnight" (John, 23 October;
   Hindcaster changed from "5:50am"). New tools do the same. Clockmaker's
-  24-hour "06:00" stays, as it suits broadcasting, and so do minutes and
-  seconds ("29:30", "60:00") in Clockmaker and Backtimer, which are
-  timings, not times of day.
+  24-hour "06:00" stays, as it suits broadcasting, as does Lightreader's
+  ("06:48"; John, 27 October: "we tried various looks and this was the
+  best"). So do minutes and seconds ("29:30", "60:00") in Clockmaker and
+  Backtimer, which are timings, not times of day.
 - **Rounding** (any tool showing decimals): halves away from zero, so 4.55
   shows as 4.6 and −0.05 as −0.1, never "−0.0". Don't use JavaScript's
   `toFixed` or a plain `Math.round` for this; work in whole hundredths
@@ -670,9 +684,10 @@ baish.net landing page, with the hub's title and description updated to
 match (in this repo, with his OK).
 
 **After the hub card, update the baish.net overview** (`design/overview/` in
-this repo; its `README.md` has the steps): a written page and screenshots for
-the new tool, and the shared pages brought up to date. It's for John to share
-with Claude in other chats. Before that thread, John adds `baish.net` and its
-subdomains to the environment's Allowed domains, so the screenshots can come
-from the live sites (without them, Claude builds each site from `main` and
-serves it locally, and the PDF says so).
+this repo; its `README.md` has the steps): a section for the new tool in
+`baish-net-overview.md` (the words) and its screenshots in the pictures PDF,
+with the shared parts brought up to date. It's for John to share with Claude
+in other chats. Before that thread, John adds `baish.net` and its subdomains
+to the environment's Allowed domains, so the screenshots can come from the
+live sites (without them, Claude builds each site from `main` and serves it
+locally, and the PDF says so).
