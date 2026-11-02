@@ -110,7 +110,8 @@ warning, and `"dayFile":{"date":"2026-11-01","pages":0,"rows":0,"finished":false
 
 **Then:** the 01:10 UTC run (old code) made the November 1st day file: 37 pages, 361,344 readings, 2,879 gauges,
 `finished: true` (`fad0b55` in the data repo). Merged to `main` at John's word (fast-forward; checks 118 + 85, `tsc -b`
-and lint clean first), so the collector runs it from the next hour.
+and lint clean first), so the collector runs it from the next hour. Branches tidied: "Delete merged branches" trial run, then the
+real run, deleted `collect-retry`; `stage-4-areas` (unmerged, stage 4 work in another thread) left alone.
 
 ### 2026-11-01 — house style re-copied: sessions delete merged branches themselves (notes only, straight to `main`)
 
