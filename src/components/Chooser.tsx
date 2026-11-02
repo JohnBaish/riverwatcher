@@ -86,6 +86,10 @@ export function Chooser() {
           <div><button className="btn btn-secondary" type="button" onClick={() => go({ kind: 'england' })}>Show England</button></div>
         </div>
       </div>
+      <p className="muted chooser-about">
+        See whether the rivers near you are high or low for the time of year. River levels for anywhere in England, from
+        Environment Agency gauges, updated every hour, with charts and comparisons with past years. Free to use.
+      </p>
     </>
   )
 }
