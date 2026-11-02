@@ -1,5 +1,4 @@
-// "About these figures" (SPEC §9: Claude's draft with John's changes of October 30th; the
-// last two paragraphs' new sentences are drafts for John, October 31st) and the credits (§10).
+// "About these figures" (SPEC §9, agreed by John on November 2nd) and the credits (§10).
 
 export function AboutFigures() {
   return (
@@ -20,17 +19,23 @@ export function AboutFigures() {
         start. Just under half the gauges have records from before 2000, a few go back to the 1950s, and some started only
         in the last few years; each gauge's figures say the year its record begins. Normal is the middle half of those
         days; low and high are the next 15% on each side; very low and very high are the lowest and highest 10%.
-        {' '}<span className="draft">Where a gauge's record has a long gap, its figures say "History incomplete" and when the gap was.</span>
+        {' '}Where a gauge's record has a long gap, its figures say "History incomplete" and when the gap was.
       </p>
       <p>
         On rivers with locks and weirs, such as the Thames, the level is kept steady for boats, so it rises in very wet
         weather but doesn't tell us much about low water. For these, Riverwatcher only says when the level is high.
-        {' '}<span className="draft">Drains and rhynes in the fens and levels are treated the same way, as their levels are usually set by pumping.</span>
+        {' '}Drains and rhynes in the fens and levels are treated the same way, as their levels are usually set by pumping.
         {' '}Where a gauge has no long record, Riverwatcher uses the Environment Agency's own usual range for it, which covers
         the whole year.
-        {' '}<span className="draft">A few gauges have neither, so Riverwatcher shows how their level has moved but not whether it is high or low.</span>
+        {' '}A few gauges have neither, so Riverwatcher shows how their level has moved but not whether it is high or low.
       </p>
       <p>Rivers are listed upstream to downstream, using Ordnance Survey's map of rivers.</p>
+      <p>
+        In a county, a region, or in the England view, the summary counts only gauges that can be compared with past years.
+        Those on rivers with locks and weirs, and fen drains, are only counted when they're high. "The most unusual" are the
+        gauges that are higher or lower for the time of year than they have been for the longest period of time, so a river
+        at its lowest since 1967 comes before one at its lowest since 2022.
+      </p>
     </section>
   )
 }

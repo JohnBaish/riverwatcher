@@ -258,32 +258,16 @@ its word; each arm checked with the dataviz validator in light and dark.
    folded labels, the chooser's England line, flood warnings placed by their nearest gauge (ten
    listed in a region or England, then "And N more in force here"), and "on the Isle of Wight".
 
-## 9. "About these figures" (Proposed: Claude's draft with John's changes of October 30th)
+## 9. "About these figures" (Agreed, John, November 2nd 2026)
 
-> Riverwatcher shows river levels measured by the Environment Agency's gauges. These usually
-> collect data every 15 minutes, and Riverwatcher fetches that information once an hour. Recent
-> figures are provisional: the Environment Agency checks them later and sometimes corrects them.
->
-> Heights are above each gauge's own zero, not the depth of the river, so the figures for
-> different gauges can't be compared with each other.
->
-> "For the time of year" compares the last 24 hours with the same gauge's levels on the days a week
-> either side of today's date, in every year on record. There's a lot of variation in when the
-> historical records for each gauge start. Just under half the gauges have records from before
-> 2000, a few go back to the 1950s, and some started only in the last few years; each gauge's
-> figures say the year its record begins. Normal
-> is the middle half of those days; low and high are the next 15% on each side; very low and very
-> high are the lowest and highest 10%.
->
-> On rivers with locks and weirs, such as the Thames, the level is kept steady for boats, so it
-> rises in very wet weather but doesn't tell us much about low water. For these, Riverwatcher only
-> says when the level is high. Where a gauge has no long record, Riverwatcher uses the Environment
-> Agency's own usual range for it, which covers the whole year.
->
-> Rivers are listed upstream to downstream, using Ordnance Survey's map of rivers.
-
-**To add** (John, October 31st): a sentence on fen drains and rhynes being treated like locks
-and weirs, as their levels are usually set by pumping; and one on "History incomplete".
+The text is in `src/components/About.tsx`, which is the reference. Since October 30th: the
+sentences on "History incomplete", fen drains and rhynes, and gauges with neither a long record
+nor a usual range were added (drafted October 31st, agreed November 2nd), and a last paragraph on
+the area views, with John's changes: "In a county, a region, or in the England view, the summary
+counts only gauges that can be compared with past years. Those on rivers with locks and weirs,
+and fen drains, are only counted when they're high. "The most unusual" are the gauges that are
+higher or lower for the time of year than they have been for the longest period of time, so a
+river at its lowest since 1967 comes before one at its lowest since 2022."
 
 The sentences on how far back records go are John's wording (October 30th), from these figures: from the archive on October
 30th, 1,088 of 2,184 river gauges' records start before 2000; the earliest full one is the Severn
