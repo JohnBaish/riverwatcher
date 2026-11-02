@@ -241,7 +241,9 @@ its word; each arm checked with the dataviz validator in light and dark.
    very low. [18] are held steady by locks or weirs, so they're only counted when high."), the most
    unusual high and low gauges, Hindcaster-style (held gauges only on the high side), then every
    gauge folded away, highest for the time of year first. For a region or England, the ten highest
-   and ten lowest instead of every gauge (Agreed, as Hindcaster).
+   and ten lowest instead of every gauge (Agreed, as Hindcaster), counting only gauges that really
+   are high or low: "The two gauges that are high for the time of year" when fewer than ten are,
+   and no list when none is (John, November 2nd, option B).
 3. **"The most unusual"** (Agreed, John, November 1st, option B): ranked by how long it has been
    since the gauge was last as high (or low) for the time of year: its "since" year, or its whole
    record when it's the highest (lowest) since records began. The percentage only settles ties.

@@ -1,11 +1,11 @@
 // The county, region and England views (SPEC §8.2; stage 4, drafted for John): the summary,
 // the most unusual high and low gauges (held gauges only on the high side), then every gauge
-// folded away, highest for the time of year first (a county), or the ten highest and ten
-// lowest (a region or England, as Hindcaster's), and the chosen gauge in detail.
+// folded away, highest for the time of year first (a county), or up to ten high and ten low
+// gauges (a region or England), and the chosen gauge in detail.
 
 import { useEffect, useRef, useState } from 'react'
 import meta from 'virtual:riverwatcher/meta'
-import { areaFloods, areaGauges, areaSummary, byRank, ends, inPlace, rankLine, rankOf, type AreaKind } from '../lib/area.ts'
+import { areaFloods, areaGauges, areaSummary, byRank, ends, inPlace, listLabel, rankLine, TEN, type AreaKind } from '../lib/area.ts'
 import { capital, longDate, metres } from '../lib/format.ts'
 import { useParts } from '../lib/load.ts'
 import type { AreaChoice, PageGauge } from '../lib/pageTypes.ts'
@@ -114,9 +114,9 @@ function Area({ kind, name, os }: { kind: AreaKind; name: string; os?: string })
           const shownFloods = wide ? floods.slice(0, FLOODS_SHOWN) : floods
           const top = ends(gauges, TOP, meta.date)
           const ranked = byRank(gauges, meta.date)
-          const rankable = ranked.filter((g) => rankOf(g) !== null)
-          const highest = rankable.slice(0, 10)
-          const lowest = rankable.filter((g) => g.j.basis === 'history').reverse().slice(0, 10)
+          // Only gauges that really are high or low, at most ten (John, November 2nd, option B).
+          const real = ends(gauges, Infinity, meta.date)
+          const highest = real.high.slice(0, TEN), lowest = real.low.slice(0, TEN)
           const first = top.high[0] ?? top.low[0] ?? ranked[0]
           const chosen = gauges.find((g) => g.ref === selected) ?? first
           const select = (ref: string) => {
@@ -149,13 +149,13 @@ function Area({ kind, name, os }: { kind: AreaKind; name: string; os?: string })
                   )}
                   {wide && highest.length > 0 && (
                     <details className="all-gauges">
-                      <summary>The ten highest for the time of year</summary>
+                      <summary>{listLabel(real.high.length, 'high')}</summary>
                       {rows(highest)}
                     </details>
                   )}
                   {wide && lowest.length > 0 && (
                     <details className="all-gauges">
-                      <summary>The ten lowest for the time of year</summary>
+                      <summary>{listLabel(real.low.length, 'low')}</summary>
                       {rows(lowest)}
                     </details>
                   )}

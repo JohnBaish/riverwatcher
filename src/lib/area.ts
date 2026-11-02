@@ -85,6 +85,17 @@ export function ends(gauges: PageGauge[], n: number, date: string): { high: Page
   return { high, low }
 }
 
+/** A region's or England's folded lists hold at most this many gauges. */
+export const TEN = 10
+
+/** The folded list's label in a region or England (John, November 2nd, option B): only gauges
+ *  that really are high (low), so "The two gauges that are high for the time of year", and
+ *  "The ten highest for the time of year" when more than ten are. */
+export function listLabel(n: number, way: 'high' | 'low'): string {
+  if (n >= TEN) return `The ten ${way}est for the time of year`
+  return n === 1 ? `The one gauge that is ${way} for the time of year` : `The ${countOf(n, 'gauge')} that are ${way} for the time of year`
+}
+
 /** An area's name inside a sentence: "the West Midlands", "the Isle of Wight"; most need
  *  nothing ("Berkshire"). Headings keep the bare name (as Hindcaster's). */
 const THE = new Set(['West Midlands', 'Isle of Wight', 'East Riding of Yorkshire', 'East Midlands', 'East of England', 'West Midlands region'])

@@ -91,8 +91,15 @@ Scope (decided by John):
 ### 2026-11-02 — stage 4 wording agreed (notes only)
 
 John: "The wording is all excellent and all your other points are agreed" (the six drafted points: summary, headings,
-held line, kicker and labels, flood rule, "on the Isle of Wight"). SPEC §8.4. Open: the ten highest and lowest in a
-region with fewer than ten high gauges (asked).
+held line, kicker and labels, flood rule, "on the Isle of Wight"). SPEC §8.4.
+
+**Then (branch `area-ten-lists`, not merged):** a region's "ten highest" was filled with normal gauges when fewer than
+ten were high (North East England: eight of the ten). **John chose B:** only gauges that really are high or low, labelled
+"The two gauges that are high for the time of year" (`listLabel` and `TEN` in `src/lib/area.ts`; "The ten highest for the
+time of year" from ten up; no list when none). SPEC §8.2. Checks 118 + 112; North East England, Greater London, England
+and Berkshire at 1200px and 390px with touch, light and dark: no normal gauge in those lists (Berkshire's full list
+unchanged), no errors, no sideways scroll. Private page republished. Picture `design/previews/stage4-north-east-390.png`.
+Slip: `pkill -f` to stop the preview server also stopped this session's shell (the house style warns of it); nothing lost.
 
 ### 2026-11-02 — stage 4 merged to `main`
 

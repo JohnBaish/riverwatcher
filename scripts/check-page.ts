@@ -10,7 +10,7 @@ import {
   changeText, chip, comparisons, figureLine, heldNote, joinsBetween, nearestGauges, readingTime, riverGroups, riverSentence, shortChange, summary, theRiver,
   type Ctx, type Item,
 } from '../src/lib/view.ts'
-import { areaFloods, areaGauges, areaSummary, byRank, ends, inProse, rankLine, rankOf, yearsUnusual } from '../src/lib/area.ts'
+import { areaFloods, areaGauges, areaSummary, byRank, ends, inProse, listLabel, rankLine, rankOf, yearsUnusual } from '../src/lib/area.ts'
 import { deltas, historyFits, liveBand, ukDate, yearBefore } from './lib/pageData.ts'
 import type { History } from './lib/history.ts'
 
@@ -197,6 +197,9 @@ eq('area: more low than high is not "normal or high"', areaSummary('Devon', [ag(
   'Rivers in Devon are mostly normal or low for late October.')
 eq('area: on the Isle of Wight', areaSummary('Isle of Wight', [ag('a', hj('low', 20))], c)[0], 'The one river gauge on the Isle of Wight with a long record is low for late October.')
 eq('area: thousands with a comma', areaSummary('England', Array.from({ length: 1001 }, (_, i) => ag(`n${i}`, hj('normal', 50))), c)[1], 'None of the 1,001 gauges with long records is high or low.')
+eq('area: the folded lists name only gauges that are high or low', [listLabel(2, 'high'), listLabel(1, 'low'), listLabel(10, 'high'), listLabel(11, 'low'), listLabel(889, 'high')],
+  ['The two gauges that are high for the time of year', 'The one gauge that is low for the time of year', 'The ten highest for the time of year', 'The ten lowest for the time of year', 'The ten highest for the time of year'])
+eq('area: no normal gauge in the high or low lists', [...ends(area, Infinity, c.date).high, ...ends(area, Infinity, c.date).low].some((x) => x.j.basis === 'history' && x.j.word === 'normal'), false)
 eq('area: "the" in a sentence', [inProse('Isle of Wight'), inProse('Berkshire')], ['the Isle of Wight', 'Berkshire'])
 eq('area: the rank line', rankLine(area[0], c), 'The highest for the time of year since 2020.')
 eq('area: the rank line, since records began', rankLine(area[1], c), 'The highest for the time of year since records began in 2002.')
