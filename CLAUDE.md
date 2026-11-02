@@ -88,6 +88,26 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-02 — a failed page no longer fails the collector's run (branch `collect-retry`, not merged)
+
+**What happened:** the Collect run at 00:10 UTC (run 41365705249) failed, and GitHub emailed John. Page 26 of the
+EA's bulk list for November 1st got "HTTP 503" (the EA's server temporarily unavailable) twice, and the script
+stopped. The latest readings and flood warnings were already written and were committed (`3e2eeb7`). The November
+1st day file and that run's log line were not. The same page loaded normally at 00:52. Each run makes a day file
+that's missing, so the 01:10 run tries again.
+
+**John:** yes to making the collector carry on when this happens. **What:** `fetchDayRows()` in
+`scripts/lib/collect.ts`. Each page is now tried four times (was two; waits of 5, 10 and 15 seconds). At most about
+8½ minutes, so a page started just before the 20-minute stop still ends inside the workflow's 30. If a page still
+fails, or time runs out, the run log says `finished: false` with the reason (`stopped`) and the run shows a yellow
+warning, not a failure. The next hour tries again.
+
+**Verified:** `npm run check` (118 + 85; new: a full download, a page that still fails, out of time, no such page).
+Making the download throw again made the new check fail, then the code was restored. `tsc -b` and lint are clean. A
+trial run with the real EA in a scratch copy of the data, with no time allowed for the day file: exit 0, the
+warning, and `"dayFile":{"date":"2026-11-01","pages":0,"rows":0,"finished":false,"stopped":"out of time"}` in the log.
+**Not checked:** a real 503 from the EA (can't be made to happen).
+
 ### 2026-11-01 — house style re-copied: sessions delete merged branches themselves (notes only, straight to `main`)
 
 From clockwheel `5086657`: §10 now asks a session to run the "Delete merged branches" workflow itself after a merge (trial run

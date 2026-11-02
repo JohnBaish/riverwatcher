@@ -110,3 +110,33 @@ export function readingsByMeasure(rows: Record<string, string>[], wanted: Set<st
   }
   return out
 }
+
+/** The day file's bulk download: yesterday's readings, page by page. `get` fetches one page
+ *  (null for a 404) and may throw after its own retries; `inTime` says whether there's still
+ *  time to ask for another page. A page that still fails, or running out of time, ends the
+ *  download unfinished, with the reason: the run carries on and the next hour tries again
+ *  (November 2nd 2026: one EA 503 on page 26 used to fail the whole run). */
+export async function fetchDayRows(
+  get: (offset: number) => Promise<string | null>,
+  parse: (text: string) => Record<string, string>[],
+  pageRows: number,
+  inTime: () => boolean,
+  pause: () => Promise<unknown> = async () => {},
+): Promise<{ rows: Record<string, string>[]; pages: number; finished: boolean; stopped?: string }> {
+  const rows: Record<string, string>[] = []
+  let pages = 0
+  for (let offset = 0; ; offset += pageRows) {
+    if (!inTime()) return { rows, pages, finished: false, stopped: 'out of time' }
+    let text: string | null
+    try {
+      text = await get(offset)
+    } catch (e) {
+      return { rows, pages, finished: false, stopped: (e as Error).message }
+    }
+    pages++
+    const page = text ? parse(text) : []
+    rows.push(...page)
+    if (page.length < pageRows) return { rows, pages, finished: text !== null, ...(text === null ? { stopped: 'page not found' } : {}) }
+    await pause()
+  }
+}
