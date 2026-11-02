@@ -88,12 +88,17 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-02 — Vercel project created (notes only, on the branch)
+
+John created the Vercel project (launch steps, part A). This entry is the push that starts the branch's own preview
+build; `main` has no `vercel.json` yet, so its first build was expected to fail.
+
 ### 2026-11-02 — stage 5 begun: About, favicon, preview image, search, launch set-up (branch `claude/sweet-hamilton-oje25t`, not merged)
 
 **John:** "About these figures" agreed (the October 31st drafts kept; a paragraph on the area views and a sentence on
 gauges left out as faulty, his wording; SPEC §9). Favicon **A** (two waves; options in `design/favicon-options/`).
 Link-preview image with "River levels in your chosen area, with historical comparisons." (`design/og-riverwatcher.html`,
-`public/og-riverwatcher.png`; both fonts confirmed loaded); waiting for his OK on the redone picture. Search: title
+`public/og-riverwatcher.png`; both fonts confirmed loaded); John approved it. Search: title
 "Riverwatcher – river levels in England", description A, the chooser paragraph (Hindcaster's `.chooser-about`), canonical,
 `robots.txt`, `sitemap.xml`, `og:`/`twitter:` tags. **Launch set-up:** `vercel.json` and `scripts/vercel-build.sh` (each
 Vercel build fetches the data repo, git or tarball, then builds; 15 s here); `@vercel/analytics` as Hindcaster's (the part
