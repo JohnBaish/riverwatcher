@@ -94,7 +94,8 @@ John said merge. `main`'s collector fix (`collect-retry`) brought into `stage-4-
 log; both kept), then checks 118 + 110, `tsc -b`, lint and the build clean, and `main` fast-forwarded. On `main` now: the
 full chooser, the county, region and England views, and "the most unusual" ranked by how long since (option B). The
 drafted wording still waits for John (the summary, headings, held line, kicker, folded labels, the chooser's England
-line, the flood rule, "on the Isle of Wight"). Nothing is public yet (no Vercel project until stage 5).
+line, the flood rule, "on the Isle of Wight"). Nothing is public yet (no Vercel project until stage 5). Branches tidied:
+"Delete merged branches" trial run (only `stage-4-areas`), then the real run; only `main` is left.
 
 ### 2026-11-02 — a failed page no longer fails the collector's run (branch `collect-retry`, merged)
 
