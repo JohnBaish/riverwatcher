@@ -88,5 +88,8 @@ SPEC §12: downstream gauges, tidal stations, groundwater, full postcodes, Wales
 - The Monthly workflow runs on the 3rd of each month at 02.23 UTC (in the data repo, from
   October 31st 2026). If GitHub doesn't start it on November 3rd, John re-saves
   `.github/workflows/monthly.yml` on github.com under his own account (as Hindcaster's needed).
-- The Vercel deploy hook (a secret in GitHub Actions): made in stage 2.
-- Re-check the free plans' limits (GitHub, cron-job.org, Vercel) before launch.
+- The Vercel deploy hook (`VERCEL_DEPLOY_HOOK`, a secret in the data repo's Actions): made by John in stage 5 (`design/launch-steps-2026-11-02.md`).
+- Free plans re-checked November 2nd 2026 by web search only (the providers' pages are blocked here): GitHub's
+  standard runners free and unlimited for public repos; cron-job.org every minute at most, no hard job limit; Vercel
+  Hobby 100 deployments a day (previews count), 45 minutes a build, deploy hooks listed in its limits table (one
+  summary says not on Hobby: John to see in the dashboard). Riverwatcher needs 24 production builds a day plus previews.

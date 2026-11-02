@@ -88,6 +88,21 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-02 — stage 5 begun: About, favicon, preview image, search, launch set-up (branch `claude/sweet-hamilton-oje25t`, not merged)
+
+**John:** "About these figures" agreed (the October 31st drafts kept; a paragraph on the area views and a sentence on
+gauges left out as faulty, his wording; SPEC §9). Favicon **A** (two waves; options in `design/favicon-options/`).
+Link-preview image with "River levels in your chosen area, with historical comparisons." (`design/og-riverwatcher.html`,
+`public/og-riverwatcher.png`; both fonts confirmed loaded); waiting for his OK on the redone picture. Search: title
+"Riverwatcher – river levels in England", description A, the chooser paragraph (Hindcaster's `.chooser-about`), canonical,
+`robots.txt`, `sitemap.xml`, `og:`/`twitter:` tags. **Launch set-up:** `vercel.json` and `scripts/vercel-build.sh` (each
+Vercel build fetches the data repo, git or tarball, then builds; 15 s here); `@vercel/analytics` as Hindcaster's (the part
+after "#" dropped); the deploy-hook step drafted in `design/workflows/collect.yml` (not yet in the data repo); John's steps in
+`design/launch-steps-2026-11-02.md`. **Verified:** checks 118 + 112, `tsc -b`, lint, build; chooser and RG4 at 1200px and
+390px with touch, light and dark: no errors, no sideways scroll; `robots.txt`, `sitemap.xml`, image and favicon served
+with the right types. **Couldn't check:** Vercel itself; the codeload tarball route (blocked here). Free plans re-checked by
+search only (Vercel's and cron-job.org's pages are blocked here): see PLAN. Collector runs healthy since the November 2nd fix.
+
 ### 2026-11-02 — the prompt for stage 5 (notes only)
 
 `design/prompt-stage-5-2026-11-02.md`: what John pastes into a new thread to start stage 5 (finishing and launch).
