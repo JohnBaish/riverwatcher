@@ -143,7 +143,9 @@ reading (Roe Bridge on the Brock has one day in 1919, then nothing for decades).
    doesn't fit what the gauge reads now (the archive and the live feed on different zero
    points, 18 gauges such as Kings Road Bridge) is set aside, and the gauge is judged by its
    typical range; day-file figures outside the plausible levels are left out of the charts and
-   "a year ago".
+   "a year ago". **A floor** (fresh look 2.3, November 2nd): a logger reading the same low figure,
+   give or take a few millimetres, on many days far below everything else (Greta Bridge read
+   about -0.24 m on winter days against a usual 1.1 m) is left out too (`floorDays`).
 
 ## 5. Updates (Agreed: hourly)
 
@@ -205,8 +207,11 @@ with the switch).
    marked "Nearest"; "The Kennet joins here" between the right gauges, and "Joins the Thames
    between Caversham Lock and Sonning Lock" on the tributary. A lake has its own card. When every
    nearby gauge is held, the nearest free-flowing gauge within 10 miles is added in its own card
-   (to try). Each row: name, distance in whole miles ("less than 1 mile"), the judgement, latest
-   level and time, last 24 hours ("Steady" for less than 2 cm, with the figure), a year ago, and a two-week
+   (to try). A gauge with no river name is spoken of as a gauge ("the gauge at …"), under
+   "Unnamed watercourse" (fresh look 2.4). Rivers with nothing to say but "held steady" share one
+   sentence in the summary (fresh look 3.3). Each row: name, distance in whole miles ("less than 1 mile"), the judgement, latest
+   level and time, last 24 hours ("Steady" when the change rounds to less than 2 cm, with the
+   figure; fresh look 3.4), a year ago, and a two-week
    line.
 5. **The chosen gauge in detail** (the nearest at first; tap or choose another): the judgement,
    "0.26 m at 10.45am. Steady: up 1 cm in the last 24 hours.", A's line at a held gauge ("The level
@@ -227,6 +232,12 @@ with the switch).
    year", left-aligned to the chart's own left edge, in line with its first date (Agreed, John,
    October 30th). A tooltip on hover or touch.
 7. **About these figures** (§9) and the credits at the foot (§10).
+8. **Fresh look, November 2nd 2026** (John agreed every fix): figures more than three hours old
+   by the visitor's clock get a warning ("These figures were collected at … and Riverwatcher
+   hasn't been able to update them since."); a flood alert, warning and severe warning look
+   different (pale card; thick red edge; solid red); printing gives the collection time and the
+   credits, without the period buttons or "About these figures"; a page for a place that doesn't
+   exist shows just its message.
 
 Judgement colours (Agreed): low water terracotta, high water blue, normal grey, each always with
 its word; each arm checked with the dataviz validator in light and dark.
