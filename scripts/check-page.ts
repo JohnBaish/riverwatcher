@@ -11,6 +11,7 @@ import {
   type Ctx, type Item,
 } from '../src/lib/view.ts'
 import { areaFloods, areaGauges, areaSummary, byRank, ends, inProse, listLabel, rankLine, rankOf, yearsUnusual } from '../src/lib/area.ts'
+import { staleText, updatedText } from '../src/lib/freshness.ts'
 import { deltas, historyFits, liveBand, ukDate, yearBefore } from './lib/pageData.ts'
 import type { History } from './lib/history.ts'
 
@@ -43,11 +44,13 @@ eq('a year before February 29th', yearBefore('2028-02-29'), '2027-02-28')
 // ---- movement ----
 eq('steady, up 1 cm', changeText(10), 'Steady: up 1 cm')
 eq('steady, no change', changeText(4), 'Steady: no change')
-eq('steady at 19 mm', changeText(-19), 'Steady: down 2 cm')
+eq('19 mm rounds to 2 cm, so not steady (fresh look 3.4)', changeText(-19), 'Down 2 cm')
+eq('14 mm is steady', changeText(-14), 'Steady: down 1 cm')
+eq('15 mm rounds the same up and down', [changeText(15), changeText(-15)], ['Up 2 cm', 'Down 2 cm'])
 eq('2 cm is not steady', changeText(20), 'Up 2 cm')
 eq('down 13 cm', changeText(-130), 'Down 13 cm')
 eq('unknown', changeText(null), null)
-eq('the table: Steady', shortChange(-15), 'Steady')
+eq('the table: Steady', shortChange(-14), 'Steady')
 eq('the table: Up 3 cm', shortChange(30), 'Up 3 cm')
 
 // ---- the charts' figures ----
@@ -63,6 +66,13 @@ eq('a steady gauge still gets room', liveBand([68900, 68950]), [68100, 69750])
 const hist = (mid: number) => ({ table: [Array.from({ length: 41 }, (_, i) => mid - 200 + i * 10)] }) as unknown as History
 eq('a history that fits', historyFits(hist(400), liveBand([300, 500])), true)
 eq("Kings Road Bridge: the archive at 0.1 m, the gauge at 68.9 m", historyFits(hist(110), liveBand([68900, 68950])), false)
+
+// ---- how fresh the figures are (fresh look 5.2) ----
+eq('updated today: the time', updatedText('2026-11-02T15:54:00Z', new Date('2026-11-02T17:00:00Z')), '3.54pm')
+eq('updated yesterday: the weekday', updatedText('2026-11-01T15:54:00Z', new Date('2026-11-02T09:00:00Z')), 'Sunday 3.54pm')
+eq('updated long ago: the date', updatedText('2026-10-20T15:54:00Z', new Date('2026-11-02T09:00:00Z')), 'October 20th, 4.54pm')
+eq('fresh: no warning', staleText('2026-11-02T15:54:00Z', new Date('2026-11-02T18:54:00Z')), null)
+eq('stale after three hours', staleText('2026-11-02T15:54:00Z', new Date('2026-11-02T18:55:00Z')), "These figures were collected at 3.54pm on Monday November 2nd, and Riverwatcher hasn't been able to update them since. Please check again later.")
 
 // ---- sentences, on made-up gauges ----
 const c: Ctx = { made: '2026-10-31T10:04:00Z', date: '2026-10-31' }
@@ -160,6 +170,18 @@ eq('every gauge silent', riverSentence(riverGroups(silent)[0], c), 'The Vee has 
 eq('the summary', summary('RG4', groups.slice(0, 2), c), "Near RG4: the Thames is very high for late October at B Lock, and held steady by a lock or weir elsewhere. The Kennet is held steady by a lock or weir here, and isn't high for late October.")
 eq('a summary starting with a name', summary('TA8', riverGroups(drain), c), 'Near TA8: North Drain is high for late October.')
 eq('no gauges', summary('TR21', [], c), 'There are no river gauges within 10 miles of TR21.')
+// Fresh look 3.3: several rivers with nothing to say but "held steady" share one sentence.
+const sewers: Item[] = ['Haverings New Sewer', 'The Gores', 'Rainham Creek'].map((r, k) => ({ g: place(`w${k}`, `W${k} Sluice`, r, k + 1, { held: 'name', j: { basis: 'held', word: null } }), miles: k + 1, extra: false }))
+eq('held rivers joined', summary('DA18', riverGroups(sewers), c), 'Near DA18: Haverings New Sewer, The Gores and Rainham Creek are held steady by locks or weirs here, and none is high for late October.')
+eq('two held rivers: neither', summary('DA18', riverGroups(sewers.slice(0, 2)), c), 'Near DA18: Haverings New Sewer and The Gores are held steady by locks or weirs here, and neither is high for late October.')
+eq('one held river keeps its own sentence', summary('RG4', riverGroups([...near.filter((i) => i.g.ref === 'c'), ...near.filter((i) => i.g.ref === 'd')]), c), "Near RG4: the Kennet is held steady by a lock or weir here, and isn't high for late October. The Loddon at D is normal for late October.")
+eq('held rivers joined where the first was', summary('X1', riverGroups([sewers[0], ...near.filter((i) => i.g.ref === 'd').map((i) => ({ ...i, miles: 1.5 })), sewers[1]]), c), "Near X1: Haverings New Sewer and The Gores are held steady by locks or weirs here, and neither is high for late October. The Loddon at D is normal for late October.")
+// Fresh look 2.4: a gauge with no river name is spoken of as a gauge.
+const nameless: Item[] = [{ g: place('n1', 'Birmingham Perry Beeches Beeches Road', null, 1, { j: { basis: 'history', word: 'very low', percent: 3 } }), miles: 1, extra: false }]
+const nl = riverGroups(nameless)
+eq('no river name: a group of its own', [nl.length, nl[0].unnamed], [1, true])
+eq('no river name: the sentence', summary('B44', nl, c), 'Near B44: the gauge at Birmingham Perry Beeches Beeches Road is very low for late October.')
+eq('a nameless gauge never merges with a river of its name', riverGroups([...nameless, { g: place('n2', 'X', 'Birmingham Perry Beeches Beeches Road', 2), miles: 2, extra: false }]).length, 2)
 
 // ---- the area views (stage 4), on made-up gauges ----
 const ag = (ref: string, o: Partial<PageGauge>) => g({ ref, name: ref, county: 'Berkshire', region: 'South East England', ...o })

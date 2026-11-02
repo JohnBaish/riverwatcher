@@ -2,7 +2,7 @@
 
 export function AboutFigures() {
   return (
-    <section className="card about">
+    <section className="card about" data-noprint>
       <h3>About these figures</h3>
       <p>
         Riverwatcher shows river levels measured by the Environment Agency's gauges. These usually collect data every 15

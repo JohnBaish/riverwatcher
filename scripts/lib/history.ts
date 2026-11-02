@@ -151,6 +151,34 @@ export function stuckDays(days: Day[]): Set<string> {
   return out
 }
 
+/** A floor: a logger reading the same low figure, give or take a few millimetres, on many days,
+ *  far below everything else (fresh look 2.3, November 2nd 2026: Greta Bridge read about
+ *  -0.24 m on winter days, against a usual 1.1 m, setting its "very low" line below zero).
+ *  Not caught as stuck (the figure wobbles by a millimetre or two) nor as impossible (it's
+ *  well within the gauge's range). Days whose usual level lies more than FLOOR_IQRS times the
+ *  middle half's spread below its lower quarter are a floor when there are at least FLOOR_DAYS
+ *  of them, and most (four in five) have their lowest reading within FLOOR_MM of the same
+ *  figure. A real drought falls gradually, so its days don't bunch like that. */
+export const FLOOR_IQRS = 3
+export const FLOOR_DAYS = 10
+export const FLOOR_MM = 30
+export function floorDays(days: Day[]): Set<string> {
+  if (days.length < 30) return new Set()
+  const v = days.map(usual).sort((a, b) => a - b)
+  const q = (p: number) => v[Math.floor(p * (v.length - 1))]
+  const iqr = Math.max(q(0.75) - q(0.25), 0.05)
+  const fence = q(0.25) - FLOOR_IQRS * iqr
+  const low = days.filter((d) => usual(d) < fence)
+  if (low.length < FLOOR_DAYS) return new Set()
+  // The floor is where those days' lowest readings bunch; a day that dropped to it part-way
+  // through (0.04 m, then -0.24 m) counts too.
+  const lows = low.map((d) => d.low).sort((a, b) => a - b)
+  const floor = lows[Math.floor(lows.length / 2)]
+  const at = low.filter((d) => Math.abs(d.low - floor) <= FLOOR_MM / 1000)
+  if (at.length < FLOOR_DAYS || at.length < 0.8 * low.length) return new Set()
+  return new Set(at.map((d) => d.date))
+}
+
 export function cleanDays(highs: Map<string, number>, lows: Map<string, number>): { highs: Map<string, number>; lows: Map<string, number>; other: { from: string; to: string }[]; dropped: number; bounds: [number, number] | null } {
   const stuck = stuckDays(joinDays(highs, lows))
   const unstuck = (m: Map<string, number>) => new Map([...m].filter(([d]) => !stuck.has(d)))
@@ -168,7 +196,12 @@ export function cleanDays(highs: Map<string, number>, lows: Map<string, number>)
   const ok = (v: number) => v >= lo && v <= hi && !(isSentinel(v) && (v < slo || v > shi))
   const bad = new Set(days.filter((d) => !ok(usual(d))).map((d) => d.date))
   const keep = (m: Map<string, number>) => new Map([...m].filter(([d, v]) => !bad.has(d) && ok(v)))
-  const h2 = keep(h), l2 = keep(l)
+  let h2 = keep(h), l2 = keep(l)
+  const floor = floorDays(joinDays(h2, l2))
+  if (floor.size) {
+    h2 = new Map([...h2].filter(([d]) => !floor.has(d)))
+    l2 = new Map([...l2].filter(([d]) => !floor.has(d)))
+  }
   const dropped = stuck.size + new Set([...[...h].filter(([d]) => !h2.has(d)), ...[...l].filter(([d]) => !l2.has(d))].map(([d]) => d)).size
   return { highs: h2, lows: l2, other, dropped, bounds: [lo, hi] }
 }

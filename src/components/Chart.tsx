@@ -81,10 +81,13 @@ export function Chart({ g, weeks, made, pts, bands, latest, narrow }: Props) {
             <circle className="hdot" cx={x(hover[0])} cy={y(hover[1])} r={4} />
           </>
         )}
-        <rect x={L} y={0} width={W - L - R} height={H} fill="transparent" onPointerMove={onMove} onPointerDown={onMove} onPointerLeave={() => setHover(null)} />
+        {/* A mouse shows the tooltip while it's over the chart. A finger "leaves" as soon as it
+            lifts, so on a touch screen the tooltip stays until the next tap (fresh look 4.1). */}
+        <rect x={L} y={0} width={W - L - R} height={H} fill="transparent" onPointerMove={onMove} onPointerDown={onMove} onPointerLeave={(e) => { if (e.pointerType === 'mouse') setHover(null) }} />
       </svg>
       {hover && (
-        <div className="tip" style={{ left: `${(x(hover[0]) / W) * 100}%`, top: `${(y(hover[1]) / H) * 100}%` }}>
+        // Kept inside the chart at either end (fresh look 6.7).
+        <div className={`tip${x(hover[0]) > W * 0.7 ? ' tip-left' : x(hover[0]) < W * 0.3 ? ' tip-right' : ''}`} style={{ left: `${(x(hover[0]) / W) * 100}%`, top: `${(y(hover[1]) / H) * 100}%` }}>
           {when}: {metres(hover[1])}{isLatest ? ' (latest)' : weeks > 6 ? ' (day’s usual level)' : ''}
         </div>
       )}

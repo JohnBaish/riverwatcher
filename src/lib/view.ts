@@ -46,6 +46,8 @@ export const theRiver = (name: string) => (/^River /.test(name) ? `the ${name.re
 
 export type Group = {
   name: string
+  /** No river name: the group is one gauge, named by the gauge (fresh look 2.4). */
+  unnamed: boolean
   items: Item[]
   nearest: number
   extra: boolean
@@ -60,8 +62,10 @@ export function riverGroups(items: Item[]): Group[] {
   const by = new Map<string, Group>()
   for (const it of items) {
     const name = it.g.river ?? it.g.name
-    const k = key(name)
-    if (!by.has(k)) by.set(k, { name, items: [], nearest: Infinity, extra: false, joins: null, inflows: [] })
+    // A gauge with no river name gets a group of its own, keyed so it can't merge with a
+    // river that happens to share its name.
+    const k = it.g.river ? key(name) : `gauge:${it.g.ref}`
+    if (!by.has(k)) by.set(k, { name, unnamed: !it.g.river, items: [], nearest: Infinity, extra: false, joins: null, inflows: [] })
     by.get(k)!.items.push(it)
   }
   const groups = [...by.values()]
@@ -75,7 +79,7 @@ export function riverGroups(items: Item[]): Group[] {
   for (const gr of groups) {
     const j = gr.items.find((i) => i.g.joins)?.g.joins
     if (!j) continue
-    const main = groups.find((m) => m !== gr && key(m.name) === key(j.river))
+    const main = groups.find((m) => m !== gr && !m.unnamed && key(m.name) === key(j.river))
     if (!main) continue
     const above = main.items.filter((i) => (i.g.toSeaKm ?? 0) > j.toSeaKm)
     const below = main.items.filter((i) => (i.g.toSeaKm ?? 0) <= j.toSeaKm)
@@ -122,17 +126,24 @@ const since = (age: number, c: Ctx) => readingTime(c.made, age, c.date)
 
 // ---- movement ----
 
-/** "Steady: up 1 cm", "Down 3 cm"; less than 2 cm is "Steady" (SPEC §7.4). Null when unknown. */
+/** Steady: a change that rounds to less than 2 cm (SPEC §7.4; fresh look 3.4, John,
+ *  November 2nd: decided on the rounded figure, so "Steady: down 2 cm" can't sit beside
+ *  "Down 2 cm"). `ch` in mm. */
+export const isSteady = (ch: number) => Math.abs(cmOf(ch)) < 2
+/** Whole centimetres from mm, rounding halves away from zero, so up and down match. */
+const cmOf = (ch: number) => Math.sign(ch) * Math.round(Math.abs(ch) / 10)
+
+/** "Steady: up 1 cm", "Down 3 cm". Null when unknown. */
 export function changeText(ch: number | null): string | null {
   if (ch === null) return null
-  const cm = Math.round(ch / 10)
+  const cm = cmOf(ch)
   const dir = cm > 0 ? `up ${cm} cm` : cm < 0 ? `down ${-cm} cm` : 'no change'
-  return Math.abs(ch) < 20 ? `Steady: ${dir}` : capital(dir)
+  return isSteady(ch) ? `Steady: ${dir}` : capital(dir)
 }
 /** "up 1 cm" under "Steady" (SPEC §7.4: "Steady", with the figure). */
-export const changeFigure = (ch: number) => { const cm = Math.round(ch / 10); return cm > 0 ? `up ${cm} cm` : cm < 0 ? `down ${-cm} cm` : 'no change' }
+export const changeFigure = (ch: number) => { const cm = cmOf(ch); return cm > 0 ? `up ${cm} cm` : cm < 0 ? `down ${-cm} cm` : 'no change' }
 /** The table's "Last 24 hours": "Steady", "Up 3 cm". */
-export const shortChange = (ch: number | null) => (ch === null ? null : Math.abs(ch) < 20 ? 'Steady' : changeText(ch))
+export const shortChange = (ch: number | null) => (ch === null ? null : isSteady(ch) ? 'Steady' : changeText(ch))
 
 /** "0.26 m at 10.45am. Steady: up 1 cm in the last 24 hours." */
 export function figureLine(g: PageGauge, c: Ctx): string | null {
@@ -184,9 +195,13 @@ const heldWords = (gs: PageGauge[]) => {
   return drains ? 'pumping' : gs.length > 1 ? 'locks and weirs' : 'a lock or weir'
 }
 
+/** How a group is named in a sentence: "the Thames", "Bourne Brook", or for a gauge with
+ *  no river name "the gauge at Birmingham Perry Beeches Beeches Road" (fresh look 2.4). */
+export const groupName = (gr: Group) => (gr.unnamed ? `the gauge at ${gr.name}` : theRiver(gr.name))
+
 export function riverSentence(gr: Group, c: Ctx): string {
   const toy = timeOfYear(c.date)
-  const cap = capital(theRiver(gr.name))
+  const cap = capital(groupName(gr))
   const live = gr.items.map((i) => i.g).filter((g) => !isSilent(g))
   const free = live.filter((g) => g.j.basis === 'history')
   const highs = live.filter((g) => g.j.basis === 'held' && g.j.word)
@@ -194,7 +209,7 @@ export function riverSentence(gr: Group, c: Ctx): string {
   const typical = live.filter((g) => g.j.basis === 'typical')
   const wordOf = (g: PageGauge) => (g.j.basis === 'history' || g.j.basis === 'held' ? g.j.word! : null)
   // "at Reading", but not "North Drain … at North Drain".
-  const atName = (g: PageGauge) => (key(g.name) === key(gr.name) ? '' : ` at ${g.name}`)
+  const atName = (g: PageGauge) => (gr.unnamed || key(g.name) === key(gr.name) ? '' : ` at ${g.name}`)
   if (free.length) {
     const at = free.length === 1 ? atName(free[0]) : ''
     const also = highs.length ? `, and ${spanOf(highs.map(wordOf) as Word[])} at ${list(highs.map((g) => g.name))}` : ''
@@ -222,8 +237,36 @@ export function riverSentence(gr: Group, c: Ctx): string {
   return live.length ? `${cap} has no long record to compare with here.` : `${cap} has sent no reading for more than six hours.`
 }
 
+/** A group with nothing to say but "held steady here, and isn't high": every reporting gauge
+ *  is held steady (none high, none free-flowing, none with only a usual range). */
+const onlySteady = (gr: Group) => {
+  const live = gr.items.map((i) => i.g).filter((g) => !isSilent(g))
+  return live.length > 0 && live.every(heldSteady)
+}
+
+/** Several such groups in one sentence (fresh look 3.3, John, November 2nd): "Haverings New
+ *  Sewer, the Gores, Rainham Creek and Beam River are held steady by locks or weirs here, and
+ *  none is high for early November." */
+export function steadySentence(grs: Group[], c: Ctx): string {
+  const toy = timeOfYear(c.date)
+  const gauges = grs.flatMap((gr) => gr.items.map((i) => i.g).filter((g) => !isSilent(g)))
+  const drains = gauges.filter((g) => g.held === 'drain').length
+  const by = drains === gauges.length ? 'pumping' : drains ? 'locks, weirs or pumping' : 'locks or weirs'
+  const none = grs.length === 2 ? 'neither is' : 'none is'
+  return `${capital(list(grs.map(groupName)))} are held steady by ${by} here, and ${none} high for ${toy}.`
+}
+
 /** "Near RG4: the Thames is very high … The Kennet is …" */
 export function summary(code: string, groups: Group[], c: Ctx): string {
   if (!groups.length) return `There are no river gauges within ${NEAR_MILES} miles of ${code}.`
-  return `Near ${code}: ` + groups.map((gr, i) => { const s = riverSentence(gr, c); return i === 0 ? s.replace(/^The /, 'the ') : s }).join(' ')
+  const steady = groups.filter(onlySteady)
+  const joined = steady.length > 1
+  const sentences: string[] = []
+  for (const gr of groups) {
+    if (joined && onlySteady(gr)) {
+      // Said once, where the first of them would have been.
+      if (gr === steady[0]) sentences.push(steadySentence(steady, c))
+    } else sentences.push(riverSentence(gr, c))
+  }
+  return `Near ${code}: ` + sentences.map((s, i) => (i === 0 ? s.replace(/^The /, 'the ') : s)).join(' ')
 }

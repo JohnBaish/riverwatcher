@@ -12,9 +12,9 @@ import type { AreaChoice, PageGauge } from '../lib/pageTypes.ts'
 import { useIsNarrow } from '../lib/responsive.ts'
 import { saveChoice } from '../lib/route.ts'
 import { points, type Point } from '../lib/series.ts'
-import { changeFigure, isSilent, readingTime, shortChange, type Ctx } from '../lib/view.ts'
+import { changeFigure, isSilent, isSteady, readingTime, shortChange, type Ctx } from '../lib/view.ts'
 import { countOf } from '../lib/words.ts'
-import { Detail, FloodList, JChip, Spark, Waiting } from './PostcodeView.tsx'
+import { CollectedLine, Detail, FloodList, JChip, Spark, Waiting } from './PostcodeView.tsx'
 
 const ctx: Ctx = { made: meta.made, date: meta.date }
 /** The most flood warnings listed in a region or England before "and N more". */
@@ -56,7 +56,7 @@ function Rows({ gauges, kind, selected, onSelect, narrow, spark }: { gauges: Pag
               <td><b>{g.name}</b><div className="gsub">{subOf(g, kind)}</div></td>
               <td><JChip g={g} /></td>
               <td className="mono"><b>{g.now ? metres(g.now.v) : '–'}</b><div className="note">{timeOf(g)}</div></td>
-              <td>{g.now && !isSilent(g) ? <>{shortChange(g.now.ch) ?? '–'}{g.now.ch !== null && Math.abs(g.now.ch) < 20 && <div className="note">{changeFigure(g.now.ch)}</div>}</> : '–'}</td>
+              <td>{g.now && !isSilent(g) ? <>{shortChange(g.now.ch) ?? '–'}{g.now.ch !== null && isSteady(g.now.ch) && <div className="note">{changeFigure(g.now.ch)}</div>}</> : '–'}</td>
               <td><Spark g={g} pts={spark(g)} /></td>
             </tr>
           ))}
@@ -104,6 +104,7 @@ function Area({ kind, name, os }: { kind: AreaKind; name: string; os?: string })
       <div className="page-head">
         <div className="card-kicker">River levels {kind === 'england' ? 'across England' : where}, with historical comparisons</div>
         <h2>{longDate(new Date(meta.made))}</h2>
+        <CollectedLine />
       </div>
       <Waiting loaded={loaded}>
         {({ gauges: all, hours }) => {

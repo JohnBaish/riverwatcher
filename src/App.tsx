@@ -1,6 +1,7 @@
 import { Component, useEffect, useState, type ReactNode } from 'react'
 import meta from 'virtual:riverwatcher/meta'
-import { clock } from './lib/format.ts'
+import { staleText, updatedText } from './lib/freshness.ts'
+import { district } from './lib/postcode.ts'
 import { hashOf, parseHash, savedChoice, type Route } from './lib/route.ts'
 import { AboutFigures, Credits } from './components/About.tsx'
 import { Chooser } from './components/Chooser.tsx'
@@ -36,6 +37,15 @@ class SafetyNet extends Component<{ children: ReactNode }, { failed: boolean }> 
   }
 }
 
+/** Whether a route names something real: a view, not a "there's no such place" message
+ *  (fresh look 5.3: those show just the message, without "About these figures"). */
+function isReal(r: Route): boolean {
+  if (r.kind === 'postcode') return !!district(r.code)
+  if (r.kind === 'county') return meta.counties.some((c) => c.slug === r.slug)
+  if (r.kind === 'region') return meta.regions.some((c) => c.slug === r.slug)
+  return true
+}
+
 export default function App() {
   const [route, setRoute] = useState<Route>(startingRoute)
   useEffect(() => {
@@ -47,30 +57,36 @@ export default function App() {
     return () => window.removeEventListener('hashchange', onHash)
   }, [])
 
+  const view = route.kind !== 'choose' && isReal(route)
+  // The visitor's clock when the page opened (the figures don't change while it's open).
+  const [now] = useState(() => new Date())
+  const stale = view ? staleText(meta.made, now) : null
   return (
     <>
       <nav className="nav" data-noprint>
         <a className="nav-brand" href="#choose">Riverwatcher</a>
         <div className="nav-right">
-          {route.kind !== 'choose' && <span className="tag tag-neutral">Updated {clock(new Date(meta.made))}</span>}
+          {view && <span className="tag tag-neutral">Updated {updatedText(meta.made, now)}</span>}
           <ThemeSwitch />
         </div>
       </nav>
       <main className="col screen">
+        {stale && <div className="card stale" role="status"><p>{stale}</p></div>}
         <SafetyNet key={hashOf(route)}>
           {route.kind === 'postcode' ? <PostcodeView key={route.code} code={route.code} />
             : route.kind === 'county' || route.kind === 'region' ? <AreaView kind={route.kind} slug={route.slug} />
             : route.kind === 'england' ? <AreaView kind="england" />
             : <Chooser />}
         </SafetyNet>
-        {route.kind !== 'choose' && <AboutFigures />}
-        <footer className="footer-notice" data-noprint>
+        {view && <AboutFigures />}
+        {/* The credits are printed (fresh look 5.1); the rest of the footer isn't. */}
+        <footer className="footer-notice">
           <Credits />
-          Riverwatcher is a free-to-use personal project by John Baish. More free tools at{' '}
+          <span data-noprint>Riverwatcher is a free-to-use personal project by John Baish. More free tools at{' '}
           <a href="https://www.baish.net/" target="_blank" rel="noopener noreferrer" className="footer-link">www.baish.net</a>.
           {' '}Contact: workshop@baish.net. We don't record anything you do here, apart from anonymous visit statistics (no
           cookies, no personal data) showing us how the site is used. Your device, rather than the website, stores your last
-          choices (location, chart period and light or dark mode), so the page opens the same way next time.
+          choices (location, chart period and light or dark mode), so the page opens the same way next time.</span>
         </footer>
       </main>
     </>

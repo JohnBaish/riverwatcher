@@ -302,3 +302,32 @@ details summary { cursor: pointer; font-weight: 600; margin-bottom: var(--space-
   .ends { grid-template-columns: 1fr; }
   .end-card { padding: var(--space-3) var(--space-4); }
 }
+
+/* ---- Fresh look fixes (November 2nd 2026) ---- */
+/* 3.1: in the tables the judgement label wraps rather than running over the level beside it
+   (iPads upright, about 720 to 900px wide, and in print). */
+.r-table .jchip { white-space: normal; }
+/* 4.1: the tooltip is kept inside the chart at either end. */
+.tip.tip-left { transform: translate(calc(-100% + 8px), -110%); }
+.tip.tip-right { transform: translate(-8px, -110%); }
+/* 5.2: figures more than three hours old. */
+.stale { background: var(--alert-bg); border: 1.5px solid var(--alert-edge); padding: var(--space-3) var(--space-6); margin: var(--space-6) 0 0; }
+.stale p { margin: 0; }
+/* 5.4: 44px to tap on a phone, as elsewhere (HOUSE-STYLE §6). */
+@media (max-width: 720px) {
+  .choose .input, .choose .btn, .strip .btn, .not-found .btn, .load-failed .btn { min-height: 44px; }
+  .stale { padding: var(--space-3) var(--space-4); }
+}
+/* 5.5: a flood alert, a flood warning and a severe flood warning look different, as on GOV.UK:
+   an alert keeps the pale card; a warning has a thick red edge; a severe warning is solid red. */
+:root { --flood-red: #b3261e; --flood-severe: #8f1d16; --flood-on-severe: #fff8ee; }
+@media screen { :root[data-theme="dark"] { --flood-red: #f08a7e; --flood-severe: #a3261d; } }
+.alert.sev-2 { border: 3px solid var(--flood-red); }
+.alert.sev-2 .sev { color: var(--flood-red); }
+.alert.sev-1 { background: var(--flood-severe); border: 3px solid var(--flood-severe); }
+.alert.sev-1, .alert.sev-1 .sev, .alert.sev-1 h4, .alert.sev-1 a { color: var(--flood-on-severe); }
+@media print {
+  .collected { margin: 2px 0 0; font-size: 12px; }
+  .footer-notice { margin-top: var(--space-6); break-inside: avoid; }
+  .r-table { font-size: 12px; }
+}

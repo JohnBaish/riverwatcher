@@ -10,7 +10,7 @@ import {
   dropNearDuplicates, heldReason, isBackup, isLake, namesAgree, navigationHeads, riverKey, riverMeasure, shownName, tidyName, type Station,
 } from './lib/gauges.ts'
 import {
-  average24, buildHistory, cleanDays, lastStep, otherZero, dayOfYear, incompleteGaps, judge, joinDays, levelsFor, movement, percentBelow, readDailyCsv, recordStart, sinceYear, timeOfYear, wordFor,
+  average24, buildHistory, cleanDays, floorDays, lastStep, otherZero, dayOfYear, incompleteGaps, judge, joinDays, levelsFor, movement, percentBelow, readDailyCsv, recordStart, sinceYear, timeOfYear, wordFor,
   type Day, type History,
 } from './lib/history.ts'
 import { englishName, normRiver } from './lib/rivers.ts'
@@ -171,6 +171,18 @@ eq('the last 24 hours\' average', average24([['2026-10-29T10:00:00Z', 9], ['2026
   eq('two changes: the last one counts', lastStep(twice), '2018-06-01')
   const away = daysOf((d) => (d >= '2017-06-01' && d < '2019-03-01' ? -3 : 0))
   eq('a stretch away and back: only it is left out (Melton Park)', otherZero(away), [{ from: '2017-06-01', to: '2019-02-28' }])
+  // Fresh look 2.3: a floor (Greta Bridge read about -0.24 m on winter days, give or take a
+  // millimetre) is left out; a drought that falls gradually, and a stream dry for long
+  // stretches, are kept.
+  const floorAt = daysOf((d, i) => (d >= '2019-12-01' && d < '2020-01-10' ? -1.5 - (0.6 + 0.3 * Math.cos((2 * Math.PI * i) / 365) + 0.05 * Math.sin(i * 1.7)) + 0.0005 * (i % 3) : 0))
+  eq('a floor found', floorDays(floorAt).size, 40)
+  const [fh, fl] = maps(floorAt)
+  const cf = cleanDays(fh, fl)
+  eq('the floor days left out', [cf.highs.has('2019-12-15'), cf.highs.has('2019-11-15')], [false, true])
+  const drought = daysOf((d, i) => (d >= '2018-06-01' && d < '2018-09-01' ? -0.012 * (i - 1247) : 0))
+  eq('a drought falling gradually is kept', floorDays(drought).size, 0)
+  const dry = daysOf((d) => (d.slice(5, 7) >= '06' && d.slice(5, 7) <= '10' ? -5 : 0))
+  eq('a stream dry for five months a year is kept', floorDays(dry).size, 0)
   const stuckAt = daysOf((d) => (d >= '2019-01-01' && d < '2020-01-01' ? NaN : 0)).map((d) => (Number.isNaN(d.high) ? { ...d, high: -1.25, low: -1.25 } : d))
   const [kh, kl] = maps(stuckAt)
   const c3 = cleanDays(kh, kl)

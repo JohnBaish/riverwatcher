@@ -11,7 +11,7 @@ import { useIsNarrow } from '../lib/responsive.ts'
 import { bandDays, hourly, PERIODS, points, type Point, type Weeks } from '../lib/series.ts'
 import {
   chip, comparisons, figureLine, heldNote, isSilent, joinsBetween, NEAR_MILES, nearestGauges, readingTime, riverGroups, shortChange, summary,
-  changeFigure, type Ctx, type Group, type Item,
+  changeFigure, isSteady, type Ctx, type Group, type Item,
 } from '../lib/view.ts'
 import { Chart, Key } from './Chart.tsx'
 import { saveChoice } from '../lib/route.ts'
@@ -28,6 +28,11 @@ function savedWeeks(): Weeks {
   } catch {
     return 2
   }
+}
+
+/** In print only (fresh look 5.1): when the figures were collected, as the top bar isn't printed. */
+export function CollectedLine() {
+  return <p className="print-only collected">Figures collected at {clock(new Date(meta.made))} on {longDate(new Date(meta.made))}.</p>
 }
 
 export function Waiting<T>({ loaded, children }: { loaded: Loaded<T>; children: (value: T) => React.ReactNode }) {
@@ -78,7 +83,7 @@ export function FloodList({ floods: near, more = 0 }: { floods: Flood[]; more?: 
         const when = t ? new Date(t) : null
         const today = when && new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/London' }).format(when) === meta.date
         return (
-          <div className="card alert" role="note" key={f.id}>
+          <div className={`card alert sev-${f.level}`} role="note" key={f.id}>
             <span className="sev">{f.severity}</span>
             <h4>{f.area}</h4>
             <p>
@@ -125,7 +130,7 @@ function GroupCard({ gr, code, nearest, selected, onSelect, narrow, spark }: { g
         <td><b>{g.name}</b>{near(it)}<div className="gsub">{milesText(it.miles)} away</div></td>
         <td><JChip g={g} /></td>
         <td className="mono"><b>{g.now ? metres(g.now.v) : '–'}</b><div className="note">{timeOf(g)}</div></td>
-        <td>{g.now && !isSilent(g) ? <>{shortChange(g.now.ch) ?? '–'}{g.now.ch !== null && Math.abs(g.now.ch) < 20 && <div className="note">{changeFigure(g.now.ch)}</div>}</> : '–'}</td>
+        <td>{g.now && !isSilent(g) ? <>{shortChange(g.now.ch) ?? '–'}{g.now.ch !== null && isSteady(g.now.ch) && <div className="note">{changeFigure(g.now.ch)}</div>}</> : '–'}</td>
         <td>{g.yearAgo ? <>{metres(g.yearAgo.v)}{g.yearAgo.word && <div className="note">{g.yearAgo.word}</div>}</> : <span className="muted">–</span>}</td>
         <td><Spark g={g} pts={spark(g)} /></td>
       </tr>,
@@ -133,7 +138,7 @@ function GroupCard({ gr, code, nearest, selected, onSelect, narrow, spark }: { g
   })
   return (
     <div className="card river-group">
-      <div className="river-head"><h4>{gr.name}</h4>{notes.map((n) => <span className="note" key={n}>{n}</span>)}</div>
+      <div className="river-head"><h4>{gr.unnamed ? 'Unnamed watercourse' : gr.name}</h4>{notes.map((n) => <span className="note" key={n}>{n}</span>)}</div>
       {narrow ? <div className="b-rows">{rows}</div> : (
         <table className="table r-table">
           <colgroup><col className="c1" /><col className="c2" /><col className="c3" /><col className="c4" /><col className="c5" /><col className="c6" /></colgroup>
@@ -180,7 +185,7 @@ export function Detail({ g, sub, narrow }: { g: PageGauge; sub: string; narrow: 
           {fig && (() => { const m = /^\d+\.\d\d m/.exec(fig)?.[0]; return <p className="figure">{m ? <><b className="mono">{m}</b>{fig.slice(m.length)}</> : fig}</p> })()}
           {note && <p className="held-note">{note}</p>}
         </div>
-        <div className="periods-row">
+        <div className="periods-row" data-noprint>
           <span className="muted periods-label">Show the last</span>
           <span className="periods" role="group" aria-label="Period shown">
             {PERIODS.map((w) => <button type="button" key={w} aria-pressed={w === weeks} onClick={() => choose(w)}>{w === 52 ? 'year' : `${w} weeks`}</button>)}
@@ -215,7 +220,8 @@ export function PostcodeView({ code }: { code: string }) {
   }
   const select = (ref: string) => {
     setSelected(ref)
-    if (narrow) requestAnimationFrame(() => detail.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
+    // On a computer too (fresh look 3.2): the detail is below the gauges, often off the screen.
+    requestAnimationFrame(() => detail.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
   }
   return (
     <>
@@ -226,6 +232,7 @@ export function PostcodeView({ code }: { code: string }) {
       <div className="page-head">
         <div className="card-kicker">River levels nearby, with historical comparisons</div>
         <h2>{longDate(new Date(meta.made))}</h2>
+        <CollectedLine />
       </div>
       <Floods at={at} />
       <Waiting loaded={loaded}>
@@ -245,7 +252,7 @@ export function PostcodeView({ code }: { code: string }) {
               </section>
               <section className="source">
                 <div className="section-head"><h3>The nearest gauges, river by river</h3><span className="note">{narrow ? 'Tap' : 'Choose'} one to see it in detail.</span></div>
-                {groups.map((gr) => <GroupCard key={gr.name} gr={gr} code={code} nearest={nearest} selected={chosen.g.ref} onSelect={select} narrow={narrow} spark={spark} />)}
+                {groups.map((gr) => <GroupCard key={gr.unnamed ? gr.items[0].g.ref : gr.name} gr={gr} code={code} nearest={nearest} selected={chosen.g.ref} onSelect={select} narrow={narrow} spark={spark} />)}
                 <div ref={detail} className="detail-anchor"><Detail key={chosen.g.ref} g={chosen.g} sub={[chosen.g.river, milesText(chosen.miles)].filter(Boolean).join(' · ')} narrow={narrow} /></div>
                 <p className="data-credit">This uses Environment Agency flood and river level data from the real-time data API (Beta).</p>
               </section>
