@@ -88,6 +88,12 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-02 — live at riverwatcher.baish.net; launch steps done (notes only)
+
+John: launch steps B to E done (the domain, Web Analytics, the deploy hook, Search Console). Vercel shows the
+hook-started deployment, and the site's figures updated at 3.54pm. Next: `/fresh-look` in a new thread
+(`design/prompt-fresh-look-2026-11-02.md`); then the tracker, the hub card (with John's OK) and the overview.
+
 ### 2026-11-02 — the hourly rebuild: deploy hook wired in (data repo `4bccefe`)
 
 John made the Vercel deploy hook and the `VERCEL_DEPLOY_HOOK` secret in the data repo (launch steps B to D). The step
