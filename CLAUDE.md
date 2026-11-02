@@ -88,6 +88,15 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-02 — the hourly rebuild: deploy hook wired in (data repo `4bccefe`)
+
+John made the Vercel deploy hook and the `VERCEL_DEPLOY_HOOK` secret in the data repo (launch steps B to D). The step
+drafted in `design/workflows/collect.yml` added to the data repo's Collect workflow (push access to the data repo
+attached for this session). **Verified:** Collect run by hand (run 41476201235, green): data committed, then "Vercel asked
+to rebuild."; the secret shown only as `***`. Not checkable from here: the Vercel deployment it started (Vercel's site is
+blocked). **Noticed:** GitHub warns that `actions/cache` v4 runs on a retired Node version; harmless now, worth moving to
+the next version when one is released.
+
 ### 2026-11-02 — stage 5 steps 1 to 4A merged to `main`
 
 John said merge. `claude/sweet-hamilton-oje25t` fast-forwarded into `main` (checks 118 + 112, `tsc -b` and the build clean
