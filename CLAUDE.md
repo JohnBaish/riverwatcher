@@ -88,7 +88,7 @@ Scope (decided by John):
 
 ## Log
 
-### 2026-11-02 — a failed page no longer fails the collector's run (branch `collect-retry`, not merged)
+### 2026-11-02 — a failed page no longer fails the collector's run (branch `collect-retry`, merged)
 
 **What happened:** the Collect run at 00:10 UTC (run 41365705249) failed, and GitHub emailed John. Page 26 of the
 EA's bulk list for November 1st got "HTTP 503" (the EA's server temporarily unavailable) twice, and the script
@@ -107,6 +107,10 @@ Making the download throw again made the new check fail, then the code was resto
 trial run with the real EA in a scratch copy of the data, with no time allowed for the day file: exit 0, the
 warning, and `"dayFile":{"date":"2026-11-01","pages":0,"rows":0,"finished":false,"stopped":"out of time"}` in the log.
 **Not checked:** a real 503 from the EA (can't be made to happen).
+
+**Then:** the 01:10 UTC run (old code) made the November 1st day file: 37 pages, 361,344 readings, 2,879 gauges,
+`finished: true` (`fad0b55` in the data repo). Merged to `main` at John's word (fast-forward; checks 118 + 85, `tsc -b`
+and lint clean first), so the collector runs it from the next hour.
 
 ### 2026-11-01 — house style re-copied: sessions delete merged branches themselves (notes only, straight to `main`)
 
