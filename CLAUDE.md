@@ -101,7 +101,7 @@ showed "About these figures"; 5.4 phone buttons 36px; 5.5 flood alerts and warni
 - 2.2: `scripts/fill-days.ts` (`npm run fill-days`): each missing day's usual level from the archive's 15-minute
   readings (Suspect and Missing left out), run here once: 353,889 days filled for 2,108 gauges, pushed to the data repo
   (`f94ea41`). "A year ago" now 1,979 of 2,865; long charts 72% of days. Going forward the collector's own day files cover it.
-- 2.1: `scripts/lib/heldCheck.ts`, used by `pageData` at each build (about 1 s). A first measure (the shape of each
+- 2.1: `scripts/lib/heldCheck.ts`, used by `pageData` at each build (a few seconds; the whole build takes about 7). A first measure (the shape of each
   history) didn't separate locks from mills (it kept Riding Mill held and freed two Thames locks), so not used.
 - 2.3: `floorDays` in `history.ts`. Rebuilt the ten: three fixed and kept (Greta Bridge, Brigstock, Chatburn Pendle
   Avenue); the other seven are long stretches at another level (drawn-down sluices, older zero points), not floors, so
