@@ -93,7 +93,7 @@ Scope (decided by John):
 John: "The wording is all excellent and all your other points are agreed" (the six drafted points: summary, headings,
 held line, kicker and labels, flood rule, "on the Isle of Wight"). SPEC §8.4.
 
-**Then (branch `area-ten-lists`, not merged):** a region's "ten highest" was filled with normal gauges when fewer than
+**Then (branch `area-ten-lists`, merged to `main` at John's word, fast-forward; checks, `tsc -b` and build clean first):** a region's "ten highest" was filled with normal gauges when fewer than
 ten were high (North East England: eight of the ten). **John chose B:** only gauges that really are high or low, labelled
 "The two gauges that are high for the time of year" (`listLabel` and `TEN` in `src/lib/area.ts`; "The ten highest for the
 time of year" from ten up; no list when none). SPEC §8.2. Checks 118 + 112; North East England, Greater London, England
