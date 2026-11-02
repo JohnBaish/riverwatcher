@@ -88,6 +88,13 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-02 — stage 5 steps 1 to 4A merged to `main`
+
+John said merge. `claude/sweet-hamilton-oje25t` fast-forwarded into `main` (checks 118 + 112, `tsc -b` and the build clean
+first): "About these figures", the favicon, the link-preview image and tags, search, `vercel.json`, Web Analytics. `main`'s
+Vercel build should now work. Branch tidied: "Delete merged branches" trial run (one merged branch), then the real run;
+`git ls-remote --heads origin` shows only `main`. **Next (John):** launch steps B to E (`design/launch-steps-2026-11-02.md`).
+
 ### 2026-11-02 — Vercel project created (notes only, on the branch)
 
 John created the Vercel project (launch steps, part A). This entry is the push that starts the branch's own preview
