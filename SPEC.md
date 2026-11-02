@@ -262,7 +262,7 @@ its word; each arm checked with the dataviz validator in light and dark.
 
 The text is in `src/components/About.tsx`, which is the reference. Since October 30th: the
 sentences on "History incomplete", fen drains and rhynes, and gauges with neither a long record
-nor a usual range were added (drafted October 31st, agreed November 2nd), and a last paragraph on
+nor a usual range were added (drafted October 31st, agreed November 2nd), a sentence on gauges left out as probably faulty ("Gauges whose level hasn't moved for weeks, or that keep repeating the same reading, are left out, as they're probably faulty."), and a last paragraph on
 the area views, with John's changes: "In a county, a region, or in the England view, the summary
 counts only gauges that can be compared with past years. Those on rivers with locks and weirs,
 and fen drains, are only counted when they're high. "The most unusual" are the gauges that are

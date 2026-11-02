@@ -28,6 +28,8 @@ export function AboutFigures() {
         {' '}Where a gauge has no long record, Riverwatcher uses the Environment Agency's own usual range for it, which covers
         the whole year.
         {' '}A few gauges have neither, so Riverwatcher shows how their level has moved but not whether it is high or low.
+        {' '}Gauges whose level hasn't moved for weeks, or that keep repeating the same reading, are left out, as they're
+        probably faulty.
       </p>
       <p>Rivers are listed upstream to downstream, using Ordnance Survey's map of rivers.</p>
       <p>
