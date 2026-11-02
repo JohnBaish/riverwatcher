@@ -91,7 +91,9 @@ Scope (decided by John):
 ### 2026-11-02 — Vercel project created (notes only, on the branch)
 
 John created the Vercel project (launch steps, part A). This entry is the push that starts the branch's own preview
-build; `main` has no `vercel.json` yet, so its first build was expected to fail.
+build; `main` has no `vercel.json` yet, so its first build failed, as expected. The branch's preview built
+successfully (Vercel's status on `d28cb73`), so `scripts/vercel-build.sh` works on Vercel. The preview address can't be
+opened from this session (`*.vercel.app` is blocked).
 
 ### 2026-11-02 — stage 5 begun: About, favicon, preview image, search, launch set-up (branch `claude/sweet-hamilton-oje25t`, not merged)
 
