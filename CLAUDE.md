@@ -88,6 +88,10 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-02 — the prompt for stage 5 (notes only)
+
+`design/prompt-stage-5-2026-11-02.md`: what John pastes into a new thread to start stage 5 (finishing and launch).
+
 ### 2026-11-02 — stage 4 wording agreed (notes only)
 
 John: "The wording is all excellent and all your other points are agreed" (the six drafted points: summary, headings,
