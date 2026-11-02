@@ -88,6 +88,12 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-02 — stage 4 wording agreed (notes only)
+
+John: "The wording is all excellent and all your other points are agreed" (the six drafted points: summary, headings,
+held line, kicker and labels, flood rule, "on the Isle of Wight"). SPEC §8.4. Open: the ten highest and lowest in a
+region with fewer than ten high gauges (asked).
+
 ### 2026-11-02 — stage 4 merged to `main`
 
 John said merge. `main`'s collector fix (`collect-retry`) brought into `stage-4-areas` first (the only clash was this

@@ -250,6 +250,11 @@ its word; each arm checked with the dataviz validator in light and dark.
    settled them alphabetically). Each gauge's line says what it's ranked by: "The lowest for the
    time of year since records began in 1967." Held gauges that are high are ranked by the same
    year, worked out for ranking only and never shown (John: yes).
+4. **Wording** (Agreed, John, November 2nd, as drafted in stage 4): the summary and its variants
+   (`areaSummary` in `src/lib/area.ts`), the headings ("The most unusual for the time of year",
+   Highest, Lowest), "Held by a lock or weir, so it's only counted when high.", the kicker, the
+   folded labels, the chooser's England line, flood warnings placed by their nearest gauge (ten
+   listed in a region or England, then "And N more in force here"), and "on the Isle of Wight".
 
 ## 9. "About these figures" (Proposed: Claude's draft with John's changes of October 30th)
 
