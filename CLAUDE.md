@@ -99,7 +99,7 @@ ten were high (North East England: eight of the ten). **John chose B:** only gau
 time of year" from ten up; no list when none). SPEC §8.2. Checks 118 + 112; North East England, Greater London, England
 and Berkshire at 1200px and 390px with touch, light and dark: no normal gauge in those lists (Berkshire's full list
 unchanged), no errors, no sideways scroll. Private page republished. Picture `design/previews/stage4-north-east-390.png`.
-Slip: `pkill -f` to stop the preview server also stopped this session's shell (the house style warns of it); nothing lost.
+Branch tidied (trial run, then the real run; only `main` left). Slip: `pkill -f` to stop the preview server also stopped this session's shell (the house style warns of it); nothing lost.
 
 ### 2026-11-02 — stage 4 merged to `main`
 
