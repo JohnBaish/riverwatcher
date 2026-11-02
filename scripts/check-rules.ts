@@ -15,7 +15,7 @@ import {
 } from './lib/history.ts'
 import { englishName, normRiver } from './lib/rivers.ts'
 import { daysFromReadings, hourlyAverages, usualOfReadings } from './lib/days.ts'
-import { todayHours, addSamples, flatOrStuck, floodsInForce, isSilent, latestLine, readingsByMeasure } from './lib/collect.ts'
+import { fetchDayRows, todayHours, addSamples, flatOrStuck, floodsInForce, isSilent, latestLine, readingsByMeasure } from './lib/collect.ts'
 
 let passed = 0
 const failures: string[] = []
@@ -210,6 +210,21 @@ eq('the last 24 hours\' average', average24([['2026-10-29T10:00:00Z', 9], ['2026
 }
 
 // ---- the collector ----
+
+// The day file's download: a page that fails ends it unfinished, without failing the run.
+{
+  const parse = (t: string) => t.split('\n').filter(Boolean).map((x) => ({ x }))
+  const page = (n: number) => Array.from({ length: n }, (_, i) => `r${i}`).join('\n')
+  const ok = await fetchDayRows(async (o) => (o < 20 ? page(10) : page(3)), parse, 10, () => true)
+  eq('a full download: three pages, finished', [ok.pages, ok.rows.length, ok.finished, ok.stopped], [3, 23, true, undefined])
+  const bad = await fetchDayRows(async (o) => { if (o === 10) throw new Error('HTTP 503'); return page(10) }, parse, 10, () => true)
+  eq('a page that still fails: unfinished, with the reason, no error thrown', [bad.pages, bad.finished, bad.stopped], [1, false, 'HTTP 503'])
+  let asked = 0
+  const late = await fetchDayRows(async () => page(10), parse, 10, () => asked++ < 2)
+  eq('out of time: unfinished', [late.pages, late.finished, late.stopped], [2, false, 'out of time'])
+  const gone = await fetchDayRows(async () => null, parse, 10, () => true)
+  eq('no such page: unfinished', [gone.finished, gone.stopped], [false, 'page not found'])
+}
 {
   const now = new Date('2026-10-31T12:10:00Z')
   const st = addSamples({ made: '', samples: { A: { '2026-10-29T08': 100, '2026-10-30T11': 200, '2026-10-30T12': 210 } } }, new Map([['A', { time: '2026-10-31T12:00:00Z', value: 0.25 }], ['B', { time: '2026-10-31T13:00:00Z', value: 1 }]]), now)

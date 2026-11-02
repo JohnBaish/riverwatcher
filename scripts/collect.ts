@@ -8,7 +8,7 @@
 //    whose position is kept in data/flood-areas.json);
 // 3. data/latest.json: each gauge's latest level and time, its 24-hour average and change, and
 //    the flood warnings;
-// 4. once a day, after UTC midnight: yesterday's day file from all of its 15-minute readings
+// 4. once a day, after UTC midnight (and each hour after until it's done): yesterday's day file from all of its 15-minute readings
 //    (about 38 pages of the EA's bulk list), the flat and stuck gauges from the last four weeks
 //    (data/quiet.json), and day files older than 400 days removed;
 // 5. a line in data/runs/YYYY-MM.json: what came in, how long it took.
@@ -19,7 +19,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync
 import { dirname, join } from 'node:path'
 import { FM, getJson, getText, lastPart, parseCsv, sleep } from './lib/ea.ts'
 import { hourlyAverages, usualOfReadings } from './lib/days.ts'
-import { addSamples, flatOrStuck, floodsInForce, isSilent, latestLine, mm, todayHours, readingsByMeasure, type LatestLine, type State } from './lib/collect.ts'
+import { addSamples, fetchDayRows, flatOrStuck, floodsInForce, isSilent, latestLine, mm, todayHours, readingsByMeasure, type LatestLine, type State } from './lib/collect.ts'
 
 const dataDir = process.argv[2] ?? '../riverwatcher-data/data'
 const stateFile = process.argv[3] ?? join(dataDir, '..', 'state', 'recent.json')
@@ -97,7 +97,7 @@ const today = ymd(now.getTime())
 const todayLines = gauges.map((g) => [g.ref, todayHours(state!.samples[g.ref], today, now.getUTCHours() + 1)] as const).filter(([, h]) => h.some((x) => x !== null))
 writeFileSync(join(dataDir, 'today.json'), `{"note":"Today's hours so far (UTC): each gauge's sample for each hour, mm (scripts/collect.ts). Replaced by the day file after midnight.","date":"${today}","made":"${now.toISOString()}","gauges":{\n${todayLines.map(([ref, h]) => `${JSON.stringify(ref)}:${JSON.stringify(h)}`).join(',\n')}\n}}\n`)
 
-// ---- 4. once a day: yesterday's day file ----
+// ---- 4. once a day (and each hour after, until it's done): yesterday's day file ----
 const daysDir = join(dataDir, 'days')
 mkdirSync(daysDir, { recursive: true })
 const yesterday = ymd(now.getTime() - 86400e3)
@@ -105,18 +105,15 @@ type DayFile = { date: string; made: string; from: string[]; gauges: Record<stri
 const yFile = join(daysDir, `${yesterday}.json`)
 const yDay = readJson<DayFile | null>(yFile, null)
 if (!yDay?.from.includes('collector')) {
-  const rows: Record<string, string>[] = []
-  let finished = false
-  let pages = 0
-  for (let offset = 0; (Date.now() - started) / 60000 < DAY_FILE_MINUTES; offset += PAGE_ROWS) {
-    const text = await getText(`${FM}/data/readings.csv?parameter=level&startdate=${yesterday}&enddate=${yesterday}&_limit=${PAGE_ROWS}&_offset=${offset}`, 2)
-    pages++
-    const page = text ? parseCsv(text) : []
-    rows.push(...page)
-    if (page.length < PAGE_ROWS) { finished = text !== null; break }
-    await sleep(500)
-  }
-  log.dayFile = { date: yesterday, pages, rows: rows.length, finished }
+  // Each page is tried up to four times (waits of 5, 10 and 15 seconds; at most about 8½
+  // minutes, so a page started just before DAY_FILE_MINUTES still ends inside the workflow's
+  // 30); if one still fails, the day file waits for the next hour's run and this run
+  // finishes normally.
+  const { rows, pages, finished, stopped } = await fetchDayRows(
+    (offset) => getText(`${FM}/data/readings.csv?parameter=level&startdate=${yesterday}&enddate=${yesterday}&_limit=${PAGE_ROWS}&_offset=${offset}`, 4),
+    parseCsv, PAGE_ROWS, () => (Date.now() - started) / 60000 < DAY_FILE_MINUTES, () => sleep(500))
+  log.dayFile = { date: yesterday, pages, rows: rows.length, finished, ...(stopped ? { stopped } : {}) }
+  if (!finished) console.log(`::warning::The day file for ${yesterday} isn't finished (${stopped}); the next run will try again.`)
   if (finished) {
     const per = readingsByMeasure(rows, new Set(byMeasure.keys()))
     const day: DayFile = yDay ?? { date: yesterday, made: now.toISOString(), from: [], gauges: {} }

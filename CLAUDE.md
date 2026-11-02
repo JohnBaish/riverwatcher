@@ -16,7 +16,7 @@ Read these first, in this order:
    John's answers. Then `design/content-answers-2026-10-30.md`: the main page's
    content, as agreed so far.
 3. `HOUSE-STYLE.md`: the shared look and ways of working. Copied from
-   clockwheel on 2026-10-30 (commit `674122d`; last re-copied 2026-11-01 at `a6cb099`), with `SEO-HANDOVER.md`,
+   clockwheel on 2026-10-30 (commit `674122d`; last re-copied 2026-11-01 at `5086657`), with `SEO-HANDOVER.md`,
    `.claude/skills/fresh-look/` and `.gitignore`. Clockwheel holds the master
    copies; if they change, re-copy them and note it here.
 4. The tracker: `projects/riverwatcher.md` in `JohnBaish/baish.net-directory`.
@@ -87,6 +87,45 @@ Scope (decided by John):
 - Flood warnings in the first version, if easy (they look it: finding 11).
 
 ## Log
+
+### 2026-11-02 — stage 4 merged to `main`
+
+John said merge. `main`'s collector fix (`collect-retry`) brought into `stage-4-areas` first (the only clash was this
+log; both kept), then checks 118 + 110, `tsc -b`, lint and the build clean, and `main` fast-forwarded. On `main` now: the
+full chooser, the county, region and England views, and "the most unusual" ranked by how long since (option B). The
+drafted wording still waits for John (the summary, headings, held line, kicker, folded labels, the chooser's England
+line, the flood rule, "on the Isle of Wight"). Nothing is public yet (no Vercel project until stage 5).
+
+### 2026-11-02 — a failed page no longer fails the collector's run (branch `collect-retry`, merged)
+
+**What happened:** the Collect run at 00:10 UTC (run 41365705249) failed, and GitHub emailed John. Page 26 of the
+EA's bulk list for November 1st got "HTTP 503" (the EA's server temporarily unavailable) twice, and the script
+stopped. The latest readings and flood warnings were already written and were committed (`3e2eeb7`). The November
+1st day file and that run's log line were not. The same page loaded normally at 00:52. Each run makes a day file
+that's missing, so the 01:10 run tries again.
+
+**John:** yes to making the collector carry on when this happens. **What:** `fetchDayRows()` in
+`scripts/lib/collect.ts`. Each page is now tried four times (was two; waits of 5, 10 and 15 seconds). At most about
+8½ minutes, so a page started just before the 20-minute stop still ends inside the workflow's 30. If a page still
+fails, or time runs out, the run log says `finished: false` with the reason (`stopped`) and the run shows a yellow
+warning, not a failure. The next hour tries again.
+
+**Verified:** `npm run check` (118 + 85; new: a full download, a page that still fails, out of time, no such page).
+Making the download throw again made the new check fail, then the code was restored. `tsc -b` and lint are clean. A
+trial run with the real EA in a scratch copy of the data, with no time allowed for the day file: exit 0, the
+warning, and `"dayFile":{"date":"2026-11-01","pages":0,"rows":0,"finished":false,"stopped":"out of time"}` in the log.
+**Not checked:** a real 503 from the EA (can't be made to happen).
+
+**Then:** the 01:10 UTC run (old code) made the November 1st day file: 37 pages, 361,344 readings, 2,879 gauges,
+`finished: true` (`fad0b55` in the data repo). Merged to `main` at John's word (fast-forward; checks 118 + 85, `tsc -b`
+and lint clean first), so the collector runs it from the next hour. Branches tidied: "Delete merged branches" trial run, then the
+real run, deleted `collect-retry`; `stage-4-areas` (unmerged, stage 4 work in another thread) left alone.
+
+### 2026-11-01 — house style re-copied: sessions delete merged branches themselves (notes only, straight to `main`)
+
+From clockwheel `5086657`: §10 now asks a session to run the "Delete merged branches" workflow itself after a merge (trial run
+first, then the real run, then check the branches are gone and log it), rather than listing branches for John (John). No app code
+changed.
 
 ### 2026-11-01 — "the most unusual" ranked by how long since (branch `stage-4-areas`, not merged)
 
