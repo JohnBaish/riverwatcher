@@ -88,6 +88,35 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-02 — fresh look, and every fix John chose (branch `claude/elegant-franklin-sm00mx`, merged)
+
+**Review** (`/fresh-look` of `main` at `2e007ad`, data at 3.54pm; PDF sent): 2.1 gauges named after a mill held
+though free-flowing; 2.2 "A year ago" for only 894 of 2,864 gauges, long charts patchy (the archive's daily lowest
+missing for most gauges); 2.3 pockets of bad low readings in some histories; 2.4 rivers with no name; 3.1 labels over
+the levels at iPad widths; 3.2 no scroll to the detail on a computer; 3.3 repeated "held steady" sentences; 3.4 "Steady:
+down 2 cm" beside "Down 2 cm"; 4.1 tooltip gone on touch; 5.1 print; 5.2 no warning when figures are old; 5.3 error pages
+showed "About these figures"; 5.4 phone buttons 36px; 5.5 flood alerts and warnings alike; 6.1–6.8 left alone.
+
+**John: do them all** (2.1 and 2.2 option a), Claude's judgement throughout, merge without asking. **What:**
+- 2.2: `scripts/fill-days.ts` (`npm run fill-days`): each missing day's usual level from the archive's 15-minute
+  readings (Suspect and Missing left out), run here once: 353,889 days filled for 2,108 gauges, pushed to the data repo
+  (`f94ea41`). "A year ago" now 1,979 of 2,865; long charts 72% of days. Going forward the collector's own day files cover it.
+- 2.1: `scripts/lib/heldCheck.ts`, used by `pageData` at each build (about 1 s). A first measure (the shape of each
+  history) didn't separate locks from mills (it kept Riding Mill held and freed two Thames locks), so not used.
+- 2.3: `floorDays` in `history.ts`. Rebuilt the ten: three fixed and kept (Greta Bridge, Brigstock, Chatburn Pendle
+  Avenue); the other seven are long stretches at another level (drawn-down sluices, older zero points), not floors, so
+  their histories were left as they were (Islip Sluice's rebuild came out worse). The monthly rebuild will apply the rule
+  to every gauge as its history is refreshed.
+- 2.4, 3.3, 3.4 in `view.ts`; 3.1, 5.4, 5.5 in `global.css`; 3.2 in `PostcodeView.tsx`; 4.1 in `Chart.tsx`; 5.1 print rules,
+  `CollectedLine`, credits printed; 5.2 `src/lib/freshness.ts` (warning after three hours; "Updated Sunday 3.54pm");
+  5.3 `isReal` in `App.tsx`. Wording drafted by Claude (John left it to Claude): the stale warning, "Unnamed watercourse",
+  the joined held sentence.
+
+**Verified:** `tsc -b`, lint, checks 125 + 126 (new: floors, the river test, Steady, joined sentences, unnamed rivers,
+freshness). Chromium at 1200px, 744/768/820px touch, and 390px touch, light and dark: 56 views with no errors or
+sideways scroll; each fix tried (clock moved forward 5 and 26 hours for 5.2; made-up flood warnings in a scratch copy for
+5.5; print to PDF). **Couldn't check:** a real iPhone, a real printer, a real flood warning.
+
 ### 2026-11-02 — live at riverwatcher.baish.net; launch steps done (notes only)
 
 John: launch steps B to E done (the domain, Web Analytics, the deploy hook, Search Console). Vercel shows the

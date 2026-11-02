@@ -5,6 +5,7 @@
 // were built by `npm run history` on October 30th 2026. If the gauge list is beside this
 // repo (../riverwatcher-data/data/gauges.json), its rivers are checked too.
 
+import { agreement, behaveLikeRivers, type DayLevels } from './lib/heldCheck.ts'
 import { existsSync, readFileSync } from 'node:fs'
 import {
   dropNearDuplicates, heldReason, isBackup, isLake, namesAgree, navigationHeads, riverKey, riverMeasure, shownName, tidyName, type Station,
@@ -314,6 +315,33 @@ if (existsSync(listFile)) {
   eq('Twyford\'s archive is Twyford Main', twy.archive, '1f60373d-2b3c-4c41-b4be-0950dd97e068_w1TH')
   check('every major river in one piece', ['River Trent', 'River Severn', 'River Aire', 'River Nene', 'River Medway', 'River Kennet', 'River Witham'].every((r) => new Set(gs.filter((g) => g.river === r && g.toSeaKm !== null).map((g) => g.system)).size === 1))
 } else console.log('(The gauge list isn\'t beside this repo, so its rivers weren\'t checked.)')
+
+
+// ---- named gauges that behave like rivers (fresh look 2.1) ----
+{
+  // A history whose levels for every day of the year run evenly from 0 to 4 m, so a level of
+  // x mm is x/40 % of the way up.
+  const flat = { table: Array.from({ length: 73 }, () => Array.from({ length: 41 }, (_, i) => i * 100)) } as unknown as History
+  const days: DayLevels[] = Array.from({ length: 120 }, (_, i) => ({ date: new Date(Date.UTC(2026, 0, 1) + i * 86400e3).toISOString().slice(0, 10), u: {} }))
+  // The rivers swing between low (500 mm, 12%), normal (2,000, 50%) and high (3,500, 87%).
+  const level = (i: number) => [500, 2000, 3500][Math.floor(i / 10) % 3]
+  const gs = [
+    ...[0, 1, 2].map((k) => ({ ref: `f${k}`, name: `Free ${k}`, lat: 52 + k * 0.01, long: -1, held: null })),
+    { ref: 'mill', name: 'Riding Mill', lat: 52.02, long: -1.01, held: 'name' },
+    { ref: 'lock', name: 'Culham Lock', lat: 52.02, long: -1.01, held: 'name' },
+    { ref: 'pond', name: 'Duck Mill', lat: 52.02, long: -1.01, held: 'name' },
+  ]
+  days.forEach((d, i) => {
+    for (const k of [0, 1, 2]) d.u[`f${k}`] = level(i)
+    d.u.mill = level(i); d.u.lock = level(i)
+    d.u.pond = 2000 // held at one level whatever the rivers do
+  })
+  const hs = new Map(gs.map((g) => [g.ref, flat]))
+  eq('a mill moving with the rivers is judged like one; a lock stays held; a held pond stays held',
+    [...behaveLikeRivers(gs, hs, days)], ['mill'])
+  eq('agreement measured', [agreement(gs, hs, days).get('mill'), agreement(gs, hs, days).get('pond')!.toFixed(2)], [1, '0.33'])
+  eq('too few neighbours: not measured', agreement(gs.slice(2), hs, days).has('mill'), false)
+}
 
 console.log(`${passed} passed${failures.length ? `, ${failures.length} failed:` : '.'}`)
 for (const f of failures) console.log(`  FAILED ${f}`)

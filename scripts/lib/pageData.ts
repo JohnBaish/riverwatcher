@@ -8,6 +8,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import type { Flood, LatestLine } from './collect.ts'
 import type { HeldReason } from './gauges.ts'
+import { behaveLikeRivers } from './heldCheck.ts'
 import { dayOfYear, judge, levelsFor, metresOf, percentBelow, sinceYear, TABLE_STEP_DAYS, wordFor, type History, type Word } from './history.ts'
 import type { PageDaily, PageGauge, PageHours, PageJudgement, PageMeta } from '../../src/lib/pageTypes.ts'
 
@@ -108,6 +109,8 @@ export function historyFits(h: History, band: [number, number]): boolean {
   const m = mids.sort((a, b) => a - b)[Math.floor(mids.length / 2)]
   return m >= band[0] && m <= band[1]
 }
+/** Gauges held only by their name that the last build judged like rivers (for the notes). */
+export const freed: string[] = []
 /** Gauges whose history was set aside by `historyFits` in the last build (for the notes). */
 export const unfitting: string[] = []
 
@@ -164,9 +167,6 @@ export function pageData(dir = dataDir()): PageData {
     return b && (v < b[0] || v > b[1]) ? null : v
   }
 
-  const pageGauges = gauges.map((g) =>
-    pageGauge(g, latest.gauges[g.ref] ?? null, histories.get(g.ref) ?? null, !!quiet[g.ref], date, fits(g.ref, ago?.gauges[g.ref]?.u)))
-
   const doy = dayOfYear(date)
   // Today's hours so far (data/today.json, from the collector), after the last day file.
   const todayFile = existsSync(join(dir, 'today.json')) ? read<{ date: string; gauges: Record<string, (number | null)[]> }>('today.json') : null
@@ -213,6 +213,14 @@ export function pageData(dir = dataDir()): PageData {
   const yearDays: string[] = []
   for (let d = have[0]; d <= have[have.length - 1]; d = addDays(d, 1)) yearDays.push(d)
   const yearFiles = yearDays.map((d) => day(d) ?? { date: d, gauges: {} })
+  // Gauges held only by their name (a mill, weir, gate or sluice) whose level behaves like a
+  // river's are judged like one (fresh look 2.1; scripts/lib/heldCheck.ts).
+  freed.length = 0
+  freed.push(...behaveLikeRivers(gauges, histories, yearFiles.map((f) => ({ date: f.date, u: Object.fromEntries(Object.entries(f.gauges).map(([ref, v]) => [ref, fits(ref, v.u)])) }))))
+  const free = new Set(freed)
+  const pageGauges = gauges.map((g) =>
+    pageGauge(free.has(g.ref) ? { ...g, held: null } : g, latest.gauges[g.ref] ?? null, histories.get(g.ref) ?? null, !!quiet[g.ref], date, fits(g.ref, ago?.gauges[g.ref]?.u)))
+
   const daily: PageDaily['g'] = {}
   for (const g of gauges) {
     const v = yearFiles.map((f) => fits(g.ref, f.gauges[g.ref]?.u))

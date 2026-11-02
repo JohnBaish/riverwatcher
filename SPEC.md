@@ -95,6 +95,11 @@ reading (Roe Bridge on the Brock has one day in 1919, then nothing for decades).
    gauges are gauging weirs or culverts, where the level follows the flow); each navigation
    on the list is held from its head down (`NAVIGATIONS` in `scripts/lib/gauges.ts`;
    `design/gauge-review.md` §2).*
+   *Fresh look 2.1 (November 2nd, John, option a): a gauge held only by its name (a mill,
+   weir, gate or sluice, never a lock) is judged like a river when, over the past year, its
+   word for the time of year agrees with the free-flowing gauges within 20 miles on at least
+   64% of days (`scripts/lib/heldCheck.ts`, worked out at each build): 61 such gauges on
+   November 2nd, Riding Mill on the Tyne among them.*
 5. **Place along the river:** each gauge is put on its nearest stretch in OS Open Rivers
    (preferring one with the EA's river name, within 600 m) and given its distance to the sea
    along the river. A tributary's route shows which river it joins, and where.
