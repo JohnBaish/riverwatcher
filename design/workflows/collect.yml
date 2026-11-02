@@ -67,3 +67,14 @@ jobs:
           git commit -q -m "Data: $(date -u +'%Y-%m-%d %H:%M') UTC"
           git pull --rebase origin "$GITHUB_REF_NAME"
           git push origin "HEAD:$GITHUB_REF_NAME"
+
+      # Vercel builds the site from JohnBaish/riverwatcher, so a data commit here doesn't start a
+      # build by itself: the deploy hook (a secret, made by John in Vercel) asks for one. Without
+      # the secret this step does nothing, and a failed call only warns.
+      - name: Ask Vercel to rebuild the site
+        if: ${{ !cancelled() }}
+        env:
+          HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then echo 'No deploy hook set yet.'; exit 0; fi
+          curl -fsS -X POST "$HOOK" -o /dev/null && echo 'Vercel asked to rebuild.' || echo '::warning::The Vercel deploy hook call failed.'
