@@ -88,6 +88,14 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-02 — on the baish.net hub and in the overview (notes only)
+
+John chose option (a) for the hub card: "River levels in your chosen area, with historical comparisons." (the link-preview
+line). Added in clockwheel (`74ddc9f`, after Refueller), with the hub's search description now ending "…, fuel prices and river
+levels." (148 characters) and Riverwatcher's column in `SEO-HANDOVER.md`. The overview (`design/overview/` in clockwheel,
+`5e369de`): a Riverwatcher section in the words, and four pages of pictures from the live site in
+`baish-net-pictures-2026-11-02.pdf`. Tracker updated. PLAN stage 5 is complete.
+
 ### 2026-11-02 — fresh look, and every fix John chose (branch `claude/elegant-franklin-sm00mx`, merged)
 
 **Review** (`/fresh-look` of `main` at `2e007ad`, data at 3.54pm; PDF sent): 2.1 gauges named after a mill held
