@@ -102,7 +102,7 @@ in `design/workflows/collect.yml` matches. Nothing can be done here about a run 
 **Verified:** the workflow parses; the loop tried here with a pretend push that succeeds on the first,
 third and never: exits 0, 0 and 1. Not checked: a real refused push (can't be made to happen).
 
-### 2026-11-03 — a gauge's details just below it in the list, style A (branch `details-inline`, not merged)
+### 2026-11-03 — a gauge's details just below it in the list, style A (branch `details-inline`, merged)
 
 **John:** not folded; the chosen gauge's name in the larger heading type in its highlighted row, the details' repeated
 name, line and label dropped; style A (the row's tint and orange edge running down beside the details) on phones and
@@ -128,6 +128,10 @@ away from the entry (rather than cards across the whole width). There they're th
 label), in the ordinary card style; under an entry they stay as before. **Verified:** checks, `tsc -b`, lint, build;
 Berkshire and England at 1200px and 390px with touch: the name and label below the cards on a computer, none repeated
 under entries, no errors, no sideways scroll.
+
+**Merged** to `main` at John's word ("Please merge and tidy"; fast-forward; checks 125 + 148, `tsc -b` and build clean
+first; Vercel's deployment of `a9e44e7` completed). Branch tidied: trial run 41699678791, real run 41699731989;
+`git ls-remote --heads origin` shows only `main`.
 
 ### 2026-11-03 — mock-up: a gauge's details just below it in the list (design only, nothing changed)
 
