@@ -1,6 +1,6 @@
 # Gauge place lines, for review
 
-Made 2026-11-03 by `npm run places` (scripts/build-places.ts), from OS Open Names. 2888 gauges: 1243 get a line, 1645 don't (named after a town or village, or the place would repeat a word of their name).
+Made 2026-11-03 by `npm run places` (scripts/build-places.ts), from OS Open Names. 2888 gauges: 1242 get a line, 1646 don't (named after a town or village, or the place would repeat a word of their name).
 
 Rule (John, November 3rd 2026): a town or city within 3 miles; else a village within 2 miles; else a suburb or hamlet within 2 miles; further than that, the nearest town or village with its distance and direction. Distances are to the place’s point in Open Names.
 
@@ -13,7 +13,7 @@ Rule (John, November 3rd 2026): a town or city within 3 miles; else a village wi
 1.5 Cow Green Flow (Durham): 7 miles south-west of Ireshopeburn
 1.6 Moorhouse (Cumbria): 5 miles south of Garrigill
 
-## 2. A suburb or hamlet, as no town or village is near (51)
+## 2. A suburb or hamlet, as no town or village is near (50)
 
 2.1 Heaton Mill (Northumberland): Near Grindon, 1.8 miles (hamlet)
 2.2 Field End Road (Greater London): Near South Harrow, 0.6 miles (suburban area)
@@ -41,31 +41,30 @@ Rule (John, November 3rd 2026): a town or city within 3 miles; else a village wi
 2.24 Weigall Road (Greater London): Near Blackheath Park, 0.5 miles (suburban area)
 2.25 Manor House Gardens (Greater London): Near Lee, 0.3 miles (suburban area)
 2.26 Dunnabridge (Devon): Near Hexworthy, 1.2 miles (hamlet)
-2.27 De Lank (Cornwall): Near Bradford, 1.1 miles (other settlement)
-2.28 Leehamford (Devon): Near Barton Town, 0.4 miles (hamlet)
-2.29 Powys Lane (Greater London): Near Bowes Park, 0.5 miles (suburban area)
-2.30 Walthamstow, Low Hall (Greater London): Near Leyton Marshes, 0.4 miles (suburban area)
-2.31 Horseshoe Corner Tidal Sluice (Greater London): Near Barking Riverside, 0.7 miles (suburban area)
-2.32 Beam Auto Sluice (Greater London): Near Dagenham, 0.8 miles (other settlement)
-2.33 Gaynes Park (Greater London): Near Upminster, 0.6 miles (other settlement)
-2.34 Havering Tidal Sluice (Greater London): Near Rainham, 1.2 miles (other settlement)
-2.35 Torside Reservoir (Derbyshire): Near Crowden, 1.2 miles (hamlet)
-2.36 Cringle Brook Debris Screen (Greater Manchester): Near Fallowfield, 0.6 miles (suburban area)
-2.37 Winster Drive (Merseyside): Near Woodlands, 0.1 miles (suburban area)
-2.38 Brown Howe (Cumbria): Near High Nibthwaite, 0.7 miles (hamlet)
-2.39 Galesyke (Cumbria): Near Nether Wasdale, 0.4 miles (other settlement)
-2.40 Thirlmere Reservoir (Spillway level = 16.55m) (Cumbria): Near Legburthwaite, 0.5 miles (hamlet)
-2.41 Thirlmere (Cumbria): Near Legburthwaite, 0.5 miles (hamlet)
-2.42 Crummock Water (Cumbria): Near Loweswater, 0.7 miles (other settlement)
-2.43 Scalehill Upper Lorton Valley (Cumbria): Near Loweswater, 0.6 miles (other settlement)
-2.44 Grass Dyke (Cumbria): Near Easton, 0.5 miles (hamlet)
-2.45 Broadway Foot (North Yorkshire): Near Hawnby, 1.3 miles (hamlet)
-2.46 Wholsea Grange (East Riding of Yorkshire): Near Tollingham, 1.1 miles (other settlement)
-2.47 Harwood (Durham): Near Langdon Beck, 0.3 miles (hamlet)
-2.48 Park Bridge (North Yorkshire): Near Keld, 0.4 miles (hamlet)
+2.27 Leehamford (Devon): Near Barton Town, 0.4 miles (hamlet)
+2.28 Powys Lane (Greater London): Near Bowes Park, 0.5 miles (suburban area)
+2.29 Walthamstow, Low Hall (Greater London): Near Leyton Marshes, 0.4 miles (suburban area)
+2.30 Horseshoe Corner Tidal Sluice (Greater London): Near Barking Riverside, 0.7 miles (suburban area)
+2.31 Beam Auto Sluice (Greater London): Near Dagenham, 0.8 miles (other settlement)
+2.32 Gaynes Park (Greater London): Near Upminster, 0.6 miles (other settlement)
+2.33 Havering Tidal Sluice (Greater London): Near Rainham, 1.2 miles (other settlement)
+2.34 Torside Reservoir (Derbyshire): Near Crowden, 1.2 miles (hamlet)
+2.35 Cringle Brook Debris Screen (Greater Manchester): Near Fallowfield, 0.6 miles (suburban area)
+2.36 Winster Drive (Merseyside): Near Woodlands, 0.1 miles (suburban area)
+2.37 Brown Howe (Cumbria): Near High Nibthwaite, 0.7 miles (hamlet)
+2.38 Galesyke (Cumbria): Near Nether Wasdale, 0.4 miles (other settlement)
+2.39 Thirlmere Reservoir (Spillway level = 16.55m) (Cumbria): Near Legburthwaite, 0.5 miles (hamlet)
+2.40 Thirlmere (Cumbria): Near Legburthwaite, 0.5 miles (hamlet)
+2.41 Crummock Water (Cumbria): Near Loweswater, 0.7 miles (other settlement)
+2.42 Scalehill Upper Lorton Valley (Cumbria): Near Loweswater, 0.6 miles (other settlement)
+2.43 Grass Dyke (Cumbria): Near Easton, 0.5 miles (hamlet)
+2.44 Broadway Foot (North Yorkshire): Near Hawnby, 1.3 miles (hamlet)
+2.45 Wholsea Grange (East Riding of Yorkshire): Near Tollingham, 1.1 miles (other settlement)
+2.46 Harwood (Durham): Near Langdon Beck, 0.3 miles (hamlet)
+2.47 Park Bridge (North Yorkshire): Near Keld, 0.4 miles (hamlet)
+2.48 Wilfholme PS (East Riding of Yorkshire): Near Tophill Low, 1.0 miles (hamlet)
 2.49 Wilfholme PS (East Riding of Yorkshire): Near Tophill Low, 1.0 miles (hamlet)
-2.50 Wilfholme PS (East Riding of Yorkshire): Near Tophill Low, 1.0 miles (hamlet)
-2.51 Stone Creek (East Riding of Yorkshire): Near Sunk Island, 1.9 miles (other settlement)
+2.50 Stone Creek (East Riding of Yorkshire): Near Sunk Island, 1.9 miles (other settlement)
 
 ## 3. Every line, county by county
 
@@ -177,7 +176,7 @@ Rule (John, November 3rd 2026): a town or city within 3 miles; else a village wi
 - Bush (River Strat): Near Stratton, 1.0 mi; named after Bush (hamlet)
 - Colliford Weir (St Neot River): Near St Neot, 2.0 mi
 - Craigshill Wood (St Neot River): Near Doublebois, 1.1 mi
-- De Lank (De Lank River): Near Bradford, 1.1 mi
+- De Lank (De Lank River): Near St Breward, 2.4 mi
 - Gwills (River Gannel): Near Newquay, 1.8 mi
 - Helebridge (River Neet): Near Bude, 1.8 mi
 - Idless (River Allen): Near Truro, 1.5 mi; named after Idless (hamlet)
@@ -1115,7 +1114,6 @@ Rule (John, November 3rd 2026): a town or city within 3 miles; else a village wi
 - Kings Lock (River Thames): Near Kidlington, 2.4 mi
 - Langford Village (Langford Brook): Near Bicester, 0.7 mi; named after Langford Village (suburban area)
 - Lower Arncott (River Ray): Near Bicester, 2.8 mi; named after Lower Arncott (hamlet)
-- Mapledurham Lock (River Thames): Near Chazey Heath, 1.7 mi; named after Mapledurham (hamlet)
 - Minns Estate (Seacourt Stream): Near Oxford, 1.4 mi
 - New Botley (Bulstake Stream): Near Oxford, 1.0 mi; named after New Botley (suburban area)
 - Newbridge (River Windrush): Near Standlake, 0.8 mi; named after Newbridge (other settlement)

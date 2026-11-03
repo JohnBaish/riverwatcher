@@ -315,6 +315,8 @@ if (existsSync(new URL('gauges.json', dataDir))) {
     eq('Roundmoor Ditch is near Eton', pl['2732TH'] && placeLine(pl['2732TH'], true), 'Near Eton')
     eq('Reading has no line', pl['2200TH'], undefined)
     eq('Sonning Lock has no line', pl['2301TH'], undefined)
+    eq('Mapledurham Lock has no line (John)', pl['2199TH'], undefined)
+    eq('De Lank is near St Breward (John)', pl['49129'] && placeLine(pl['49129'], true), 'Near St Breward')
   }
 }
 

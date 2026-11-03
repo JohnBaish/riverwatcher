@@ -38,7 +38,7 @@ export function AboutFigures() {
         {' '}Gauges whose level hasn't moved for weeks, or that keep repeating the same reading, are left out, as they're
         probably faulty.
       </p>
-      <p>Rivers are listed upstream to downstream, using Ordnance Survey's map of rivers.</p>
+      <p>Rivers are listed upstream to downstream, using Ordnance Survey's map of rivers. Where a gauge isn't named after a town or village, the nearest one is given, from Ordnance Survey's place names.</p>
       <p>
         In a county, a region, or in the England view, the summary counts only gauges that can be compared with past years.
         Those on rivers with locks and weirs, and fen drains, are only counted when they're high. "The most unusual" are the

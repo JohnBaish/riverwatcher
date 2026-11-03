@@ -8,7 +8,7 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { loadPlaces } from './lib/openNames.ts'
 import { dataDir } from './lib/pageData.ts'
-import { gaugePlace, indexPlaces, namedAfter, type GaugePlace } from './lib/places.ts'
+import { gaugePlace, indexPlaces, namedAfter, PLACE_EXCEPTIONS, type GaugePlace } from './lib/places.ts'
 import { placeLine } from '../src/lib/format.ts'
 
 const namesDir = process.argv[2]
@@ -25,7 +25,12 @@ const out: Record<string, GaugePlace> = {}
 const rows: { g: G; line: string; p: GaugePlace; after: string | null }[] = []
 let named = 0
 for (const g of gauges) {
-  const p = gaugePlace(g.name, g.e, g.n, idx)
+  const ex = PLACE_EXCEPTIONS[g.ref]
+  const fixed = ex ? idx.all.filter((q) => q.name === ex).sort((a, b) => Math.hypot(a.x - g.e, a.y - g.n) - Math.hypot(b.x - g.e, b.y - g.n))[0] : undefined
+  if (ex && !fixed) throw new Error(`No place called ${ex} for ${g.name}`)
+  const p: GaugePlace | null = ex === null ? null
+    : fixed ? { name: fixed.name, type: fixed.type, metres: Math.round(Math.hypot(fixed.x - g.e, fixed.y - g.n)), far: null }
+    : gaugePlace(g.name, g.e, g.n, idx)
   if (!p) { named++; continue }
   out[g.ref] = p
   const after = namedAfter(g.name, g.e, g.n, idx)

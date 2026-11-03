@@ -13,6 +13,13 @@
 import type { Place } from './openNames.ts'
 
 export const MILE = 1609.344
+
+// John's exceptions after reading the review list (November 3rd 2026), by gauge reference:
+// a place name to use instead, or null for no line.
+export const PLACE_EXCEPTIONS: Record<string, string | null> = {
+  '2199TH': null, // Mapledurham Lock: better known than "Near Chazey Heath"
+  '49129': 'St Breward', // De Lank: "Near Bradford" (a Cornish hamlet) could be read as the city
+}
 const BIG = ['City', 'Town']
 const VILLAGE = ['Village']
 const SMALL = ['Hamlet', 'Suburban Area', 'Other Settlement']

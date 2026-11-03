@@ -91,7 +91,17 @@ Scope (decided by John):
 
 ## Log
 
-### 2026-11-03 — "Near …" lines for gauges (branch `gauge-places`, not merged)
+### 2026-11-03 — "Near …" lines: John's fixes; merged to `main`
+
+**John:** yes to the "About these figures" sentence ("Where a gauge isn't named after a town or village, the nearest one
+is given, from Ordnance Survey's place names.", added to the rivers paragraph) and merge with the fixes:
+`PLACE_EXCEPTIONS` in `scripts/lib/places.ts` (Mapledurham Lock no line; De Lank "Near St Breward", not "Near Bradford").
+Data file rebuilt (data repo `ea8d9e7`): 1,242 lines. The review list is also a private page,
+https://claude.ai/artifact/UYR9dLemDQF4o2whdc7tK6 (the repo's .md wouldn't open in John's app). **Verified:** checks
+125 + 148, `tsc -b`, lint, build; RG4, PL30, Cornwall and SL1 at 1200px and 390px with touch, light and dark: no errors, no
+sideways scroll, the sentence present, Mapledurham Lock with no line.
+
+### 2026-11-03 — "Near …" lines for gauges (branch `gauge-places`)
 
 **John** (a tester had never heard of Roundmoor Ditch): extend Hindcaster's "near …" idea. He chose a
 river rule over Hindcaster's own (which often picked a hamlet: "near Spitalhatch", "near Coat") and approved
