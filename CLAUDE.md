@@ -100,6 +100,8 @@ Data file rebuilt (data repo `ea8d9e7`): 1,242 lines. The review list is also a 
 https://claude.ai/artifact/UYR9dLemDQF4o2whdc7tK6 (the repo's .md wouldn't open in John's app). **Verified:** checks
 125 + 148, `tsc -b`, lint, build; RG4, PL30, Cornwall and SL1 at 1200px and 390px with touch, light and dark: no errors, no
 sideways scroll, the sentence present, Mapledurham Lock with no line.
+Merged to `main` at John's word (fast-forward; checks first). Branch tidied: trial run 41621269206, real run
+41621313202; `git ls-remote --heads origin` shows only `main`.
 
 ### 2026-11-03 — "Near …" lines for gauges (branch `gauge-places`)
 
