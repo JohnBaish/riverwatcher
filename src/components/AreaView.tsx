@@ -142,8 +142,10 @@ function Area({ kind, name, os }: { kind: AreaKind; name: string; os?: string })
           const spark = (g: PageGauge) => points(g, 2, meta.made, hours)
           const detail = chosen ? <Detail key={`${chosen.ref}-${choice!.list}`} g={chosen} sub="" narrow={narrow} inline /> : null
           // The two "most unusual" cards sit side by side on a computer, too narrow for the
-          // details, so there they open just below the pair; on a phone, under the entry. With
-          // nothing high or low, the first gauge's details stay below the cards, as before.
+          // details, so there they open just below the pair, with the gauge's name, line and
+          // label back on, as they're away from the entry (John, November 3rd); on a phone, under
+          // the entry. With nothing high or low, the first gauge's details stay below the cards.
+          const fullDetail = chosen ? <Detail key={`${chosen.ref}-full`} g={chosen} sub={subOf(chosen, kind) || capital(chosen.county ?? '')} narrow={narrow} /> : null
           const endOnPhone = narrow && (choice?.list === 'high' || choice?.list === 'low')
           const belowEnds = choice && !endOnPhone && (choice.list === 'high' || choice.list === 'low' || choice.list === 'none')
           const rows = (gs: PageGauge[], list: ListId) => <Rows gauges={gs} kind={kind} list={list} chosen={choice} onSelect={select} narrow={narrow} spark={spark} detail={detail} />
@@ -163,7 +165,7 @@ function Area({ kind, name, os }: { kind: AreaKind; name: string; os?: string })
                     <EndCard title="Lowest" gauges={top.low} kind={kind} list="low" chosen={choice} onSelect={select} detail={endOnPhone ? detail : null}
                       empty={`No river gauge ${where} is low for the time of year.`} />
                   </div>
-                  {belowEnds && detail}
+                  {belowEnds && fullDetail}
                   {!wide && (
                     <details className="all-gauges">
                       <summary>All {countOf(gauges.length, 'gauge')} {where}, highest for the time of year first</summary>

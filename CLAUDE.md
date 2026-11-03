@@ -112,6 +112,12 @@ its own line, and an orange rule beneath (`.river-head` in `global.css`; the car
 RG4, SL1, CA12, Berkshire and England at 1200px and 390px with touch, light and dark: the counts right ("Four nearby
 gauges", "One nearby gauge"), no errors, no sideways scroll.
 
+**Then:** John: on a computer, details opened below the "Highest" and "Lowest" cards need the gauge's name back, being
+away from the entry (rather than cards across the whole width). There they're the full details again (name, line,
+label), in the ordinary card style; under an entry they stay as before. **Verified:** checks, `tsc -b`, lint, build;
+Berkshire and England at 1200px and 390px with touch: the name and label below the cards on a computer, none repeated
+under entries, no errors, no sideways scroll.
+
 ### 2026-11-03 — mock-up: a gauge's details just below it in the list (design only, nothing changed)
 
 **John** asked to see the chosen gauge's details opening just below it in the list, not at the bottom. Mocked up by
