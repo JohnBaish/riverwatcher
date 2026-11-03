@@ -95,8 +95,8 @@ eq('figure line', figureLine(base, c), '1.21 m at 9.44am. Down 5 cm in the last 
 eq('figure line, steady', figureLine(g({ now: { v: 6730, age: 20, mean: 6739, ch: 2 } }), c), '6.73 m at 9.44am. Steady: no change in the last 24 hours.')
 eq('figure line, no change known', figureLine(g({ now: { v: 6730, age: 20, mean: null, ch: null } }), c), '6.73 m at 9.44am.')
 eq('figure line, silent', figureLine(g({ now: { v: 6730, age: 400, mean: null, ch: null } }), c), 'No reading since 3.24am. The last was 6.73 m.')
-eq('held note at a lock', heldNote(g({ held: 'navigation' })), 'The level here is held by a weir, so it rises in very wet weather but says little about low water.')
-eq('held note at a drain', heldNote(g({ held: 'drain' })), 'The level in this drain is usually set by pumping, so it rises in very wet weather but says little about low water.')
+eq('held note at a lock', heldNote(g({ held: 'navigation' })), 'The level here is held by a weir, so it rises in very wet weather but doesn’t fall much in dry weather.')
+eq('held note at a drain', heldNote(g({ held: 'drain' })), 'The level in this drain is usually set by pumping, so it rises in very wet weather but doesn’t fall much in dry weather.')
 eq('no held note', heldNote(base), null)
 
 eq('comparisons, normal with a gap', comparisons(g({ gaps: [{ from: '2023-05-01', to: '2024-05-06' }] }), c), [

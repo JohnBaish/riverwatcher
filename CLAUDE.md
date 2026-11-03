@@ -88,6 +88,18 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-03 — held line reworded; mock-up of the chart tip's label (branch `held-wording`, not merged)
+
+**John chose C:** the held line now ends "…but doesn’t fall much in dry weather." (was "…but says little about low
+water."), for weirs and drains (`src/lib/view.ts`, the check, SPEC §7.5). **Mock-up only:** the long charts' tip with
+"(middle of the day’s range, 9am to 9am)" in place of "(day’s usual level)", text swapped in the browser, nothing in the
+code: `design/previews/tip-range-*.png`. On a phone it runs off the screen on one line, so a two-line version is shown.
+**Found:** the archive's daily highest and lowest run from 9am UTC on the date to 9am UTC the next day (94% of
+Caversham's 2018–2026 days match that window from the 15-minute readings; most of the rest are duplicate entries). In
+summer that's 10am to 10am UK time. Days from the live feed and the collector (Caversham's last 31) are UTC midnight to
+midnight, so a fixed "9am to 9am" label would be wrong for recent weeks. **Verified:** checks 125 + 126, `tsc -b`,
+build; Chromium at 1200px and 390px with touch, no errors.
+
 ### 2026-11-02 — on the baish.net hub and in the overview (notes only)
 
 John chose option (a) for the hub card: "River levels in your chosen area, with historical comparisons." (the link-preview

@@ -220,7 +220,7 @@ with the switch).
    line.
 5. **The chosen gauge in detail** (the nearest at first; tap or choose another): the judgement,
    "0.26 m at 10.45am. Steady: up 1 cm in the last 24 hours.", A's line at a held gauge ("The level
-   here is held by a weir, so it rises in very wet weather but says little about low water."),
+   here is held by a weir, so it rises in very wet weather but doesn’t fall much in dry weather."),
    the chart, and the comparisons:
    - "Higher than on 61% of late October days since 2000." (Greta Bridge; not at held gauges);
    - "The highest for the time of year since 2025." (Keswick Campsite; only when high or low; not at held gauges);

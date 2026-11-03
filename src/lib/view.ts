@@ -156,8 +156,8 @@ export function figureLine(g: PageGauge, c: Ctx): string | null {
 /** The line under a held gauge's figures (SPEC §7.5; drains drafted for John). */
 export function heldNote(g: PageGauge): string | null {
   if (g.held === null) return null
-  if (g.held === 'drain') return 'The level in this drain is usually set by pumping, so it rises in very wet weather but says little about low water.'
-  return 'The level here is held by a weir, so it rises in very wet weather but says little about low water.'
+  if (g.held === 'drain') return 'The level in this drain is usually set by pumping, so it rises in very wet weather but doesn’t fall much in dry weather.'
+  return 'The level here is held by a weir, so it rises in very wet weather but doesn’t fall much in dry weather.'
 }
 
 // ---- the comparisons (SPEC §7.5) ----
