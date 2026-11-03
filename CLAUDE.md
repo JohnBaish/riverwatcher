@@ -66,6 +66,9 @@ Key points:
   from Hindcaster's `build-areas.ts`), `shapefile.ts` (from Hindcaster, with polylines),
   `history.ts` (the time-of-year table, records, "since", the judgement, Steady),
   `days.ts` (hourly averages, a day's usual level).
+- `npm run places <OS Open Names Data folder> [<data>]`: `data/gauge-places.json`, the "Near …"
+  line for each gauge (`scripts/lib/places.ts`, reader `openNames.ts` from Hindcaster), and
+  `design/gauge-places-review.md`. Run again after `npm run gauges`.
 - `npm run gauges <Open Rivers data folder> <Boundary-Line folder> [<data>]`:
   `data/gauges.json` and `design/gauge-review.md`. `RW_CACHE=<folder>` reuses the EA
   lists. Both OS downloads come from api.os.uk (ESRI Shapefile, GB) and aren't kept.
@@ -87,6 +90,22 @@ Scope (decided by John):
 - Flood warnings in the first version, if easy (they look it: finding 11).
 
 ## Log
+
+### 2026-11-03 — "Near …" lines for gauges (branch `gauge-places`, not merged)
+
+**John** (a tester had never heard of Roundmoor Ditch): extend Hindcaster's "near …" idea. He chose a
+river rule over Hindcaster's own (which often picked a hamlet: "near Spitalhatch", "near Coat") and approved
+a mock-up. **What:** `scripts/lib/places.ts` (the rule, SPEC §3.8), `scripts/lib/openNames.ts` (copied from
+Hindcaster), `scripts/build-places.ts` (`npm run places`), `placeLine` in `src/lib/format.ts`, `place` on
+`PageGauge` (`pageData.ts` reads `data/gauge-places.json` if present), the lines in `PostcodeView.tsx` and
+`AreaView.tsx`. Made from OS Open Names (October 2026 download from api.os.uk, not kept): 1,243 of 2,888
+gauges get a line (6 with miles and a direction, 51 a suburb or hamlet), pushed to the data repo
+(`cbc5661`; the code on `main` ignores it). A first version gave gauges named after a suburb another suburb
+("Pinner, Avenue Road" → "Near Pinnerwood Park"); now they get a line only from a town or village. Review
+list `design/gauge-places-review.md`. No new credit: the OS line is already on the page. **Verified:** checks
+125 + 146 (16 new; removing the suburb rule made its check fail, then restored), `tsc -b`, lint, build;
+Chromium at 1200px and 390px with touch, light and dark (SL1, RG4, NE66, Berkshire, Greater London,
+England): no errors, no sideways scrolling, no "undefined" or "null" in any line.
 
 ### 2026-11-03 — both ends of the normal range labelled, in terracotta (branch `range-lines`, merged)
 

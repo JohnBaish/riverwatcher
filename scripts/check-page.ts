@@ -3,7 +3,9 @@
 // the data repo is beside this one, real postcodes too (RG4, CA12, TA8, TR21).
 
 import { existsSync, readFileSync } from 'node:fs'
-import { clock, dateYear, metres, milesText, monthYear } from '../src/lib/format.ts'
+import { clock, dateYear, metres, milesText, monthYear, placeLine } from '../src/lib/format.ts'
+import { gaugePlace, indexPlaces, MILE } from './lib/places.ts'
+import type { Place } from './lib/openNames.ts'
 import type { PageGauge } from '../src/lib/pageTypes.ts'
 import { bandAt, topLineShown, undelta } from '../src/lib/series.ts'
 import {
@@ -77,7 +79,7 @@ eq('stale after three hours', staleText('2026-11-02T15:54:00Z', new Date('2026-1
 // ---- sentences, on made-up gauges ----
 const c: Ctx = { made: '2026-10-31T10:04:00Z', date: '2026-10-31' }
 const base: PageGauge = {
-  ref: 'X', name: 'Weston', river: 'River Test', lat: 51, long: -1, held: null, lake: false, toSeaKm: 50, joins: null, county: null, region: null, quiet: false,
+  ref: 'X', name: 'Weston', river: 'River Test', lat: 51, long: -1, held: null, lake: false, toSeaKm: 50, joins: null, county: null, region: null, place: null, quiet: false,
   now: { v: 1210, age: 20, mean: 1200, ch: -50 }, j: { basis: 'history', word: 'normal', percent: 55.2 }, fromYear: 2002,
   since: null, heldSince: null, yearAgo: { v: 840, word: 'normal' }, record: { v: 5350, date: '2015-12-05' }, gaps: [], typical: null, span: [800, 2000],
 }
@@ -281,6 +283,39 @@ if (existsSync(new URL('gauges.json', dataDir))) {
   eq('top line not drawn at Sheepbridge', topLineShown(g({ typical: [80, 890], span: [74, 449] }), pts, null, true), false)
   eq('no top line without bands', topLineShown(g({ typical: [68, 300], span: [71, 319] }), pts, null, false), false)
   eq('no top line without a range', topLineShown(g({ typical: null, span: [71, 319] }), pts, null, true), false)
+}
+
+// The "Near …" line (John, November 3rd 2026; scripts/lib/places.ts), on made-up places in
+// grid metres round a gauge at 0, 0.
+{
+  const P = (name: string, type: string, x: number, y: number): Place => ({ name, type, x, y, district: '', county: '' })
+  const at = (...ps: Place[]) => indexPlaces(ps)
+  const town = P('Eton', 'Town', 0, 2 * MILE), village = P('Dorney', 'Village', MILE, 0), hamlet = P('Boveney', 'Hamlet', 0, -0.5 * MILE)
+  eq('a town within 3 miles comes first', gaugePlace('Roundmoor Ditch', 0, 0, at(town, village, hamlet))?.name, 'Eton')
+  eq('else a village within 2 miles', gaugePlace('Roundmoor Ditch', 0, 0, at(P('Eton', 'Town', 0, 4 * MILE), village, hamlet))?.name, 'Dorney')
+  eq('else a hamlet within 2 miles', gaugePlace('Roundmoor Ditch', 0, 0, at(P('Eton', 'Town', 0, 4 * MILE), hamlet))?.name, 'Boveney')
+  const far = gaugePlace('Coalburn Beck', 0, 0, at(P('Falstone', 'Village', 0, 6 * MILE)))
+  eq('further out: miles and direction', far && placeLine(far, true), '6 miles south of Falstone')
+  eq('named after a village: no line', gaugePlace('Dorney Weir', 0, 0, at(town, village)), null)
+  eq('named after a town 4 miles off: no line', gaugePlace('Eton', 0, 0, at(P('Eton', 'Town', 0, 4 * MILE), village)), null)
+  eq('a same-named village 3 miles off is a coincidence', gaugePlace('Dorney', 0, 0, at(P('Dorney', 'Village', 0, 3 * MILE), town))?.name, 'Eton')
+  eq('named after a hamlet: a town still given', gaugePlace('Boveney', 0, 0, at(town, hamlet))?.name, 'Eton')
+  eq('named after a suburb, nothing bigger near: no line', gaugePlace('Pinner, Avenue Road', 0, 0, at(P('Pinner', 'Suburban Area', 0, 300), P('Pinnerwood Park', 'Suburban Area', 0, 900))), null)
+  eq('a place repeating the name: no line', gaugePlace('Horsforth Cornmill View', 0, 0, at(P('Horsforth Woodside', 'Suburban Area', 0, 400))), null)
+  eq('river words alone are not a place', gaugePlace('Mill Bridge', 0, 0, at(P('Mill', 'Hamlet', 0, 100), town))?.name, 'Eton')
+  eq('placeLine mid-line', placeLine({ name: 'Eton', far: null }, false), 'near Eton')
+  eq('placeLine one mile', placeLine({ name: 'Gayle', far: { miles: 1, dir: 'west' } }, true), '1 mile west of Gayle')
+}
+
+// The real lines, when the data repo is beside this one.
+{
+  const f = new URL('../../riverwatcher-data/data/gauge-places.json', import.meta.url)
+  if (existsSync(f)) {
+    const pl = (JSON.parse(readFileSync(f, 'utf8')) as { gauges: Record<string, { name: string; far: { miles: number; dir: string } | null }> }).gauges
+    eq('Roundmoor Ditch is near Eton', pl['2732TH'] && placeLine(pl['2732TH'], true), 'Near Eton')
+    eq('Reading has no line', pl['2200TH'], undefined)
+    eq('Sonning Lock has no line', pl['2301TH'], undefined)
+  }
 }
 
 console.log(`${passed} passed${failures.length ? `, ${failures.length} failed:\n  ${failures.join('\n  ')}` : ''}`)

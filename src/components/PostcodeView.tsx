@@ -3,7 +3,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import meta from 'virtual:riverwatcher/meta'
-import { clock, longDate, metres, milesBetween, milesText, weekday } from '../lib/format.ts'
+import { capital, clock, longDate, metres, milesBetween, milesText, placeLine, weekday } from '../lib/format.ts'
 import { useParts, type Loaded } from '../lib/load.ts'
 import { district } from '../lib/postcode.ts'
 import type { PageGauge } from '../lib/pageTypes.ts'
@@ -113,7 +113,7 @@ function GroupCard({ gr, code, nearest, selected, onSelect, narrow, spark }: { g
           <button type="button" className="b-row" aria-pressed={sel} onClick={() => onSelect(g.ref)}>
             <span>
               <h4 className="gname">{g.name}{near(it)}</h4>
-              <span className="gsub">{milesText(it.miles)} away</span>
+              <span className="gsub">{g.place && `${placeLine(g.place, true)} · `}{milesText(it.miles)} away</span>
               <span className="b-chip"><JChip g={g} /></span>
             </span>
             <span className="mono b-fig">
@@ -127,7 +127,7 @@ function GroupCard({ gr, code, nearest, selected, onSelect, narrow, spark }: { g
     return [
       ...between.map((t) => <tr className="joins" key={t}><td colSpan={6}>{t}</td></tr>),
       <tr key={g.ref} aria-selected={sel} tabIndex={0} onClick={() => onSelect(g.ref)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect(g.ref) } }}>
-        <td><b>{g.name}</b>{near(it)}<div className="gsub">{milesText(it.miles)} away</div></td>
+        <td><b>{g.name}</b>{near(it)}<div className="gsub">{g.place && `${placeLine(g.place, true)} · `}{milesText(it.miles)} away</div></td>
         <td><JChip g={g} /></td>
         <td className="mono"><b>{g.now ? metres(g.now.v) : '–'}</b><div className="note">{timeOf(g)}</div></td>
         <td>{g.now && !isSilent(g) ? <>{shortChange(g.now.ch) ?? '–'}{g.now.ch !== null && isSteady(g.now.ch) && <div className="note">{changeFigure(g.now.ch)}</div>}</> : '–'}</td>
@@ -253,7 +253,7 @@ export function PostcodeView({ code }: { code: string }) {
               <section className="source">
                 <div className="section-head"><h3>The nearest gauges, river by river</h3><span className="note">{narrow ? 'Tap' : 'Choose'} one to see it in detail.</span></div>
                 {groups.map((gr) => <GroupCard key={gr.unnamed ? gr.items[0].g.ref : gr.name} gr={gr} code={code} nearest={nearest} selected={chosen.g.ref} onSelect={select} narrow={narrow} spark={spark} />)}
-                <div ref={detail} className="detail-anchor"><Detail key={chosen.g.ref} g={chosen.g} sub={[chosen.g.river, milesText(chosen.miles)].filter(Boolean).join(' · ')} narrow={narrow} /></div>
+                <div ref={detail} className="detail-anchor"><Detail key={chosen.g.ref} g={chosen.g} sub={capital([chosen.g.river, chosen.g.place && placeLine(chosen.g.place, false), milesText(chosen.miles)].filter(Boolean).join(' · '))} narrow={narrow} /></div>
                 <p className="data-credit">This uses Environment Agency flood and river level data from the real-time data API (Beta).</p>
               </section>
             </>

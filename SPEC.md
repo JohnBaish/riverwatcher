@@ -111,6 +111,12 @@ reading (Roe Bridge on the Brock has one day in 1919, then nothing for decades).
    with a plain line instead of the judgement. Left out while flat or stuck (no change of more
    than 2 cm in four weeks, or the same reading more than 90% of the time), worked out by the
    collector.
+8. **"Near …" line** (Agreed, John, November 3rd 2026): a gauge not named after a town, city or
+   village gets the nearest town or city within 3 miles, else a village within 2 miles, else a suburb or
+   hamlet within 2 miles ("Near Eton"); further out, "5 miles west of Wooler". A gauge named after a suburb
+   or hamlet gets a line only from a town or village; none repeats a word of the gauge's name. From OS Open
+   Names (`npm run places`, `data/gauge-places.json`). Shown before the distance in the nearest gauges
+   ("Near Eton · 1 mile away"), and after the river in the detail and area lists ("The Cut · near Bracknell").
 
 ## 4. "For the time of year" (Proposed rules; the five words Agreed)
 

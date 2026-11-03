@@ -6,7 +6,7 @@
 import { useEffect, useRef, useState } from 'react'
 import meta from 'virtual:riverwatcher/meta'
 import { areaFloods, areaGauges, areaSummary, byRank, ends, inPlace, listLabel, rankLine, TEN, type AreaKind } from '../lib/area.ts'
-import { capital, longDate, metres } from '../lib/format.ts'
+import { capital, longDate, metres, placeLine } from '../lib/format.ts'
 import { useParts } from '../lib/load.ts'
 import type { AreaChoice, PageGauge } from '../lib/pageTypes.ts'
 import { useIsNarrow } from '../lib/responsive.ts'
@@ -23,7 +23,8 @@ const TOP = 3
 const timeOf = (g: PageGauge) => (g.now ? readingTime(meta.made, g.now.age, meta.date) : '')
 
 /** The line under a gauge's name: its river, and its county in a region or England. */
-const subOf = (g: PageGauge, kind: AreaKind) => [g.river, kind === 'county' ? null : g.county?.replace(/ ceremonial county$/, '')].filter(Boolean).join(' · ')
+const subOf = (g: PageGauge, kind: AreaKind) =>
+  capital([g.river, g.place && placeLine(g.place, false), kind === 'county' ? null : g.county?.replace(/ ceremonial county$/, '')].filter(Boolean).join(' · '))
 
 function Rows({ gauges, kind, selected, onSelect, narrow, spark }: { gauges: PageGauge[]; kind: AreaKind; selected: string; onSelect: (ref: string) => void; narrow: boolean; spark: (g: PageGauge) => Point[] }) {
   if (narrow) {

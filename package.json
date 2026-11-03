@@ -14,7 +14,8 @@
     "backfill": "node scripts/backfill.ts",
     "gaps": "node scripts/add-gaps.ts",
     "fill-days": "node scripts/fill-days.ts",
-    "collect": "node scripts/collect.ts"
+    "collect": "node scripts/collect.ts",
+    "places": "node scripts/build-places.ts"
   },
   "devDependencies": {
     "@types/node": "^24.13.3",

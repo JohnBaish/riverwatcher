@@ -48,7 +48,7 @@ const isLow = (w: Word | null) => w === 'low' || w === 'very low'
 
 /** One gauge's figures for the page. `level` is the average of the last 24 hours (or the
  *  latest reading when there's no average yet), in mm. */
-export function pageGauge(g: GaugeLine, line: LatestLine | null, h: History | null, quiet: boolean, date: string, yearAgoLevel: number | null): PageGauge {
+export function pageGauge(g: GaugeLine, line: LatestLine | null, h: History | null, quiet: boolean, date: string, yearAgoLevel: number | null, place: PageGauge['place'] = null): PageGauge {
   const held = g.held !== null
   const level = line ? (line[2] ?? line[0]) : null
   let j: PageJudgement = { basis: 'none' }
@@ -82,7 +82,7 @@ export function pageGauge(g: GaugeLine, line: LatestLine | null, h: History | nu
     : g.typical ? [Math.round(g.typical[0] * 1000), Math.round(g.typical[1] * 1000)] : null
   return {
     ref: g.ref, name: g.name, river: g.river, lat: g.lat, long: g.long, held: g.held, lake: g.lake,
-    toSeaKm: g.toSeaKm, joins: g.joins, county: g.county, region: g.region ?? null, quiet,
+    toSeaKm: g.toSeaKm, joins: g.joins, county: g.county, region: g.region ?? null, place, quiet,
     now: line ? { v: line[0], age: line[1], mean: line[2], ch: line[3] } : null,
     j, fromYear: h?.fromYear ?? null, since, heldSince, yearAgo,
     record: h ? { v: h.record.high.value, date: h.record.high.date } : null,
@@ -123,7 +123,7 @@ export const REGION_ORDER = ['North East England', 'North West England', 'Yorksh
 export type PageData = { meta: PageMeta; gauges: PageGauge[]; hours: PageHours; hours42: PageHours; daily: PageDaily }
 
 /** The files the parts are made from, for the plugin to watch. */
-export const SOURCES = ['gauges.json', 'latest.json', 'quiet.json', 'today.json']
+export const SOURCES = ['gauges.json', 'gauge-places.json', 'latest.json', 'quiet.json', 'today.json']
 
 /** Hourly figures for the charts: two weeks (the default period) in one part, six weeks in
  *  another, loaded only when four or six weeks are chosen. Longer periods use the daily part. */
@@ -134,6 +134,9 @@ export function pageData(dir = dataDir()): PageData {
   const gauges = read<{ gauges: GaugeLine[] }>('gauges.json').gauges
   const latest = read<{ made: string; gauges: Record<string, LatestLine>; floods?: Flood[] }>('latest.json')
   const quiet = existsSync(join(dir, 'quiet.json')) ? read<{ gauges: Record<string, string> }>('quiet.json').gauges : {}
+  // The "Near …" lines (scripts/build-places.ts); a gauge with none shows no line.
+  type PlaceLine = { name: string; far: { miles: number; dir: string } | null }
+  const places = existsSync(join(dir, 'gauge-places.json')) ? read<{ gauges: Record<string, PlaceLine> }>('gauge-places.json').gauges : {}
   const date = ukDate(latest.made)
 
   const dayFiles = readdirSync(join(dir, 'days')).filter((f) => /^\d{4}-\d\d-\d\d\.json$/.test(f)).sort()
@@ -219,7 +222,8 @@ export function pageData(dir = dataDir()): PageData {
   freed.push(...behaveLikeRivers(gauges, histories, yearFiles.map((f) => ({ date: f.date, u: Object.fromEntries(Object.entries(f.gauges).map(([ref, v]) => [ref, fits(ref, v.u)])) }))))
   const free = new Set(freed)
   const pageGauges = gauges.map((g) =>
-    pageGauge(free.has(g.ref) ? { ...g, held: null } : g, latest.gauges[g.ref] ?? null, histories.get(g.ref) ?? null, !!quiet[g.ref], date, fits(g.ref, ago?.gauges[g.ref]?.u)))
+    pageGauge(free.has(g.ref) ? { ...g, held: null } : g, latest.gauges[g.ref] ?? null, histories.get(g.ref) ?? null, !!quiet[g.ref], date, fits(g.ref, ago?.gauges[g.ref]?.u),
+      places[g.ref] ? { name: places[g.ref].name, far: places[g.ref].far } : null))
 
   const daily: PageDaily['g'] = {}
   for (const g of gauges) {

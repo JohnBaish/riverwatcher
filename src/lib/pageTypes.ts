@@ -41,6 +41,9 @@ export type PageGauge = {
   joins: { river: string; toSeaKm: number } | null
   county: string | null
   region: string | null
+  /** The "Near …" place, when the gauge isn't named after a town or village (John, November
+   *  3rd 2026; scripts/lib/places.ts): `far` gives "5 miles west of …" instead. */
+  place: { name: string; far: { miles: number; dir: string } | null } | null
   /** Flat or stuck, with no history or range: left out (SPEC §3.7). */
   quiet: boolean
   /** The latest reading: level, and minutes between it and `made`; null if none. */

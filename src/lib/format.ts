@@ -48,3 +48,8 @@ export function milesBetween(a: [number, number], b: [number, number]): number {
 }
 
 export const capital = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
+
+/** A gauge's place line (scripts/lib/places.ts): "Near Eton", or "5 miles west of Wooler"
+ *  further out; `start` for the beginning of a line, otherwise "near Eton". */
+export const placeLine = (p: { name: string; far: { miles: number; dir: string } | null }, start: boolean) =>
+  p.far ? `${p.far.miles} mile${p.far.miles === 1 ? '' : 's'} ${p.far.dir} of ${p.name}` : `${start ? 'Near' : 'near'} ${p.name}`
