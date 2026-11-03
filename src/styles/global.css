@@ -285,7 +285,7 @@ details summary { cursor: pointer; font-weight: 600; margin-bottom: var(--space-
 .r-table tr.detail-row:hover { background: none; }
 .r-table tr.detail-row > td { padding: 0 0 var(--space-4); cursor: default; }
 .r-table tr[data-chosen] > td { border-bottom: 0; }
-.gname-chosen { font-family: var(--font-heading); font-weight: 400; font-size: 22px; line-height: 1.2; display: block; }
+.gname-chosen { font-family: var(--font-heading); font-weight: 400; font-size: 22px; line-height: 1.2; }
 .b-row[aria-pressed="true"] .gname, .end-item[aria-pressed="true"] .gname { font-size: 22px; }
 .end-item[aria-pressed="true"] + .b-detail-inline { border-radius: 0 0 var(--radius-md, 12px) 0; }
 .warnings { display: grid; gap: var(--space-3); margin-bottom: var(--space-6); }
