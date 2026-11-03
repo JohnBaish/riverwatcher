@@ -91,6 +91,14 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-03 — mock-up: a gauge's details just below it in the list (design only, nothing changed)
+
+**John** asked to see the chosen gauge's details opening just below it in the list, not at the bottom. Mocked up by
+moving the details in the browser (SL1 with Roundmoor Ditch, Berkshire's full list with Tidmarsh; 1200px and 390px with
+touch; no errors, no sideways scroll). Points put to John: on a phone the details (about 830px) split the list;
+they blend into the card around them; on a computer they fill a river's whole card. **John:** needs more work; he'll
+come back to it in a day or two (perhaps details folded, and an outline or a different shade).
+
 ### 2026-11-03 — "Near …" lines: John's fixes; merged to `main`
 
 **John:** yes to the "About these figures" sentence ("Where a gauge isn't named after a town or village, the nearest one
