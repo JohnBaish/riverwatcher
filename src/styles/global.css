@@ -310,6 +310,8 @@ details summary { cursor: pointer; font-weight: 600; margin-bottom: var(--space-
 /* 4.1: the tooltip is kept inside the chart at either end. */
 .tip.tip-left { transform: translate(calc(-100% + 8px), -110%); }
 .tip.tip-right { transform: translate(-8px, -110%); }
+/* On a phone a long label wraps rather than running off the screen (John, November 3rd). */
+@media (max-width: 720px) { .tip { white-space: normal; width: max-content; max-width: min(240px, 66vw); } }
 /* 5.2: figures more than three hours old. */
 .stale { background: var(--alert-bg); border: 1.5px solid var(--alert-edge); padding: var(--space-3) var(--space-6); margin: var(--space-6) 0 0; }
 .stale p { margin: 0; }

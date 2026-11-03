@@ -88,7 +88,7 @@ export function Chart({ g, weeks, made, pts, bands, latest, narrow }: Props) {
       {hover && (
         // Kept inside the chart at either end (fresh look 6.7).
         <div className={`tip${x(hover[0]) > W * 0.7 ? ' tip-left' : x(hover[0]) < W * 0.3 ? ' tip-right' : ''}`} style={{ left: `${(x(hover[0]) / W) * 100}%`, top: `${(y(hover[1]) / H) * 100}%` }}>
-          {when}: {metres(hover[1])}{isLatest ? ' (latest)' : weeks > 6 ? ' (day’s usual level)' : ''}
+          {when}: {metres(hover[1])}{isLatest ? ' (latest)' : weeks > 6 ? ' (middle of the day’s range)' : ''}
         </div>
       )}
     </div>

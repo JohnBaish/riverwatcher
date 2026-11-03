@@ -88,6 +88,14 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-03 — chart tip: "(middle of the day’s range)" (branch `held-wording`, not merged)
+
+**John chose A:** the long charts' tip says "(middle of the day’s range)" instead of "(day’s usual level)", with no hours,
+since archive days run 9am to 9am UTC and recent days midnight to midnight (`src/components/Chart.tsx`). On a phone a long
+tip now wraps (`.tip` in `global.css`): at 320px it ran 11px off the screen. **Verified:** checks, `tsc -b`, build; the
+tip tried at 24 points across Caversham Lock's year chart at 1200px, 390px and 320px with touch: nothing off the screen,
+no errors.
+
 ### 2026-11-03 — held line reworded; mock-up of the chart tip's label (branch `held-wording`, not merged)
 
 **John chose C:** the held line now ends "…but doesn’t fall much in dry weather." (was "…but says little about low
