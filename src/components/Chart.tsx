@@ -47,6 +47,26 @@ export function Chart({ g, weeks, made, pts, bands, latest, narrow }: Props) {
     ? [zone((b) => b[2], (b) => b[3], 'z-high'), zone((b) => b[3], () => hi, 'z-vhigh')]
     : [zone(() => lo, (b) => b[0], 'z-vlow'), zone((b) => b[0], (b) => b[1], 'z-low'), zone((b) => b[1], (b) => b[2], 'z-normal'), zone((b) => b[2], (b) => b[3], 'z-high'), zone((b) => b[3], () => hi, 'z-vhigh')]
   const nTicks = narrow ? 3 : 5
+  /** A label for a dashed range line, put where it covers least of the river's line: at the right
+   *  or left end, above or below its line (the preferred side first), inside the plotting area. */
+  const rangeLabel = (v: number, text: string, prefer: 'above' | 'below') => {
+    const w = text.length * 6.3, sides = prefer === 'above' ? (['above', 'below'] as const) : (['below', 'above'] as const)
+    let best: { score: number; x: number; base: number; anchor: 'start' | 'end' } | null = null
+    for (const end of ['right', 'left'] as const) for (const side of sides) {
+      const base = side === 'above' ? y(v) - 5 : y(v) + 14
+      const top = base - 11, bottom = base + 2
+      if (top < T || bottom > H - B) continue
+      const x1 = end === 'right' ? W - R - 4 - w : L + 4, x2 = x1 + w
+      let score = 0
+      for (const p of all) {
+        const px = x(p[0]), py = y(p[1])
+        if (px >= x1 - 3 && px <= x2 + 3 && py >= top - 3 && py <= bottom + 3) score += p === latest ? 20 : 1
+      }
+      if (!best || score < best.score) best = { score, x: end === 'right' ? W - R - 4 : L + 4, base, anchor: end === 'right' ? 'end' : 'start' }
+    }
+    const b = best ?? { x: W - R - 4, base: y(v) - 5, anchor: 'end' as const }
+    return <text className="topline-t" x={b.x} y={b.base} textAnchor={b.anchor}>{text}</text>
+  }
   const line = pts.length ? `M${pts.map(([t, v]) => `${f(x(t))},${f(y(v))}`).join('L')}` : ''
 
   function onMove(e: PointerEvent<SVGRectElement>) {
@@ -71,14 +91,22 @@ export function Chart({ g, weeks, made, pts, bands, latest, narrow }: Props) {
         ))}
         <clipPath id={`clip-${g.ref}`}><rect x={L} y={T} width={W - L - R} height={H - T - B} /></clipPath>
         <g clipPath={`url(#clip-${g.ref})`}>{zones}</g>
-        {!bands.length && g.typical && g.typical.map((v) => <line key={v} className="typ" x1={L} x2={W - R} y1={y(v)} y2={y(v)} />)}
+        {/* A gauge with no long record: both ends of the Environment Agency's normal range, in
+            the same colour and style as the top line on other charts, each labelled (John,
+            November 3rd). Each label goes where it covers least of the river's line. */}
+        {!bands.length && g.typical && <>
+          <line className="topline" x1={L} x2={W - R} y1={y(g.typical[1])} y2={y(g.typical[1])} />
+          {rangeLabel(g.typical[1], `Top of normal range, ${metres(g.typical[1])}`, 'above')}
+          <line className="topline" x1={L} x2={W - R} y1={y(g.typical[0])} y2={y(g.typical[0])} />
+          {rangeLabel(g.typical[0], `Bottom of normal range, ${metres(g.typical[0])}`, 'below')}
+        </>}
         {Array.from({ length: nTicks + 1 }, (_, i) => {
           const t = t0 + ((t1 - t0) * i) / nTicks
           return <text key={i} className="axis-t" x={x(t)} y={H - 6} textAnchor={i === 0 ? 'start' : i === nTicks ? 'end' : 'middle'}>{shortDate(new Date(t))}</text>
         })}
         {top !== null && !topAbove && <>
           <line className="topline" x1={L} x2={W - R} y1={y(top)} y2={y(top)} />
-          <text className="topline-t" x={W - R - 4} y={y(top) - 5} textAnchor="end">Top of normal range, {metres(top)}</text>
+          {rangeLabel(top, `Top of normal range, ${metres(top)}`, 'above')}
         </>}
         {topAbove && <text className="topline-t" x={W - R - 4} y={T + 13} textAnchor="end">↑ Top of normal range, {metres(top!)}, is above the chart</text>}
         {line && <path className="line" d={line} />}
@@ -120,6 +148,6 @@ export function Key({ g, narrow, hasBands, topLine }: { g: PageGauge; narrow: bo
       </div>
     )
   }
-  if (g.typical) return <div className="legend" style={{ paddingLeft: pad }}><span><i className="li-line" />Level</span><span><i className="li-typ" />The Environment Agency's normal range</span></div>
+  if (g.typical) return <div className="legend" style={{ paddingLeft: pad }}><span><i className="li-line" />Level</span><span className="nowrap"><i className="li-top" />Environment Agency’s normal range</span></div>
   return <div className="legend" style={{ paddingLeft: pad }}><span><i className="li-line" />Level</span></div>
 }

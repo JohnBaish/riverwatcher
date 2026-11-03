@@ -88,6 +88,18 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-03 — both ends of the normal range labelled, in terracotta (branch `range-lines`, not merged)
+
+**John** (on his phone, Reading Calcot Bridge): with no long record, the chart showed the EA's normal range as two
+identical grey dashed lines, so it wasn't clear what they were; use the terracotta? **What (`Chart.tsx`, `global.css`):**
+both lines now in the top line's style, labelled "Top of normal range, 2.67 m" and "Bottom of normal range, 1.93 m"; the
+key says "Environment Agency’s normal range"; the grey `.typ` styles removed. Each label (the top line's on other charts
+too) goes where it covers least of the river's line: right or left end, above or below its line, inside the plotting area
+(`rangeLabel`); the first try, always at the right, sat on the latest reading. **Verified:** checks 125 + 130, `tsc -b`,
+lint, build; Reading Calcot Bridge at 1200px, 390px and 320px with touch, light and dark, two weeks and a year: both labels
+inside the chart and not overlapping, no errors, no sideways scroll; Caversham Lock's chart unchanged. Pictures
+`design/previews/range-lines/`.
+
 ### 2026-11-03 — top of normal range: John's choices; "normal range" throughout; merged to `main`
 
 **John:** the note above the chart where the line doesn't fit (as built); the "About these figures" paragraph agreed;
