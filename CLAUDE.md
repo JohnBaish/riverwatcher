@@ -88,7 +88,7 @@ Scope (decided by John):
 
 ## Log
 
-### 2026-11-03 — both ends of the normal range labelled, in terracotta (branch `range-lines`, not merged)
+### 2026-11-03 — both ends of the normal range labelled, in terracotta (branch `range-lines`, merged)
 
 **John** (on his phone, Reading Calcot Bridge): with no long record, the chart showed the EA's normal range as two
 identical grey dashed lines, so it wasn't clear what they were; use the terracotta? **What (`Chart.tsx`, `global.css`):**
@@ -98,7 +98,9 @@ too) goes where it covers least of the river's line: right or left end, above or
 (`rangeLabel`); the first try, always at the right, sat on the latest reading. **Verified:** checks 125 + 130, `tsc -b`,
 lint, build; Reading Calcot Bridge at 1200px, 390px and 320px with touch, light and dark, two weeks and a year: both labels
 inside the chart and not overlapping, no errors, no sideways scroll; Caversham Lock's chart unchanged. Pictures
-`design/previews/range-lines/`.
+`design/previews/range-lines/`. **Merged** to `main` at John's word (fast-forward; checks, `tsc -b` and build clean
+first; Vercel's deployment completed). Branch tidied: trial run 41607288547 (one merged branch), real run 41607328242;
+`git ls-remote --heads origin` shows only `main`.
 
 ### 2026-11-03 — top of normal range: John's choices; "normal range" throughout; merged to `main`
 
