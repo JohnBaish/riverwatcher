@@ -88,6 +88,20 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-03 — the EA's top of normal range on every chart (branch `held-wording`, not merged)
+
+**John:** yes, on all gauges, with care for dark-mode text on Macs. **What (`Chart.tsx`, `global.css`):** on charts with
+the time-of-year bands, a dashed accent line at the EA's `typical[1]` labelled "Top of normal range, 0.30 m", and
+"Environment Agency’s top of normal range" in the key (charts without bands already draw the range in grey). The label
+has no outline (the mock-up's halo looked heavy) and has the finer smoothing in dark mode. **Found:** the line sits above
+the chart's usual height at most free-flowing gauges: of 2,226 gauges with both a history and a range, including it would
+stretch 1,124 charts by more than half and 811 more than double (Sheepbridge on the Loddon, 0.89 m against a usual top
+of about 0.4 m). So by default the line is drawn only when it fits, and otherwise the chart says "↑ Top of normal range,
+0.89 m, is above the chart"; `VITE_TOPLINE=always` builds the stretched version, for pictures only, to remove once John
+chooses. Pictures `design/previews/top-of-range/` (Sheepbridge and Caversham, both ways). Draft "About these figures"
+paragraph put to John, not yet added. **Verified:** checks, `tsc -b`, lint, build; Chromium at 1200px and 390px with
+touch, light and dark: no errors, no sideways scroll. **Couldn't check:** a Mac's text drawing.
+
 ### 2026-11-03 — mock-up: the EA's top of normal range on the chart (branch `held-wording`, design only)
 
 **John** asked to see option B for Caversham Lock: the EA's top of normal range (`typical[1]`, 0.30 m there; 2,226 of

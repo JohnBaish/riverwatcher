@@ -28,8 +28,15 @@ export function Chart({ g, weeks, made, pts, bands, latest, narrow }: Props) {
   const t1 = Date.parse(made), t0 = t1 - weeks * 7 * 86400e3
   let lo = Math.min(...all.map((p) => p[1])), hi = Math.max(...all.map((p) => p[1]))
   if (g.span) { lo = Math.min(lo, g.span[0]); hi = Math.max(hi, g.span[1]) }
+  // The Environment Agency's top of normal range, an absolute height, as a dashed line on
+  // charts with the time-of-year bands; always in view (John, November 3rd). Charts without
+  // bands already show the whole range as two grey dashed lines.
+  const top = g.typical && bands.length ? g.typical[1] : null
+  if (top !== null && import.meta.env.VITE_TOPLINE === 'always') hi = Math.max(hi, top)
   const pad = (hi - lo) * 0.08 || 50
   lo -= pad; hi += pad
+  // Above the chart's usual height: said in words at the top rather than squashing the chart.
+  const topAbove = top !== null && top > hi
   const L = CHART_LEFT, R = 10, T = 10, B = 26
   const x = (t: number) => L + ((t - t0) / (t1 - t0)) * (W - L - R)
   const y = (v: number) => T + (1 - (v - lo) / (hi - lo)) * (H - T - B)
@@ -73,6 +80,11 @@ export function Chart({ g, weeks, made, pts, bands, latest, narrow }: Props) {
           const t = t0 + ((t1 - t0) * i) / nTicks
           return <text key={i} className="axis-t" x={x(t)} y={H - 6} textAnchor={i === 0 ? 'start' : i === nTicks ? 'end' : 'middle'}>{shortDate(new Date(t))}</text>
         })}
+        {top !== null && !topAbove && <>
+          <line className="topline" x1={L} x2={W - R} y1={y(top)} y2={y(top)} />
+          <text className="topline-t" x={W - R - 4} y={y(top) - 5} textAnchor="end">Top of normal range, {metres(top)}</text>
+        </>}
+        {topAbove && <text className="topline-t" x={W - R - 4} y={T + 13} textAnchor="end">↑ Top of normal range, {metres(top!)}, is above the chart</text>}
         {line && <path className="line" d={line} />}
         {latest && <circle className="end" cx={x(latest[0])} cy={y(latest[1])} r={5} />}
         {hover && (
@@ -108,6 +120,7 @@ export function Key({ g, narrow, hasBands }: { g: PageGauge; narrow: boolean; ha
         {zs.map(([c, w], i) => (
           <span key={c} className={i === zs.length - 1 ? 'nowrap' : undefined}><i className={`lz lz-${c}`} />{w}{i === zs.length - 1 ? ' for the time of year' : ''}</span>
         ))}
+        {g.typical && <span className="nowrap"><i className="li-top" />Environment Agency’s top of normal range</span>}
       </div>
     )
   }

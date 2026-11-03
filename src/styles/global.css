@@ -234,6 +234,12 @@ details summary { cursor: pointer; font-weight: 600; margin-bottom: var(--space-
 .chart .z-vlow { fill: var(--j-vlow); } .chart .z-low { fill: var(--j-low); } .chart .z-normal { fill: var(--j-normal); } .chart .z-high { fill: var(--j-high); } .chart .z-vhigh { fill: var(--j-vhigh); }
 .chart .typ { stroke: var(--color-neutral-700); stroke-dasharray: 4 3; stroke-width: 1.2; fill: none; }
 .chart .line { fill: none; stroke: var(--color-text); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+/* The Environment Agency's top of normal range (John, November 3rd). The label has no outline
+   round it, which drew fuzzy on the grey bands; dark mode's finer smoothing (above) applies. */
+.chart .topline { stroke: var(--color-accent-700); stroke-dasharray: 6 4; stroke-width: 1.5; }
+.chart .topline-t { font-size: 11px; font-weight: 600; fill: var(--color-accent-700); font-family: var(--font-body); }
+:root[data-theme="dark"] .chart .topline-t { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+.legend .li-top { height: 0; border-top: 1.5px dashed var(--color-accent-700); vertical-align: 3px; border-radius: 0; }
 .chart .end { fill: var(--color-accent); stroke: var(--color-surface); stroke-width: 2; }
 .chart .cross { stroke: var(--color-neutral-700); stroke-width: 1; }
 .chart .hdot { fill: var(--color-text); stroke: var(--color-surface); stroke-width: 2; }
