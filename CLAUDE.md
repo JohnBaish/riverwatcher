@@ -88,6 +88,15 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-03 — mock-up: the EA's top of normal range on the chart (branch `held-wording`, design only)
+
+**John** asked to see option B for Caversham Lock: the EA's top of normal range (`typical[1]`, 0.30 m there; 2,226 of
+2,888 gauges have one) as a dashed terracotta line across the chart, labelled "Top of normal range, 0.30 m" at its right
+end, with "Environment Agency’s top of normal range" in the key; the chart's height stretched to always include it. Drawn
+with a temporary change to `Chart.tsx` and `global.css`, photographed, then put back (no code change kept). Pictures
+`design/previews/top-of-range/` (computer and phone, light and dark, two weeks and a year). No errors, no sideways
+scrolling. John's reason: it's an absolute level, so it can tell a visitor whether a nearby path may flood.
+
 ### 2026-11-03 — chart tip: "(middle of the day’s range)" (branch `held-wording`, not merged)
 
 **John chose A:** the long charts' tip says "(middle of the day’s range)" instead of "(day’s usual level)", with no hours,
