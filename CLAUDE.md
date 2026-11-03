@@ -104,6 +104,14 @@ the entry. Choosing scrolls the chosen entry to the top. Styles `.b-detail-inlin
 and dark (20 views): one set of details each time, starting straight under its entry, nothing repeated, no errors, no
 sideways scroll.
 
+**Then (same branch):** John found the river's heading ("River Thames") read like another gauge. Mock-ups A (layout),
+B (words) and C (both) sent; **John chose C** for phones and computers: a shaded band across the top of each river's
+card, "Four nearby gauges" (`.river-count`, the card-kicker style) above a 26px river name, "Upstream to downstream" on
+its own line, and an orange rule beneath (`.river-head` in `global.css`; the card now clips to its corners). Also fixed:
+"NEAREST" had dropped under the larger chosen name on a computer. **Verified:** checks 125 + 148, `tsc -b`, lint, build;
+RG4, SL1, CA12, Berkshire and England at 1200px and 390px with touch, light and dark: the counts right ("Four nearby
+gauges", "One nearby gauge"), no errors, no sideways scroll.
+
 ### 2026-11-03 — mock-up: a gauge's details just below it in the list (design only, nothing changed)
 
 **John** asked to see the chosen gauge's details opening just below it in the list, not at the bottom. Mocked up by

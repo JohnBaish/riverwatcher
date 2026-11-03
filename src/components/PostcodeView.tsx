@@ -3,7 +3,7 @@
 
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import meta from 'virtual:riverwatcher/meta'
-import { clock, longDate, metres, milesBetween, milesText, placeLine, weekday } from '../lib/format.ts'
+import { capital, clock, longDate, metres, milesBetween, milesText, placeLine, weekday } from '../lib/format.ts'
 import { useParts, type Loaded } from '../lib/load.ts'
 import { district } from '../lib/postcode.ts'
 import type { PageGauge } from '../lib/pageTypes.ts'
@@ -140,7 +140,10 @@ function GroupCard({ gr, code, nearest, selected, onSelect, narrow, spark, detai
   })
   return (
     <div className="card river-group">
-      <div className="river-head"><h4>{gr.unnamed ? 'Unnamed watercourse' : gr.name}</h4>{notes.map((n) => <span className="note" key={n}>{n}</span>)}</div>
+      {/* A band across the top, so each river reads as the start of a section (John, November 3rd, option C). */}
+      <div className="river-head">
+        <div className="card-kicker river-count">{capital(numberWord(gr.items.length))} nearby gauge{gr.items.length === 1 ? '' : 's'}</div>
+        <h4>{gr.unnamed ? 'Unnamed watercourse' : gr.name}</h4>{notes.map((n) => <span className="note" key={n}>{n}</span>)}</div>
       {narrow ? <div className="b-rows">{rows}</div> : (
         <table className="table r-table">
           <colgroup><col className="c1" /><col className="c2" /><col className="c3" /><col className="c4" /><col className="c5" /><col className="c6" /></colgroup>

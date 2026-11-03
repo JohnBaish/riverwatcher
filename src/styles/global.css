@@ -251,7 +251,14 @@ details summary { cursor: pointer; font-weight: 600; margin-bottom: var(--space-
 .lz-vlow { background: var(--j-vlow); } .lz-low { background: var(--j-low); } .lz-normal { background: var(--j-normal); } .lz-high { background: var(--j-high); } .lz-vhigh { background: var(--j-vhigh); }
 .river-group { padding: var(--space-4) var(--space-6); margin-bottom: var(--space-3); }
 .river-group h4 { margin: 0; font-size: 19px; }
-.river-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin-bottom: 4px; }
+.river-group { overflow: hidden; }
+/* The river's heading as a band across the top of its card, with an orange rule beneath (John,
+   November 3rd, option C), so it reads as the start of a section, not another gauge. */
+.river-head { margin: calc(-1 * var(--space-4)) calc(-1 * var(--space-6)) 0; padding: var(--space-4) var(--space-6) 12px; background: color-mix(in srgb, var(--color-text) 6%, transparent); border-bottom: 2px solid var(--color-accent); }
+.river-head h4 { font-size: 26px; line-height: 1.15; }
+.river-head .note { display: block; margin-top: 4px; }
+.river-count { font-size: 12px; margin-bottom: 2px; }
+.river-head + .b-rows > div:first-child > .b-row { border-top: 0; }
 .river-head .note { margin: 0; }
 .r-table { table-layout: fixed; width: 100%; }
 .r-table col.c1 { width: 27%; } .r-table col.c2 { width: 25%; } .r-table col.c3 { width: 11%; } .r-table col.c4 { width: 14%; } .r-table col.c5 { width: 11%; } .r-table col.c6 { width: 12%; }
@@ -297,7 +304,7 @@ details summary { cursor: pointer; font-weight: 600; margin-bottom: var(--space-
 .credits { margin: 0 0 var(--space-3); }
 @media (max-width: 720px) {
   .river-group { padding: var(--space-2) var(--space-3); }
-  .river-head { padding: var(--space-2) 10px 4px; }
+  .river-head { margin: calc(-1 * var(--space-2)) calc(-1 * var(--space-3)) 0; padding: var(--space-3) calc(var(--space-3) + 10px) 12px; }
   .b-detail { grid-template-columns: 1fr; padding: var(--space-4); gap: var(--space-4); }
   .periods button { min-height: 44px; padding: 5px 14px; }
 }
