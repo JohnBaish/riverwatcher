@@ -276,6 +276,18 @@ details summary { cursor: pointer; font-weight: 600; margin-bottom: var(--space-
 .b-join { font-size: 12.5px; color: var(--color-neutral-700); font-style: italic; padding: 4px 10px; border-top: 1px solid var(--color-divider); }
 .b-detail { padding: var(--space-6); margin-top: var(--space-4); display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); gap: var(--space-6); }
 .detail-anchor { scroll-margin-top: var(--space-4); }
+/* The chosen gauge's details just below its entry (John, November 3rd, style A): the entry's
+   tint carried on, with its orange edge running down beside them, and its name in the heading
+   type, so the details needn't repeat it. */
+[data-chosen] { scroll-margin-top: var(--space-4); }
+.b-detail-inline { margin-top: 0; border-radius: 0 0 var(--radius-md, 12px) 0; background: color-mix(in srgb, var(--color-accent) 12%, transparent); box-shadow: inset 3px 0 0 var(--color-accent); }
+.ends + .b-detail-inline { margin-top: var(--space-4); border-radius: var(--radius-md, 12px); }
+.r-table tr.detail-row:hover { background: none; }
+.r-table tr.detail-row > td { padding: 0 0 var(--space-4); cursor: default; }
+.r-table tr[data-chosen] > td { border-bottom: 0; }
+.gname-chosen { font-family: var(--font-heading); font-weight: 400; font-size: 22px; line-height: 1.2; display: block; }
+.b-row[aria-pressed="true"] .gname, .end-item[aria-pressed="true"] .gname { font-size: 22px; }
+.end-item[aria-pressed="true"] + .b-detail-inline { border-radius: 0 0 var(--radius-md, 12px) 0; }
 .warnings { display: grid; gap: var(--space-3); margin-bottom: var(--space-6); }
 .alert { background: var(--alert-bg); border: 1.5px solid var(--alert-edge); padding: var(--space-4) var(--space-6); }
 .alert h4 { margin: 0; font-size: 18px; }

@@ -91,6 +91,19 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-03 — a gauge's details just below it in the list, style A (branch `details-inline`, not merged)
+
+**John:** not folded; the chosen gauge's name in the larger heading type in its highlighted row, the details' repeated
+name, line and label dropped; style A (the row's tint and orange edge running down beside the details) on phones and
+computers; build on a branch to look at. **What:** `Detail` takes `inline` (`PostcodeView.tsx`); `GroupCard` and the area
+view's `Rows` and `EndCard` show it under the chosen entry (a full-width table row on a computer); the area view
+remembers which list a gauge was chosen from (`Choice`), as a gauge can be in more than one. The two "most unusual" cards
+sit side by side on a computer, too narrow for the details, so there they open just below the pair; on a phone, under
+the entry. Choosing scrolls the chosen entry to the top. Styles `.b-detail-inline`, `.gname-chosen`, `.detail-row`.
+**Verified:** checks 125 + 148, `tsc -b`, lint, build; SL1, Berkshire and England at 1200px and 390px with touch, light
+and dark (20 views): one set of details each time, starting straight under its entry, nothing repeated, no errors, no
+sideways scroll.
+
 ### 2026-11-03 — mock-up: a gauge's details just below it in the list (design only, nothing changed)
 
 **John** asked to see the chosen gauge's details opening just below it in the list, not at the bottom. Mocked up by

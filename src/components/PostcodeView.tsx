@@ -1,9 +1,9 @@
 // The postcode view (SPEC §7; the agreed design, option B revised): flood warnings, the
 // summary river by river, the nearest gauges grouped by river, and the chosen one in detail.
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import meta from 'virtual:riverwatcher/meta'
-import { capital, clock, longDate, metres, milesBetween, milesText, placeLine, weekday } from '../lib/format.ts'
+import { clock, longDate, metres, milesBetween, milesText, placeLine, weekday } from '../lib/format.ts'
 import { useParts, type Loaded } from '../lib/load.ts'
 import { district } from '../lib/postcode.ts'
 import type { PageGauge } from '../lib/pageTypes.ts'
@@ -99,7 +99,7 @@ export function FloodList({ floods: near, more = 0 }: { floods: Flood[]; more?: 
   )
 }
 
-function GroupCard({ gr, code, nearest, selected, onSelect, narrow, spark }: { gr: Group; code: string; nearest: Item; selected: string; onSelect: (ref: string) => void; narrow: boolean; spark: (g: PageGauge) => Point[] }) {
+function GroupCard({ gr, code, nearest, selected, onSelect, narrow, spark, detail }: { gr: Group; code: string; nearest: Item; selected: string; onSelect: (ref: string) => void; narrow: boolean; spark: (g: PageGauge) => Point[]; detail: ReactNode }) {
   const notes = [gr.items.length > 1 ? 'Upstream to downstream' : null, gr.joins, gr.extra ? `Added: the nearest gauge to ${code} not held by a lock or weir.` : null].filter(Boolean) as string[]
   const near = (it: Item) => (it === nearest ? <span className="nearest">Nearest</span> : null)
   const rows = gr.items.map((it, k) => {
@@ -110,7 +110,7 @@ function GroupCard({ gr, code, nearest, selected, onSelect, narrow, spark }: { g
       return (
         <div key={g.ref}>
           {between.map((t) => <div className="b-join" key={t}>{t}</div>)}
-          <button type="button" className="b-row" aria-pressed={sel} onClick={() => onSelect(g.ref)}>
+          <button type="button" className="b-row" aria-pressed={sel} data-chosen={sel || undefined} onClick={() => onSelect(g.ref)}>
             <span>
               <h4 className="gname">{g.name}{near(it)}</h4>
               <span className="gsub">{g.place && `${placeLine(g.place, true)} · `}{milesText(it.miles)} away</span>
@@ -121,19 +121,21 @@ function GroupCard({ gr, code, nearest, selected, onSelect, narrow, spark }: { g
               <span className="note">{g.now && !isSilent(g) ? shortChange(g.now.ch) : ''}</span>
             </span>
           </button>
+          {sel && detail}
         </div>
       )
     }
     return [
       ...between.map((t) => <tr className="joins" key={t}><td colSpan={6}>{t}</td></tr>),
-      <tr key={g.ref} aria-selected={sel} tabIndex={0} onClick={() => onSelect(g.ref)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect(g.ref) } }}>
-        <td><b>{g.name}</b>{near(it)}<div className="gsub">{g.place && `${placeLine(g.place, true)} · `}{milesText(it.miles)} away</div></td>
+      <tr key={g.ref} aria-selected={sel} data-chosen={sel || undefined} tabIndex={0} onClick={() => onSelect(g.ref)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect(g.ref) } }}>
+        <td><b className={sel ? 'gname-chosen' : undefined}>{g.name}</b>{near(it)}<div className="gsub">{g.place && `${placeLine(g.place, true)} · `}{milesText(it.miles)} away</div></td>
         <td><JChip g={g} /></td>
         <td className="mono"><b>{g.now ? metres(g.now.v) : '–'}</b><div className="note">{timeOf(g)}</div></td>
         <td>{g.now && !isSilent(g) ? <>{shortChange(g.now.ch) ?? '–'}{g.now.ch !== null && isSteady(g.now.ch) && <div className="note">{changeFigure(g.now.ch)}</div>}</> : '–'}</td>
         <td>{g.yearAgo ? <>{metres(g.yearAgo.v)}{g.yearAgo.word && <div className="note">{g.yearAgo.word}</div>}</> : <span className="muted">–</span>}</td>
         <td><Spark g={g} pts={spark(g)} /></td>
       </tr>,
+      ...(sel ? [<tr className="detail-row" key={`${g.ref}-detail`}><td colSpan={6}>{detail}</td></tr>] : []),
     ]
   })
   return (
@@ -165,7 +167,7 @@ function ChartBlock({ part, g, weeks, narrow }: { part: 'hours' | 'hours42' | 'd
 
 /** The chosen gauge in detail. `sub` is the line under its name (river and distance, or
  *  river and county in an area view). */
-export function Detail({ g, sub, narrow }: { g: PageGauge; sub: string; narrow: boolean }) {
+export function Detail({ g, sub, narrow, inline = false }: { g: PageGauge; sub: string; narrow: boolean; inline?: boolean }) {
   const [weeks, setWeeks] = useState<Weeks>(savedWeeks)
   const part = hourly(weeks) ? (weeks <= 2 ? 'hours' : 'hours42') : 'daily'
   const choose = (w: Weeks) => {
@@ -176,12 +178,12 @@ export function Detail({ g, sub, narrow }: { g: PageGauge; sub: string; narrow: 
   const note = heldNote(g)
   const cmp = comparisons(g, ctx)
   return (
-    <div className={`card b-detail${cmp.length ? '' : ' b-detail-one'}`} id="detail">
+    <div className={`card b-detail${cmp.length ? '' : ' b-detail-one'}${inline ? ' b-detail-inline' : ''}`} id="detail">
       <div>
-        <h4 className="gname">{g.name}</h4>
-        <div className="gsub">{sub}</div>
+        {/* Under its own row (John, November 3rd), the name, line and label are already there. */}
+        {!inline && <><h4 className="gname">{g.name}</h4><div className="gsub">{sub}</div></>}
         <div className="detail-head">
-          <p className="headline"><JChip g={g} /></p>
+          {!inline && <p className="headline"><JChip g={g} /></p>}
           {fig && (() => { const m = /^\d+\.\d\d m/.exec(fig)?.[0]; return <p className="figure">{m ? <><b className="mono">{m}</b>{fig.slice(m.length)}</> : fig}</p> })()}
           {note && <p className="held-note">{note}</p>}
         </div>
@@ -203,7 +205,6 @@ export function PostcodeView({ code }: { code: string }) {
   const narrow = useIsNarrow(720)
   const loaded = useParts(['gauges', 'hours'])
   const [selected, setSelected] = useState<string | null>(null)
-  const detail = useRef<HTMLDivElement>(null)
   useEffect(() => { if (place) saveChoice({ kind: 'postcode', code }) }, [place, code])
   const at: [number, number] | null = place ? [place.latitude, place.longitude] : null
   const gauges = loaded.state === 'ready' ? loaded.value.gauges : null
@@ -220,8 +221,8 @@ export function PostcodeView({ code }: { code: string }) {
   }
   const select = (ref: string) => {
     setSelected(ref)
-    // On a computer too (fresh look 3.2): the detail is below the gauges, often off the screen.
-    requestAnimationFrame(() => detail.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
+    // The chosen row to the top, its details just below it (John, November 3rd).
+    requestAnimationFrame(() => document.querySelector('[data-chosen]')?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
   }
   return (
     <>
@@ -252,8 +253,8 @@ export function PostcodeView({ code }: { code: string }) {
               </section>
               <section className="source">
                 <div className="section-head"><h3>The nearest gauges, river by river</h3><span className="note">{narrow ? 'Tap' : 'Choose'} one to see it in detail.</span></div>
-                {groups.map((gr) => <GroupCard key={gr.unnamed ? gr.items[0].g.ref : gr.name} gr={gr} code={code} nearest={nearest} selected={chosen.g.ref} onSelect={select} narrow={narrow} spark={spark} />)}
-                <div ref={detail} className="detail-anchor"><Detail key={chosen.g.ref} g={chosen.g} sub={capital([chosen.g.river, chosen.g.place && placeLine(chosen.g.place, false), milesText(chosen.miles)].filter(Boolean).join(' · '))} narrow={narrow} /></div>
+                {groups.map((gr) => <GroupCard key={gr.unnamed ? gr.items[0].g.ref : gr.name} gr={gr} code={code} nearest={nearest} selected={chosen.g.ref} onSelect={select} narrow={narrow} spark={spark}
+                  detail={<Detail key={chosen.g.ref} g={chosen.g} sub="" narrow={narrow} inline />} />)}
                 <p className="data-credit">This uses Environment Agency flood and river level data from the real-time data API (Beta).</p>
               </section>
             </>
