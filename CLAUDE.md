@@ -99,6 +99,8 @@ bands or a range), `tsc -b`, lint clean, build; Chromium at 1200px and 390px wit
 year (48 views: Caversham Lock, Reading, Sheepbridge, Arborfield Bridge, CA12, HU1): the line and its key entry always
 together, the paragraph present, no "usual range" left, no errors, no sideways scroll. Left as it was: About's lock
 sentence still ends "doesn't tell us much about low water" (John asked only for the chart line). Merged at John's word.
+Branch tidied: "Delete merged branches" trial run (run 41597617382: one merged branch, nothing unmerged), then the
+real run (41597655729); `git ls-remote --heads origin` shows only `main`.
 
 ### 2026-11-03 — the EA's top of normal range on every chart (branch `held-wording`, not merged)
 
