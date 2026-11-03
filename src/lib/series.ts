@@ -75,3 +75,18 @@ export function bandDays(g: PageGauge, w: Weeks, made: string, part: PageHours |
   }
   return out
 }
+
+/** The chart's lowest and highest heights: the levels shown and the gauge's usual levels over
+ *  the year, with a little room above and below. */
+export function heights(g: PageGauge, all: Point[]): [number, number] {
+  let lo = Math.min(...all.map((p) => p[1])), hi = Math.max(...all.map((p) => p[1]))
+  if (g.span) { lo = Math.min(lo, g.span[0]); hi = Math.max(hi, g.span[1]) }
+  const pad = (hi - lo) * 0.08 || 50
+  return [lo - pad, hi + pad]
+}
+
+/** Whether the top of normal range is drawn as a line on this chart (it fits in its height). */
+export function topLineShown(g: PageGauge, pts: Point[], latest: Point | null, hasBands: boolean): boolean {
+  const all = latest ? [...pts, latest] : pts
+  return !!g.typical && hasBands && all.length > 0 && g.typical[1] <= heights(g, all)[1]
+}

@@ -8,7 +8,7 @@ import { useParts, type Loaded } from '../lib/load.ts'
 import { district } from '../lib/postcode.ts'
 import type { PageGauge } from '../lib/pageTypes.ts'
 import { useIsNarrow } from '../lib/responsive.ts'
-import { bandDays, hourly, PERIODS, points, type Point, type Weeks } from '../lib/series.ts'
+import { bandDays, hourly, PERIODS, points, topLineShown, type Point, type Weeks } from '../lib/series.ts'
 import {
   chip, comparisons, figureLine, heldNote, isSilent, joinsBetween, NEAR_MILES, nearestGauges, readingTime, riverGroups, shortChange, summary,
   changeFigure, isSteady, type Ctx, type Group, type Item,
@@ -160,7 +160,7 @@ function ChartBlock({ part, g, weeks, narrow }: { part: 'hours' | 'hours42' | 'd
   const p = loaded.value[part]
   const pts = points(g, weeks, meta.made, p)
   const bands = bandDays(g, weeks, meta.made, p)
-  return <><Chart g={g} weeks={weeks} made={meta.made} pts={pts} bands={bands} latest={latestPoint(g)} narrow={narrow} /><Key g={g} narrow={narrow} hasBands={bands.length > 0} /></>
+  return <><Chart g={g} weeks={weeks} made={meta.made} pts={pts} bands={bands} latest={latestPoint(g)} narrow={narrow} /><Key g={g} narrow={narrow} hasBands={bands.length > 0} topLine={topLineShown(g, pts, latestPoint(g), bands.length > 0)} /></>
 }
 
 /** The chosen gauge in detail. `sub` is the line under its name (river and distance, or

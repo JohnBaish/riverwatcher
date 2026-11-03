@@ -109,7 +109,7 @@ export function chip(g: PageGauge, c: Ctx): Chip {
   const j = g.j
   if (j.basis === 'history') return { text: `${capital(j.word)} for ${toy}`, kind: kindOf(j.word) }
   if (j.basis === 'held') return j.word ? { text: `${capital(j.word)} for ${toy}`, kind: kindOf(j.word) } : { text: `Held steady by ${heldBy(g)}`, kind: 'held' }
-  if (j.basis === 'typical') return { text: `${capital(j.word)} its usual range`, kind: 'range' }
+  if (j.basis === 'typical') return { text: `${capital(j.word)} its normal range`, kind: 'range' }
   return { text: 'No long record to compare.', kind: 'plain' }
 }
 
@@ -173,8 +173,8 @@ export function comparisons(g: PageGauge, c: Ctx): [string, string][] {
       : (p <= 0.5 ? `Lower than on any ${toy} day since ${g.fromYear}.` : `Lower than on ${Math.round(100 - p)}% of ${toy} days since ${g.fromYear}.`)])
   }
   if (g.since && !isSilent(g)) out.push(['Since', g.since.year ? `The ${g.since.way} for the time of year since ${g.since.year}.` : `The ${g.since.way} for the time of year since records began in ${g.fromYear}.`])
-  if (j.basis === 'typical' && g.typical) out.push(['Usual range', `The Environment Agency gives ${metres(g.typical[0])} to ${metres(g.typical[1])} as this gauge's usual range, all year round. It has no long record to compare with past years.`])
-  if (j.basis === 'none') out.push(['No long record', "This gauge has no long record, and the Environment Agency gives no usual range for it, so its level can't be compared with past years."])
+  if (j.basis === 'typical' && g.typical) out.push(['Normal range', `The Environment Agency gives ${metres(g.typical[0])} to ${metres(g.typical[1])} as this gauge's normal range, all year round. It has no long record to compare with past years.`])
+  if (j.basis === 'none') out.push(['No long record', "This gauge has no long record, and the Environment Agency gives no normal range for it, so its level can't be compared with past years."])
   if (g.yearAgo) out.push(['A year ago', g.yearAgo.word ? `${metres(g.yearAgo.v)}, ${g.yearAgo.word} for the time of year.` : `${metres(g.yearAgo.v)}.`])
   if (g.record) out.push(['Highest on record', `${metres(g.record.v)}, on ${dateYear(g.record.date)}.`])
   if (g.gaps.length) out.push(['History incomplete', g.gaps.map((x) => `No records from ${monthYear(x.from)} to ${x.to ? monthYear(x.to) : 'now'}.`).join(' ')])
@@ -232,13 +232,13 @@ export function riverSentence(gr: Group, c: Ctx): string {
   if (typical.length) {
     const words = [...new Set(typical.map((g) => (g.j.basis === 'typical' ? g.j.word : '')))]
     const at = typical.length === 1 ? atName(typical[0]) : ''
-    return words.length === 1 ? `${cap}${at} is ${words[0]} its usual range.` : `${cap} is ${list(typical.map((g) => `${g.j.basis === 'typical' ? g.j.word : ''} its usual range at ${g.name}`))}.`
+    return words.length === 1 ? `${cap}${at} is ${words[0]} its normal range.` : `${cap} is ${list(typical.map((g) => `${g.j.basis === 'typical' ? g.j.word : ''} its normal range at ${g.name}`))}.`
   }
   return live.length ? `${cap} has no long record to compare with here.` : `${cap} has sent no reading for more than six hours.`
 }
 
 /** A group with nothing to say but "held steady here, and isn't high": every reporting gauge
- *  is held steady (none high, none free-flowing, none with only a usual range). */
+ *  is held steady (none high, none free-flowing, none with only a normal range). */
 const onlySteady = (gr: Group) => {
   const live = gr.items.map((i) => i.g).filter((g) => !isSilent(g))
   return live.length > 0 && live.every(heldSteady)

@@ -123,7 +123,7 @@ reading (Roe Bridge on the Brock has one day in 1919, then nothing for decades).
    10% to 25%), very high (highest 10%), written "Normal for late October". "Early", "mid" and
    "late" are days 1 to 10, 11 to 20 and 21 onwards.
 5. **At least three years of history** are needed; otherwise the EA's typical range (exceeded
-   95% and 5% of the time, all year round): "Below / Within / Above its usual range".
+   95% and 5% of the time, all year round): "Below / Within / Above its normal range".
 6. **Held gauges** (Agreed, October 30th): only "High" or "Very high" for the time of year is
    said; otherwise "Held steady by a lock or weir". Their time-of-year percentage and "since"
    lines are left out. *Fen drains and rhynes in the drained lowlands are held too (John,
@@ -232,7 +232,7 @@ with the switch).
    in the five judgement colours for each day of the period, all at the same strength (John,
    October 31st, option A; at first the outer two were paler, which made "very high" look weaker
    than "high"); at a held gauge
-   only the high zones. Its height always covers the gauge's usual range over the whole year, so a
+   only the high zones. Its height always covers the gauge's normal range over the whole year, so a
    small wobble looks small. The key: "Level, Very low, Low, Normal, High, Very high for the time of
    year", left-aligned to the chart's own left edge, in line with its first date (Agreed, John,
    October 30th). A tooltip on hover or touch.
@@ -278,7 +278,7 @@ its word; each arm checked with the dataviz validator in light and dark.
 
 The text is in `src/components/About.tsx`, which is the reference. Since October 30th: the
 sentences on "History incomplete", fen drains and rhynes, and gauges with neither a long record
-nor a usual range were added (drafted October 31st, agreed November 2nd), a sentence on gauges left out as probably faulty ("Gauges whose level hasn't moved for weeks, or that keep repeating the same reading, are left out, as they're probably faulty."), and a last paragraph on
+nor a normal range were added (drafted October 31st, agreed November 2nd), a sentence on gauges left out as probably faulty ("Gauges whose level hasn't moved for weeks, or that keep repeating the same reading, are left out, as they're probably faulty."), and a last paragraph on
 the area views, with John's changes: "In a county, a region, or in the England view, the summary
 counts only gauges that can be compared with past years. Those on rivers with locks and weirs,
 and fen drains, are only counted when they're high. "The most unusual" are the gauges that are

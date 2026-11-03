@@ -5,7 +5,7 @@
 import { existsSync, readFileSync } from 'node:fs'
 import { clock, dateYear, metres, milesText, monthYear } from '../src/lib/format.ts'
 import type { PageGauge } from '../src/lib/pageTypes.ts'
-import { bandAt, undelta } from '../src/lib/series.ts'
+import { bandAt, topLineShown, undelta } from '../src/lib/series.ts'
 import {
   changeText, chip, comparisons, figureLine, heldNote, joinsBetween, nearestGauges, readingTime, riverGroups, riverSentence, shortChange, summary, theRiver,
   type Ctx, type Item,
@@ -87,7 +87,7 @@ eq('chip: very high', chip(g({ j: { basis: 'history', word: 'very high', percent
 eq('chip: held', chip(g({ held: 'name', j: { basis: 'held', word: null } }), c), { text: 'Held steady by a lock or weir', kind: 'held' })
 eq('chip: held but high', chip(g({ held: 'thames', j: { basis: 'held', word: 'high' } }), c), { text: 'High for late October', kind: 'high' })
 eq('chip: a drain', chip(g({ held: 'drain', j: { basis: 'held', word: null } }), c), { text: 'Held steady by pumping', kind: 'held' })
-eq('chip: the typical range', chip(g({ j: { basis: 'typical', word: 'above' } }), c), { text: 'Above its usual range', kind: 'range' })
+eq('chip: the typical range', chip(g({ j: { basis: 'typical', word: 'above' } }), c), { text: 'Above its normal range', kind: 'range' })
 eq('chip: no record (a plain line)', chip(g({ j: { basis: 'none' } }), c), { text: 'No long record to compare.', kind: 'plain' })
 eq('chip: silent since yesterday', chip(g({ now: { v: 1210, age: 60 * 20, mean: null, ch: null } }), c), { text: 'No reading since Friday 2.04pm', kind: 'plain' })
 eq('reading time today', readingTime(c.made, 20, c.date), '9.44am')
@@ -120,10 +120,10 @@ eq('comparisons, held: no percentage or "since"', comparisons(g({ held: 'thames'
   ['Highest on record', '5.35 m, on December 5th 2015.'],
 ])
 eq('comparisons, the typical range', comparisons(g({ j: { basis: 'typical', word: 'within' }, typical: [132, 3100], fromYear: null, yearAgo: null, record: null }), c), [
-  ['Usual range', "The Environment Agency gives 0.13 m to 3.10 m as this gauge's usual range, all year round. It has no long record to compare with past years."],
+  ['Normal range', "The Environment Agency gives 0.13 m to 3.10 m as this gauge's normal range, all year round. It has no long record to compare with past years."],
 ])
 eq('comparisons, no record', comparisons(g({ j: { basis: 'none' }, fromYear: null, yearAgo: null, record: null }), c), [
-  ['No long record', "This gauge has no long record, and the Environment Agency gives no usual range for it, so its level can't be compared with past years."],
+  ['No long record', "This gauge has no long record, and the Environment Agency gives no normal range for it, so its level can't be compared with past years."],
 ])
 
 // ---- the nearest five and the groups ----
@@ -164,7 +164,7 @@ eq('no "North Drain at North Drain"', riverSentence(riverGroups(drain)[0], c), '
 const pumped: Item[] = [{ g: place('s', 'Bradney', 'Kings Sedgemoor Drain', 1, { held: 'drain', j: { basis: 'held', word: null } }), miles: 1, extra: false }, { g: place('t', 'Dunball', 'Kings Sedgemoor Drain', 2, { held: 'drain', j: { basis: 'held', word: null } }), miles: 2, extra: false }]
 eq('drains held by pumping', riverSentence(riverGroups(pumped)[0], c), "Kings Sedgemoor Drain is held steady by pumping here, and isn't high for late October.")
 const typ: Item[] = [{ g: place('u', 'Uggleton', 'River Ugg', 1, { j: { basis: 'typical', word: 'within' } }), miles: 1, extra: false }]
-eq('the usual range', riverSentence(riverGroups(typ)[0], c), 'The Ugg at Uggleton is within its usual range.')
+eq('the normal range', riverSentence(riverGroups(typ)[0], c), 'The Ugg at Uggleton is within its normal range.')
 const silent: Item[] = [{ g: place('v', 'V', 'River Vee', 1, { now: { v: 100, age: 500, mean: null, ch: null } }), miles: 1, extra: false }]
 eq('every gauge silent', riverSentence(riverGroups(silent)[0], c), 'The Vee has sent no reading for more than six hours.')
 eq('the summary', summary('RG4', groups.slice(0, 2), c), "Near RG4: the Thames is very high for late October at B Lock, and held steady by a lock or weir elsewhere. The Kennet is held steady by a lock or weir here, and isn't high for late October.")
@@ -271,6 +271,16 @@ if (existsSync(new URL('gauges.json', dataDir))) {
   eq('every area: no "undefined", "null" or "NaN"', badArea, 0)
   eq('47 counties with gauges, nine regions', [p.meta.counties.length, p.meta.regions.length], [47, 9])
   eq('England counts every gauge with a region', areaGauges(p.gauges, 'england').length, p.gauges.filter((x) => x.region && !x.quiet).length)
+}
+
+// The EA's top of normal range: drawn when it fits the chart's usual height, not otherwise
+// (John, November 3rd; Caversham Lock and Sheepbridge's real figures, mm).
+{
+  const pts: [number, number][] = [[0, 140], [1, 280]]
+  eq('top line drawn at Caversham Lock', topLineShown(g({ typical: [68, 300], span: [71, 319] }), pts, null, true), true)
+  eq('top line not drawn at Sheepbridge', topLineShown(g({ typical: [80, 890], span: [74, 449] }), pts, null, true), false)
+  eq('no top line without bands', topLineShown(g({ typical: [68, 300], span: [71, 319] }), pts, null, false), false)
+  eq('no top line without a range', topLineShown(g({ typical: null, span: [71, 319] }), pts, null, true), false)
 }
 
 console.log(`${passed} passed${failures.length ? `, ${failures.length} failed:\n  ${failures.join('\n  ')}` : ''}`)

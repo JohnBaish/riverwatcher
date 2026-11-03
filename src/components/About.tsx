@@ -14,6 +14,13 @@ export function AboutFigures() {
         compared with each other.
       </p>
       <p>
+        The dashed line on the charts is the top of the Environment Agency's normal range for that gauge. It's a fixed
+        height, the same all year round, so it can help show whether the river is high enough to reach a path or bank you
+        know. It isn't the same as "high for the time of year": a river can be very high for the season and still be well
+        below it. Where the top of the normal range is well above the river's usual levels, the chart says so rather than
+        drawing the line.
+      </p>
+      <p>
         "For the time of year" compares the last 24 hours with the same gauge's levels on the days a week either side of
         today's date, in every year on record. There's a lot of variation in when the historical records for each gauge
         start. Just under half the gauges have records from before 2000, a few go back to the 1950s, and some started only
@@ -25,7 +32,7 @@ export function AboutFigures() {
         On rivers with locks and weirs, such as the Thames, the level is kept steady for boats, so it rises in very wet
         weather but doesn't tell us much about low water. For these, Riverwatcher only says when the level is high.
         {' '}Drains and rhynes in the fens and levels are treated the same way, as their levels are usually set by pumping.
-        {' '}Where a gauge has no long record, Riverwatcher uses the Environment Agency's own usual range for it, which covers
+        {' '}Where a gauge has no long record, Riverwatcher uses the Environment Agency's own normal range for it, which covers
         the whole year.
         {' '}A few gauges have neither, so Riverwatcher shows how their level has moved but not whether it is high or low.
         {' '}Gauges whose level hasn't moved for weeks, or that keep repeating the same reading, are left out, as they're

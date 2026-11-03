@@ -1,12 +1,12 @@
 // A gauge's chart (SPEC §7.6; the agreed design, option B revised): the level over the chosen
 // period, on the five judgement zones for each day (only the high ones at a held gauge), with
-// a tooltip on hover or touch. Its height always covers the gauge's usual range over the
+// a tooltip on hover or touch. Its height always covers the gauge's normal range over the
 // whole year, so a small wobble looks small.
 
 import { useRef, useState, type PointerEvent } from 'react'
 import { clock, metres, shortDate } from '../lib/format.ts'
 import type { PageGauge } from '../lib/pageTypes.ts'
-import { CHART_LEFT, chartWidth, type Band, type Point, type Weeks } from '../lib/series.ts'
+import { CHART_LEFT, chartWidth, heights, type Band, type Point, type Weeks } from '../lib/series.ts'
 
 function niceTicks(lo: number, hi: number, n: number): number[] {
   const span = hi - lo || 100, step0 = span / n, mag = Math.pow(10, Math.floor(Math.log10(step0)))
@@ -26,16 +26,12 @@ export function Chart({ g, weeks, made, pts, bands, latest, narrow }: Props) {
   const all = latest ? [...pts, latest] : pts
   if (!all.length) return <p className="muted">No readings to chart.</p>
   const t1 = Date.parse(made), t0 = t1 - weeks * 7 * 86400e3
-  let lo = Math.min(...all.map((p) => p[1])), hi = Math.max(...all.map((p) => p[1]))
-  if (g.span) { lo = Math.min(lo, g.span[0]); hi = Math.max(hi, g.span[1]) }
+  const [lo, hi] = heights(g, all)
   // The Environment Agency's top of normal range, an absolute height, as a dashed line on
-  // charts with the time-of-year bands; always in view (John, November 3rd). Charts without
-  // bands already show the whole range as two grey dashed lines.
+  // charts with the time-of-year bands (John, November 3rd). Where it's above the chart's usual
+  // height it's said in words instead, so the chart isn't squashed. Charts without bands
+  // already show the whole range as two grey dashed lines.
   const top = g.typical && bands.length ? g.typical[1] : null
-  if (top !== null && import.meta.env.VITE_TOPLINE === 'always') hi = Math.max(hi, top)
-  const pad = (hi - lo) * 0.08 || 50
-  lo -= pad; hi += pad
-  // Above the chart's usual height: said in words at the top rather than squashing the chart.
   const topAbove = top !== null && top > hi
   const L = CHART_LEFT, R = 10, T = 10, B = 26
   const x = (t: number) => L + ((t - t0) / (t1 - t0)) * (W - L - R)
@@ -110,7 +106,7 @@ export function Chart({ g, weeks, made, pts, bands, latest, narrow }: Props) {
 const ZONES: [string, string][] = [['vlow', 'Very low'], ['low', 'Low'], ['normal', 'Normal'], ['high', 'High'], ['vhigh', 'Very high']]
 
 /** The key, aligned with the chart's own left edge (John, October 30th). */
-export function Key({ g, narrow, hasBands }: { g: PageGauge; narrow: boolean; hasBands: boolean }) {
+export function Key({ g, narrow, hasBands, topLine }: { g: PageGauge; narrow: boolean; hasBands: boolean; topLine: boolean }) {
   const pad = `${((CHART_LEFT / chartWidth(narrow)) * 100).toFixed(2)}%`
   if (hasBands) {
     const zs = g.held !== null ? ZONES.slice(3) : ZONES
@@ -120,10 +116,10 @@ export function Key({ g, narrow, hasBands }: { g: PageGauge; narrow: boolean; ha
         {zs.map(([c, w], i) => (
           <span key={c} className={i === zs.length - 1 ? 'nowrap' : undefined}><i className={`lz lz-${c}`} />{w}{i === zs.length - 1 ? ' for the time of year' : ''}</span>
         ))}
-        {g.typical && <span className="nowrap"><i className="li-top" />Environment Agency’s top of normal range</span>}
+        {topLine && <span className="nowrap"><i className="li-top" />Environment Agency’s top of normal range</span>}
       </div>
     )
   }
-  if (g.typical) return <div className="legend" style={{ paddingLeft: pad }}><span><i className="li-line" />Level</span><span><i className="li-typ" />The Environment Agency's usual range</span></div>
+  if (g.typical) return <div className="legend" style={{ paddingLeft: pad }}><span><i className="li-line" />Level</span><span><i className="li-typ" />The Environment Agency's normal range</span></div>
   return <div className="legend" style={{ paddingLeft: pad }}><span><i className="li-line" />Level</span></div>
 }

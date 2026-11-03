@@ -88,6 +88,18 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-03 — top of normal range: John's choices; "normal range" throughout; merged to `main`
+
+**John:** the note above the chart where the line doesn't fit (as built); the "About these figures" paragraph agreed;
+"usual range" becomes "normal range" throughout (About, the no-record gauges' line and key, the detail line, the summary,
+SPEC). **What:** the paragraph after the one on each gauge's own zero (`About.tsx`); the `VITE_TOPLINE` switch removed;
+the key shows the dashed entry only when the line is drawn (`topLineShown` and `heights` in `src/lib/series.ts`, shared by
+the chart and the key). **Verified:** checks 125 + 130 (new: the line at Caversham Lock, not at Sheepbridge, none without
+bands or a range), `tsc -b`, lint clean, build; Chromium at 1200px and 390px with touch, light and dark, two weeks and a
+year (48 views: Caversham Lock, Reading, Sheepbridge, Arborfield Bridge, CA12, HU1): the line and its key entry always
+together, the paragraph present, no "usual range" left, no errors, no sideways scroll. Left as it was: About's lock
+sentence still ends "doesn't tell us much about low water" (John asked only for the chart line). Merged at John's word.
+
 ### 2026-11-03 — the EA's top of normal range on every chart (branch `held-wording`, not merged)
 
 **John:** yes, on all gauges, with care for dark-mode text on Macs. **What (`Chart.tsx`, `global.css`):** on charts with
