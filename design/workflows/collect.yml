@@ -65,8 +65,19 @@ jobs:
             exit 0
           fi
           git commit -q -m "Data: $(date -u +'%Y-%m-%d %H:%M') UTC"
-          git pull --rebase origin "$GITHUB_REF_NAME"
-          git push origin "HEAD:$GITHUB_REF_NAME"
+          # GitHub's server sometimes refuses a push for a moment ("Internal Server Error",
+          # November 4th 2026), so try three times, waiting 15 and then 30 seconds.
+          for wait in 15 30 0; do
+            if git pull --rebase origin "$GITHUB_REF_NAME" && git push origin "HEAD:$GITHUB_REF_NAME"; then
+              exit 0
+            fi
+            if [ "$wait" -eq 0 ]; then break; fi
+            git rebase --abort 2>/dev/null || true
+            echo "::warning::Saving to GitHub failed; trying again in $wait seconds."
+            sleep "$wait"
+          done
+          echo '::error::Saving to GitHub failed three times.'
+          exit 1
 
       # Vercel builds the site from JohnBaish/riverwatcher, so a data commit here doesn't start a
       # build by itself: the deploy hook (a secret, made by John in Vercel) asks for one. Without

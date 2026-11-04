@@ -91,6 +91,17 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-04 — the collector tries saving three times (data repo `c78ee0b`)
+
+Two gaps this morning, both GitHub's own server: at 10.10 UTC cron-job.org's call got "502 Bad Gateway",
+so no run started; at 11.10 UTC the run collected but GitHub refused the save ("Internal Server Error"),
+and the run failed. The 12.10 run worked. **John:** retry the save, and merge. **What:** the Collect
+workflow's Commit step now tries pull and push three times (waits of 15 and 30 seconds, abandoning any
+half-done rebase between tries), warning on each retry and failing only after the third; the drafted copy
+in `design/workflows/collect.yml` matches. Nothing can be done here about a run that never starts.
+**Verified:** the workflow parses; the loop tried here with a pretend push that succeeds on the first,
+third and never: exits 0, 0 and 1. Not checked: a real refused push (can't be made to happen).
+
 ### 2026-11-03 — a gauge's details just below it in the list, style A (branch `details-inline`, not merged)
 
 **John:** not folded; the chosen gauge's name in the larger heading type in its highlighted row, the details' repeated
