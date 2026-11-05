@@ -96,7 +96,7 @@ Scope (decided by John):
 John: a "Curated combinations" list below "All of England" on the chooser, and a sentence for
 "About these figures" (SPEC §8.5). The first, "Berks, N Hants, S Oxon", from a numbered list of
 the 24 council areas in the three counties: the six Berkshire unitaries, Basingstoke and Deane,
-and Vale of White Horse. Agreed: the gauge list needs council areas added from OS Boundary-Line
+and South Oxfordshire (John first said Vale of White Horse, then corrected it to South Oxfordshire). Agreed: the gauge list needs council areas added from OS Boundary-Line
 (district names to be checked there); the full stop goes outside the bracket. Nothing built.
 
 ### 2026-11-05 — tapping a river's band opens its first gauge (branch `river-head-tap`, merged)
