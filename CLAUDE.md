@@ -94,6 +94,13 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-05 — "with the highest for the time of year first" (branch `curated-combinations`, not merged)
+
+John: a combination's full list reads "All 144 gauges in this combined area, with the highest for
+the time of year first", and "with the" in every view's ("All 55 gauges in Berkshire, with the
+highest …"). `AreaView.tsx`. Checks 125 + 158, `tsc -b`, lint, build; Chromium at 1200px and
+390px with touch (a combination and Berkshire): both labels, no errors, no sideways scrolling.
+
 ### 2026-11-05 — curated combinations built (branch `curated-combinations`, not merged)
 
 **John:** build the two agreed combinations. **What:** each gauge's council area from OS

@@ -169,7 +169,7 @@ function Area({ kind, name, os, refs }: { kind: AreaKind; name: string; os?: str
                   {belowEnds && fullDetail}
                   {!wide && (
                     <details className="all-gauges">
-                      <summary>All {countOf(gauges.length, 'gauge')} {where}, highest for the time of year first</summary>
+                      <summary>All {countOf(gauges.length, 'gauge')} {kind === 'combination' ? 'in this combined area' : where}, with the highest for the time of year first</summary>
                       {rows(ranked, 'all')}
                     </details>
                   )}
