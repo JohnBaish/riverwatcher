@@ -91,6 +91,14 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-05 — curated combinations: the first one chosen (notes only, straight to `main`)
+
+John: a "Curated combinations" list below "All of England" on the chooser, and a sentence for
+"About these figures" (SPEC §8.5). The first, "Berks, N Hants, S Oxon", from a numbered list of
+the 24 council areas in the three counties: the six Berkshire unitaries, Basingstoke and Deane,
+and Vale of White Horse. Agreed: the gauge list needs council areas added from OS Boundary-Line
+(district names to be checked there); the full stop goes outside the bracket. Nothing built.
+
 ### 2026-11-05 — tapping a river's band opens its first gauge (branch `river-head-tap`, merged)
 
 **John:** tapping the river's band (the count, the name, "Upstream to downstream") should open the gauge below, as tapping

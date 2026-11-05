@@ -280,6 +280,16 @@ its word; each arm checked with the dataviz validator in light and dark.
    folded labels, the chooser's England line, flood warnings placed by their nearest gauge (ten
    listed in a region or England, then "And N more in force here"), and "on the Isle of Wight".
 
+5. **Curated combinations** (Agreed in outline, John, November 5th 2026; not built yet): a
+   fourth list of choices below "All of England", headed "Curated combinations", each a named
+   group of council areas shown as an area view. The first, "Berks, N Hants, S Oxon": Bracknell
+   Forest, Reading, Slough, West Berkshire, Windsor and Maidenhead, Wokingham, Basingstoke and
+   Deane, and Vale of White Horse. Needs each gauge's council area (district or unitary) added to
+   the gauge list from OS Boundary-Line, with the district names checked there. "About these
+   figures" to add: "Curated combinations have been created specifically for individual groups of
+   users. Email workshop@baish.net if you would like one (subject to capacity)." The idea may be
+   reused in Refueller and Hindcaster later.
+
 ## 9. "About these figures" (Agreed, John, November 2nd 2026)
 
 The text is in `src/components/About.tsx`, which is the reference. Since October 30th: the
