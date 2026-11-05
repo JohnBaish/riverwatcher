@@ -277,8 +277,10 @@ its word; each arm checked with the dataviz validator in light and dark.
 4. **Wording** (Agreed, John, November 2nd, as drafted in stage 4): the summary and its variants
    (`areaSummary` in `src/lib/area.ts`), the headings ("The most unusual for the time of year",
    Highest, Lowest), "Held by a lock or weir, so it's only counted when high.", the kicker, the
-   folded labels, the chooser's England line, flood warnings placed by their nearest gauge (ten
-   listed in a region or England, then "And N more in force here"), and "on the Isle of Wight".
+   folded labels, the chooser's England line, flood warnings placed by their nearest gauge. Since November
+   5th (John): in a county, the flood alerts are folded away ("Seven flood alerts in force here",
+   opened with a tap); in a region, England or a curated combination, the flood warnings are too;
+   severe flood warnings and the postcode view's are never folded, and "on the Isle of Wight".
 
 5. **Curated combinations** (Agreed and live, John, November 5th 2026): a
    fourth list of choices below "All of England", headed "Curated combinations", each a named

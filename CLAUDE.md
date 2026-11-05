@@ -94,6 +94,19 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-05 — flood alerts and warnings folded away in area views (branch `flood-folds`, not merged)
+
+John (after mock-ups of one alert and two warnings near RG4, seven and five in Berkshire, ten and
+six in S Hants, Dorset, IoW, all made up with real EA flood-area names): option 3. A county shows
+its flood warnings in full and folds its alerts under "Seven flood alerts in force here"; a region,
+England or a curated combination folds both ("Six flood warnings in force here"). Severe flood
+warnings are never folded (Claude's judgement), and the postcode view is unchanged. The fold is a
+bar in the warning's colours, at least 44px tall; it opens to the usual cards. The "ten, then And N
+more" limit for regions and England is gone, as the lists are folded. `FloodList` and `FloodCard`
+in `PostcodeView.tsx`, `details.flood-fold` in `global.css`. Checks 125 + 160, `tsc -b`, lint,
+build; Chromium at 1200px and 390px with touch, light and dark, with the made-up warnings: no
+errors, no sideways scrolling.
+
 ### 2026-11-05 — Salterns left out; a sentence on Ordnance Datum (branch `salterns-about`, merged)
 
 John asked how Salterns (E11610) could read −1.18 m: it is one of 450 gauges measured in mAOD

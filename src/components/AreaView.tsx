@@ -17,8 +17,6 @@ import { countOf } from '../lib/words.ts'
 import { CollectedLine, Detail, FloodList, JChip, Spark, Waiting } from './PostcodeView.tsx'
 
 const ctx: Ctx = { made: meta.made, date: meta.date }
-/** The most flood warnings listed in a region or England before "and N more". */
-const FLOODS_SHOWN = 10
 const TOP = 3
 /** Which list a gauge was chosen from: a gauge can be in more than one, and its details open
  *  under the row that was tapped (John, November 3rd). */
@@ -125,7 +123,6 @@ function Area({ kind, name, os, refs }: { kind: AreaKind; name: string; os?: str
           // A county or a curated combination lists every gauge; a region or England, the ten
           // highest and lowest.
           const wide = kind === 'region' || kind === 'england'
-          const shownFloods = wide ? floods.slice(0, FLOODS_SHOWN) : floods
           const top = ends(gauges, TOP, meta.date)
           const ranked = byRank(gauges, meta.date)
           // Only gauges that really are high or low, at most ten (John, November 2nd, option B).
@@ -153,7 +150,7 @@ function Area({ kind, name, os, refs }: { kind: AreaKind; name: string; os?: str
           const rows = (gs: PageGauge[], list: ListId) => <Rows gauges={gs} kind={kind} list={list} chosen={choice} onSelect={select} narrow={narrow} spark={spark} detail={detail} />
           return (
             <>
-              <FloodList floods={shownFloods} more={floods.length - shownFloods.length} />
+              <FloodList floods={floods} fold={kind === 'county' ? 'alerts' : 'both'} />
               <section className="source">
                 <div className="section-head"><h3>Summary</h3></div>
                 <div className="card roundup"><p>{areaSummary(name, gauges, ctx, where).join(' ')}</p></div>

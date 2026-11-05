@@ -353,6 +353,11 @@ details summary { cursor: pointer; font-weight: 600; margin-bottom: var(--space-
 .alert.sev-2 .sev { color: var(--flood-red); }
 .alert.sev-1 { background: var(--flood-severe); border: 3px solid var(--flood-severe); }
 .alert.sev-1, .alert.sev-1 .sev, .alert.sev-1 h4, .alert.sev-1 a { color: var(--flood-on-severe); }
+/* Folded flood warnings and alerts (John, November 5th): one bar saying how many, in the
+   warning's colours, opened with a tap. */
+details.flood-fold > summary { background: var(--alert-bg); border: 1.5px solid var(--alert-edge); border-radius: var(--radius-md); padding: var(--space-4) var(--space-6); margin: 0; font-family: var(--font-heading); font-weight: 400; font-size: 18px; min-height: 44px; }
+details.flood-fold.sev-2 > summary { border: 3px solid var(--flood-red); color: var(--flood-red); }
+details.flood-fold > .flood-fold-list { display: grid; gap: var(--space-3); margin-top: var(--space-3); }
 @media print {
   .collected { margin: 2px 0 0; font-size: 12px; }
   .footer-notice { margin-top: var(--space-6); break-inside: avoid; }

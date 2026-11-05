@@ -15,7 +15,7 @@ import {
 } from '../lib/view.ts'
 import { Chart, Key } from './Chart.tsx'
 import { saveChoice } from '../lib/route.ts'
-import { numberWord } from '../lib/words.ts'
+import { countOf, numberWord } from '../lib/words.ts'
 import type { Flood } from '../../scripts/lib/collect.ts'
 
 const ctx: Ctx = { made: meta.made, date: meta.date }
@@ -73,27 +73,49 @@ function Floods({ at }: { at: [number, number] }) {
   return <FloodList floods={meta.floods.filter((f) => f.lat !== null && f.long !== null && milesBetween(at, [f.lat, f.long]) <= NEAR_MILES)} />
 }
 
+/** One flood alert or warning, as a card. */
+function FloodCard({ f }: { f: Flood }) {
+  const t = f.changed ?? f.raised
+  const when = t ? new Date(t) : null
+  const today = when && new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/London' }).format(when) === meta.date
+  return (
+    <div className={`card alert sev-${f.level}`} role="note">
+      <span className="sev">{f.severity}</span>
+      <h4>{f.area}</h4>
+      <p>
+        {when && <>Issued at {clock(when)} {today ? 'today' : `on ${weekday(when)}`}. </>}
+        <a href={`https://check-for-flooding.service.gov.uk/target-area/${encodeURIComponent(f.id)}`} target="_blank" rel="noopener noreferrer">Read it on GOV.UK</a>
+      </p>
+    </div>
+  )
+}
+
+/** Which flood cards are folded away, to be opened with a tap (John, November 5th): none in a
+ *  postcode view; the flood alerts in a county; the flood warnings and the flood alerts in a
+ *  region, England or a curated combination. Severe flood warnings are never folded. */
+export type FloodFold = 'none' | 'alerts' | 'both'
+
 /** The flood warnings given (SPEC §7.2); nothing when there are none. */
-export function FloodList({ floods: near, more = 0 }: { floods: Flood[]; more?: number }) {
+export function FloodList({ floods: near, fold = 'none' }: { floods: Flood[]; fold?: FloodFold }) {
   if (!near.length) return null
+  const severe = near.filter((f) => f.level === 1)
+  const warnings = near.filter((f) => f.level === 2)
+  const alerts = near.filter((f) => f.level === 3)
+  const group = (fs: Flood[], folded: boolean, level: number, one: string) => {
+    if (!fs.length) return null
+    if (!folded) return fs.map((f) => <FloodCard f={f} key={f.id} />)
+    return (
+      <details className={`flood-fold sev-${level}`}>
+        <summary>{capital(countOf(fs.length, one))} in force here</summary>
+        <div className="flood-fold-list">{fs.map((f) => <FloodCard f={f} key={f.id} />)}</div>
+      </details>
+    )
+  }
   return (
     <section className="warnings">
-      {near.map((f) => {
-        const t = f.changed ?? f.raised
-        const when = t ? new Date(t) : null
-        const today = when && new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/London' }).format(when) === meta.date
-        return (
-          <div className={`card alert sev-${f.level}`} role="note" key={f.id}>
-            <span className="sev">{f.severity}</span>
-            <h4>{f.area}</h4>
-            <p>
-              {when && <>Issued at {clock(when)} {today ? 'today' : `on ${weekday(when)}`}. </>}
-              <a href={`https://check-for-flooding.service.gov.uk/target-area/${encodeURIComponent(f.id)}`} target="_blank" rel="noopener noreferrer">Read it on GOV.UK</a>
-            </p>
-          </div>
-        )
-      })}
-      {more > 0 && <p className="note">And {numberWord(more)} more in force here: see GOV.UK's Check for flooding.</p>}
+      {group(severe, false, 1, 'severe flood warning')}
+      {group(warnings, fold === 'both', 2, 'flood warning')}
+      {group(alerts, fold !== 'none', 3, 'flood alert')}
       <p className="not-service">Riverwatcher isn't a flood warning service. For warnings, see GOV.UK's Check for flooding or call Floodline on <span className="nowrap">0345 988 1188</span>.</p>
     </section>
   )
