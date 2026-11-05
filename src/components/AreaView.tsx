@@ -5,7 +5,7 @@
 
 import { useEffect, useState, type ReactNode } from 'react'
 import meta from 'virtual:riverwatcher/meta'
-import { areaFloods, areaGauges, areaSummary, byRank, ends, inPlace, listLabel, rankLine, TEN, type AreaKind } from '../lib/area.ts'
+import { areaFloods, areaGauges, areaSummary, byRank, ends, inArea, inPlace, listLabel, rankLine, TEN, type AreaKind } from '../lib/area.ts'
 import { capital, longDate, metres, placeLine } from '../lib/format.ts'
 import { useParts } from '../lib/load.ts'
 import type { AreaChoice, PageGauge } from '../lib/pageTypes.ts'
@@ -101,7 +101,7 @@ function EndCard({ title, gauges, empty, kind, list, chosen, onSelect, detail }:
   )
 }
 
-function Area({ kind, name, os }: { kind: AreaKind; name: string; os?: string }) {
+function Area({ kind, name, os, refs }: { kind: AreaKind; name: string; os?: string; refs?: string[] }) {
   const narrow = useIsNarrow(720)
   const loaded = useParts(['gauges', 'hours'])
   const [selected, setSelected] = useState<Choice | null>(null)
@@ -119,10 +119,11 @@ function Area({ kind, name, os }: { kind: AreaKind; name: string; os?: string })
       </div>
       <Waiting loaded={loaded}>
         {({ gauges: all, hours }) => {
-          const inArea = (g: PageGauge) => (kind === 'england' ? g.region !== null : kind === 'county' ? g.county === os : g.region === os)
-          const gauges = areaGauges(all, kind, os)
-          const floods = areaFloods(meta.floods, all, inArea)
-          const wide = kind !== 'county'
+          const gauges = areaGauges(all, kind, os, refs)
+          const floods = areaFloods(meta.floods, all, (g) => inArea(g, kind, os, refs))
+          // A county or a curated combination lists every gauge; a region or England, the ten
+          // highest and lowest.
+          const wide = kind === 'region' || kind === 'england'
           const shownFloods = wide ? floods.slice(0, FLOODS_SHOWN) : floods
           const top = ends(gauges, TOP, meta.date)
           const ranked = byRank(gauges, meta.date)
@@ -206,12 +207,18 @@ function NotFound({ text }: { text: string }) {
 
 export function AreaView({ kind, slug }: { kind: AreaKind; slug?: string }) {
   const list: AreaChoice[] = kind === 'county' ? meta.counties : kind === 'region' ? meta.regions : []
-  const a = kind === 'england' ? null : list.find((x) => x.slug === slug)
+  const a = kind === 'england' || kind === 'combination' ? null : list.find((x) => x.slug === slug)
+  const combo = kind === 'combination' ? meta.combinations.find((x) => x.slug === slug) : undefined
   useEffect(() => {
     if (kind === 'england') saveChoice({ kind: 'england' })
-    else if (a) saveChoice({ kind, slug: a.slug })
-  }, [kind, a])
+    else if (kind === 'combination' && combo) saveChoice({ kind, slug: combo.slug })
+    else if (a && kind !== 'combination') saveChoice({ kind, slug: a.slug })
+  }, [kind, a, combo])
   if (kind === 'england') return <Area kind="england" name="England" />
+  if (kind === 'combination') {
+    if (!combo) return <NotFound text="There's no curated combination with that name in Riverwatcher's list." />
+    return <Area key={combo.slug} kind="combination" name={combo.name} refs={combo.refs} />
+  }
   if (!a) return <NotFound text={`There's no ${kind} with that name in Riverwatcher's list.`} />
   return <Area key={a.slug} kind={kind} name={a.name} os={a.os} />
 }

@@ -43,6 +43,7 @@ function isReal(r: Route): boolean {
   if (r.kind === 'postcode') return !!district(r.code)
   if (r.kind === 'county') return meta.counties.some((c) => c.slug === r.slug)
   if (r.kind === 'region') return meta.regions.some((c) => c.slug === r.slug)
+  if (r.kind === 'combination') return meta.combinations.some((c) => c.slug === r.slug)
   return true
 }
 
@@ -74,7 +75,7 @@ export default function App() {
         {stale && <div className="card stale" role="status"><p>{stale}</p></div>}
         <SafetyNet key={hashOf(route)}>
           {route.kind === 'postcode' ? <PostcodeView key={route.code} code={route.code} />
-            : route.kind === 'county' || route.kind === 'region' ? <AreaView kind={route.kind} slug={route.slug} />
+            : route.kind === 'county' || route.kind === 'region' || route.kind === 'combination' ? <AreaView kind={route.kind} slug={route.slug} />
             : route.kind === 'england' ? <AreaView kind="england" />
             : <Chooser />}
         </SafetyNet>

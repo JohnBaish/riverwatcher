@@ -13,6 +13,9 @@ import {
   type Ctx, type Item,
 } from '../src/lib/view.ts'
 import { areaFloods, areaGauges, areaSummary, byRank, ends, inProse, listLabel, rankLine, rankOf, yearsUnusual } from '../src/lib/area.ts'
+import { hashOf, parseHash } from '../src/lib/route.ts'
+import { COMBINATIONS } from './lib/combinations.ts'
+import { councilName } from './lib/councils.ts'
 import { staleText, updatedText } from '../src/lib/freshness.ts'
 import { deltas, historyFits, liveBand, ukDate, yearBefore } from './lib/pageData.ts'
 import type { History } from './lib/history.ts'
@@ -229,6 +232,12 @@ eq('area: the rank line', rankLine(area[0], c), 'The highest for the time of yea
 eq('area: the rank line, since records began', rankLine(area[1], c), 'The highest for the time of year since records began in 2002.')
 eq('area: the rank line, held', rankLine(area[6], c), "Held by a lock or weir, so it's only counted when high.")
 const fl = (lat: number, long: number) => ({ id: 'f', area: 'X', severity: 'Flood alert', lat, long, raised: null, changed: null }) as unknown as Parameters<typeof areaFloods>[0][number]
+eq('combination: its address both ways', [parseHash('#combination/berks-n-hants-s-oxon'), hashOf({ kind: 'combination', slug: 'berks-n-hants-s-oxon' })],
+  [{ kind: 'combination', slug: 'berks-n-hants-s-oxon' }, '#combination/berks-n-hants-s-oxon'])
+eq('combination: its gauges, across counties, leaving out quiet ones', areaGauges(area, 'combination', undefined, ['A', 'W', 'Q']).map((x) => x.ref), ['A', 'W'])
+eq('combination: none without its list', areaGauges(area, 'combination').length, 0)
+eq("council names without OS's bookkeeping", ['Reading (B)', 'South Oxfordshire District', 'Basingstoke and Deane District (B)', 'Isle of Wight', 'City of Portsmouth (B)'].map(councilName),
+  ['Reading', 'South Oxfordshire', 'Basingstoke and Deane', 'Isle of Wight', 'City of Portsmouth'])
 eq('area: a flood warning goes with its nearest gauge', areaFloods([fl(51, -1.01)], area, (x) => x.county === 'Berkshire').length, 1)
 
 // ---- real postcodes, when the data repo is beside this one ----
@@ -273,6 +282,18 @@ if (existsSync(new URL('gauges.json', dataDir))) {
   eq('every area: no "undefined", "null" or "NaN"', badArea, 0)
   eq('47 counties with gauges, nine regions', [p.meta.counties.length, p.meta.regions.length], [47, 9])
   eq('England counts every gauge with a region', areaGauges(p.gauges, 'england').length, p.gauges.filter((x) => x.region && !x.quiet).length)
+  // The curated combinations (SPEC §8.5), when the council file is there.
+  if (p.meta.combinations.length) {
+    eq('both combinations, by name', p.meta.combinations.map((x) => [x.name, x.slug]), COMBINATIONS.map((x) => [x.name, x.name === 'Berks, N Hants, S Oxon' ? 'berks-n-hants-s-oxon' : 's-hants-dorset-iow']))
+    const byRef = new Map(p.gauges.map((x) => [x.ref, x]))
+    const combo = (i: number) => p.meta.combinations[i].refs.map((r) => byRef.get(r)!)
+    eq('Berks, N Hants, S Oxon: Reading and Caversham Lock in it', ['Reading', 'Caversham Lock'].every((nm) => combo(0).some((x) => x.name === nm)), true)
+    eq('Berks, N Hants, S Oxon: only Berkshire, Hampshire and Oxfordshire', [...new Set(combo(0).map((x) => x.county))].sort(), ['Berkshire', 'Hampshire', 'Oxfordshire'])
+    eq('S Hants, Dorset, IoW: only Hampshire, Dorset and the Isle of Wight', [...new Set(combo(1).map((x) => x.county))].sort(), ['Dorset', 'Hampshire', 'Isle of Wight'])
+    eq('no gauge in both combinations', combo(0).some((x) => combo(1).includes(x)), false)
+    const texts = p.meta.combinations.flatMap((x) => { const gs = areaGauges(p.gauges, 'combination', undefined, x.refs); return [...areaSummary(x.name, gs, actx), ...gs.map((y) => rankLine(y, actx) ?? '')] })
+    eq('combinations: no "undefined", "null" or "NaN"', texts.some((t) => /undefined|null|NaN/.test(t)), false)
+  }
 }
 
 // The EA's top of normal range: drawn when it fits the chart's usual height, not otherwise

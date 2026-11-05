@@ -10,13 +10,21 @@ import type { PageGauge } from './pageTypes.ts'
 import { heldSteady, isSilent, type Ctx } from './view.ts'
 import { countOf, numberWord } from './words.ts'
 
-export type AreaKind = 'county' | 'region' | 'england'
+export type AreaKind = 'county' | 'region' | 'england' | 'combination'
 
 /** The gauges in an area: every gauge with that county or region (nine gauges just over the
  *  borders have neither, so only count in postcode views), leaving out the flat or stuck ones
  *  (SPEC §3.7). England is every gauge with a region. */
-export function areaGauges(gauges: PageGauge[], kind: AreaKind, os?: string): PageGauge[] {
-  return gauges.filter((g) => !g.quiet && (kind === 'england' ? g.region !== null : kind === 'county' ? g.county === os : g.region === os))
+export function areaGauges(gauges: PageGauge[], kind: AreaKind, os?: string, refs?: string[]): PageGauge[] {
+  return gauges.filter((g) => !g.quiet && inArea(g, kind, os, refs))
+}
+
+/** Whether a gauge is in an area. A curated combination (SPEC §8.5) is its list of gauges,
+ *  worked out at build time from their council areas. */
+export function inArea(g: PageGauge, kind: AreaKind, os?: string, refs?: string[]): boolean {
+  if (kind === 'england') return g.region !== null
+  if (kind === 'combination') return !!refs?.includes(g.ref)
+  return kind === 'county' ? g.county === os : g.region === os
 }
 
 /** How high a gauge is for the time of year (0 to 100), when it can be ranked: free-flowing

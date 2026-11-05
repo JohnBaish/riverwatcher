@@ -69,6 +69,9 @@ Key points:
 - `npm run places <OS Open Names Data folder> [<data>]`: `data/gauge-places.json`, the "Near …"
   line for each gauge (`scripts/lib/places.ts`, reader `openNames.ts` from Hindcaster), and
   `design/gauge-places-review.md`. Run again after `npm run gauges`.
+- `npm run councils <Boundary-Line folder> [<data>]`: `data/gauge-councils.json`, each gauge's
+  council area (`scripts/lib/councils.ts`), for the curated combinations listed in
+  `scripts/lib/combinations.ts` (SPEC §8.5). Run again after `npm run gauges`.
 - `npm run gauges <Open Rivers data folder> <Boundary-Line folder> [<data>]`:
   `data/gauges.json` and `design/gauge-review.md`. `RW_CACHE=<folder>` reuses the EA
   lists. Both OS downloads come from api.os.uk (ESRI Shapefile, GB) and aren't kept.
@@ -90,6 +93,24 @@ Scope (decided by John):
 - Flood warnings in the first version, if easy (they look it: finding 11).
 
 ## Log
+
+### 2026-11-05 — curated combinations built (branch `curated-combinations`, not merged)
+
+**John:** build the two agreed combinations. **What:** each gauge's council area from OS
+Boundary-Line (October 2026 download from api.os.uk, checksum matched OS's, not kept):
+`scripts/lib/councils.ts`, `scripts/build-councils.ts` (`npm run councils`), committed to the
+data repo as `data/gauge-councils.json` (`5aba9d4`; all 2,888 gauges have one; the code on
+`main` ignores it). All 24 council names offered to John were found in Boundary-Line as given.
+`scripts/lib/combinations.ts` lists the two; `pageData.ts` works out each one's gauges into
+`meta.combinations` (a council no gauge is in stops the build). The page: a "Curated
+combinations" card below All of England (`Chooser.tsx`), `#combination/<slug>` (`route.ts`), the
+view as a county's with each gauge's county on its line (`AreaView.tsx`, `inArea` in `area.ts`),
+remembered like any choice, and John's sentence at the end of "About these figures". Gauges:
+79 in "Berks, N Hants, S Oxon", 145 in "S Hants, Dorset, IoW" (144 shown; one quiet).
+**Verified:** checks 125 + 158 (new: the address, the gauges, council names, both real
+combinations, no "undefined"), `tsc -b`, lint, build; Chromium at 1200px and 390px with touch,
+light and dark: the chooser, both combinations, an unknown one, choosing from the list and
+reopening on it: no errors, no sideways scrolling.
 
 ### 2026-11-05 — a second curated combination (notes only, straight to `main`)
 

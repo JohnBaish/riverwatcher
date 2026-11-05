@@ -1,4 +1,5 @@
-// The chooser, as Hindcaster's (SPEC §8.1): a postcode, a county or region, or all of England.
+// The chooser, as Hindcaster's (SPEC §8.1): a postcode, a county or region, all of England, or
+// a curated combination (SPEC §8.5).
 // What's typed is worked out in the browser and never sent anywhere.
 
 import { useRef, useState, type FormEvent, type KeyboardEvent } from 'react'
@@ -11,7 +12,7 @@ const go = (r: Route) => { location.hash = hashOf(r) }
 
 /** A county or region list (Hindcaster's): chosen with a mouse or a finger, it goes straight
  *  there; with the keyboard, the arrow keys only move through the list, and Enter shows it. */
-function AreaList({ id, kind, label, prompt, items }: { id: string; kind: 'county' | 'region'; label: string; prompt: string; items: AreaChoice[] }) {
+function AreaList({ id, kind, label, prompt, items }: { id: string; kind: 'county' | 'region' | 'combination'; label: string; prompt: string; items: Pick<AreaChoice, 'name' | 'slug'>[] }) {
   const [chosen, setChosen] = useState('')
   const byKeys = useRef(false)
   const [keyboard, setKeyboard] = useState(false)
@@ -85,6 +86,12 @@ export function Chooser() {
           <div className="note">The highest and lowest rivers for the time of year across the whole country.</div>
           <div><button className="btn btn-secondary" type="button" onClick={() => go({ kind: 'england' })}>Show England</button></div>
         </div>
+        {meta.combinations.length > 0 && (
+          <div className="card choose-areas">
+            <h3>Curated combinations</h3>
+            <AreaList id="combination" kind="combination" label="A combination" prompt="Choose a combination" items={meta.combinations} />
+          </div>
+        )}
       </div>
       <p className="muted chooser-about">
         See whether the rivers near you are high or low for the time of year. River levels for anywhere in England, from

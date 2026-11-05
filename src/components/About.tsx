@@ -45,6 +45,10 @@ export function AboutFigures() {
         gauges that are higher or lower for the time of year than they have been for the longest period of time, so a river
         at its lowest since 1967 comes before one at its lowest since 2022.
       </p>
+      <p>
+        Curated combinations have been created specifically for individual groups of users. Email workshop@baish.net if
+        you would like one (subject to capacity).
+      </p>
     </section>
   )
 }

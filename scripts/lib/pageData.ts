@@ -7,6 +7,7 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import type { Flood, LatestLine } from './collect.ts'
+import { COMBINATIONS } from './combinations.ts'
 import type { HeldReason } from './gauges.ts'
 import { behaveLikeRivers } from './heldCheck.ts'
 import { dayOfYear, judge, levelsFor, metresOf, percentBelow, sinceYear, TABLE_STEP_DAYS, wordFor, type History, type Word } from './history.ts'
@@ -123,7 +124,7 @@ export const REGION_ORDER = ['North East England', 'North West England', 'Yorksh
 export type PageData = { meta: PageMeta; gauges: PageGauge[]; hours: PageHours; hours42: PageHours; daily: PageDaily }
 
 /** The files the parts are made from, for the plugin to watch. */
-export const SOURCES = ['gauges.json', 'gauge-places.json', 'latest.json', 'quiet.json', 'today.json']
+export const SOURCES = ['gauges.json', 'gauge-places.json', 'gauge-councils.json', 'latest.json', 'quiet.json', 'today.json']
 
 /** Hourly figures for the charts: two weeks (the default period) in one part, six weeks in
  *  another, loaded only when four or six weeks are chosen. Longer periods use the daily part. */
@@ -137,6 +138,16 @@ export function pageData(dir = dataDir()): PageData {
   // The "Near …" lines (scripts/build-places.ts); a gauge with none shows no line.
   type PlaceLine = { name: string; far: { miles: number; dir: string } | null }
   const places = existsSync(join(dir, 'gauge-places.json')) ? read<{ gauges: Record<string, PlaceLine> }>('gauge-places.json').gauges : {}
+  // Each gauge's council area (scripts/build-councils.ts), for the curated combinations. A
+  // combination naming a council no gauge is in stops the build (a typo, or the file is old).
+  const councils = existsSync(join(dir, 'gauge-councils.json')) ? read<{ gauges: Record<string, string> }>('gauge-councils.json').gauges : null
+  const combinations = councils ? COMBINATIONS.map((c) => {
+    const known = new Set(Object.values(councils))
+    const missing = c.councils.filter((x) => !known.has(x))
+    if (missing.length) throw new Error(`${c.name}: no gauge is in ${missing.join(', ')} (run npm run councils)`)
+    const want = new Set(c.councils)
+    return { name: c.name, slug: slugOf(c.name), refs: gauges.filter((g) => want.has(councils[g.ref])).map((g) => g.ref) }
+  }) : []
   const date = ukDate(latest.made)
 
   const dayFiles = readdirSync(join(dir, 'days')).filter((f) => /^\d{4}-\d\d-\d\d\.json$/.test(f)).sort()
@@ -238,6 +249,7 @@ export function pageData(dir = dataDir()): PageData {
         .map((os) => ({ name: shownCounty(os), slug: slugOf(shownCounty(os)), os })).sort((a, b) => a.name.localeCompare(b.name)),
       regions: [...new Set(gauges.map((g) => g.region).filter((r): r is string => !!r))]
         .sort((a, b) => REGION_ORDER.indexOf(a) - REGION_ORDER.indexOf(b)).map((os) => ({ name: os, slug: slugOf(os), os })),
+      combinations,
     },
     gauges: pageGauges,
     hours: hourPart(HOURS_DAYS),

@@ -1,7 +1,8 @@
 // Where the page is (as Hindcaster's): the chooser, or one view. Each has its own address after
 // "#" (HOUSE-STYLE §6: the phone's Back gesture stays inside the tool), so a view can be
 // bookmarked or shared: #postcode/RG4, #county/berkshire, #region/south-east-england,
-// #england; #choose is the chooser. Everything after "#" stays in the browser: it is
+// #england; #combination/berks-n-hants-s-oxon (a curated combination, SPEC §8.5); #choose
+// is the chooser. Everything after "#" stays in the browser: it is
 // never sent to the server, so a typed postcode isn't either.
 //
 // The last choice is kept on the visitor's own device (as Hindcaster's: SPEC §8.1), so the page
@@ -12,6 +13,7 @@ export type Route =
   | { kind: 'postcode'; code: string }
   | { kind: 'county'; slug: string }
   | { kind: 'region'; slug: string }
+  | { kind: 'combination'; slug: string }
   | { kind: 'england' }
 
 export const STORAGE_KEY = 'riverwatcher.choice'
@@ -21,10 +23,10 @@ export function parseHash(hash: string): Route | null {
   const h = decodeURIComponent(hash.replace(/^#/, '')).trim()
   if (h === 'choose') return { kind: 'choose' }
   if (h === 'england') return { kind: 'england' }
-  const m = /^(postcode|county|region)\/([A-Za-z0-9-]+)$/.exec(h)
+  const m = /^(postcode|county|region|combination)\/([A-Za-z0-9-]+)$/.exec(h)
   if (!m) return null
   if (m[1] === 'postcode') return { kind: 'postcode', code: m[2].toUpperCase() }
-  return { kind: m[1] as 'county' | 'region', slug: m[2].toLowerCase() }
+  return { kind: m[1] as 'county' | 'region' | 'combination', slug: m[2].toLowerCase() }
 }
 
 export function hashOf(r: Route): string {

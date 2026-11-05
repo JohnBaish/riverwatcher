@@ -17,7 +17,12 @@ export type PageMeta = {
    *  regions north to south. `os` is the name in gauges.json; `name` the one shown. */
   counties: AreaChoice[]
   regions: AreaChoice[]
+  /** The curated combinations (SPEC §8.5): each a named group of council areas, with the
+   *  gauges in it worked out at build time (scripts/lib/combinations.ts). */
+  combinations: Combination[]
 }
+
+export type Combination = { name: string; slug: string; refs: string[] }
 
 export type AreaChoice = { name: string; slug: string; os: string }
 
