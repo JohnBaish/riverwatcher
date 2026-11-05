@@ -94,6 +94,17 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-05 — Salterns left out; a sentence on Ordnance Datum (branch `salterns-about`, merged)
+
+John asked how Salterns (E11610) could read −1.18 m: it is one of 450 gauges measured in mAOD
+(above Ordnance Datum, roughly mean sea level), not above its own zero. John: add Claude's
+sentence to "About these figures" ("Some gauges measure from Ordnance Survey's national zero,
+close to average sea level, so their figures can be below zero."), and leave Salterns out (a
+pumping station, "SALTERNS PS", with no river, long record or normal range). `LEFT_OUT` in
+`scripts/lib/gauges.ts`, used by `build-gauges.ts` and `pageData.ts`. Checks 125 + 160, `tsc -b`,
+lint, build; Chromium at 1200px and 390px with touch (PO4, Hampshire, S Hants, Dorset, IoW):
+no Salterns, the sentence shown, no errors, no sideways scrolling. Merged at John's word.
+
 ### 2026-11-05 — curated combinations merged to `main`
 
 John said merge. `curated-combinations` fast-forwarded into `main` (checks 125 + 159, `tsc -b`

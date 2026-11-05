@@ -56,6 +56,11 @@ export function miles(a: [number, number], b: [number, number]): number {
 // ---- near-duplicates (SPEC §3.2) ----
 
 export const NEAR_DUPLICATE_M = 100
+/** Gauges left out by hand (John), with why. Left out by `build-gauges.ts` and, for a gauge
+ *  list made before the entry, by `pageData.ts`. */
+export const LEFT_OUT: Record<string, string> = {
+  E11610: 'Salterns, Portsmouth: a pumping station, with no river, long record or normal range (John, November 5th 2026)',
+}
 export const isBackup = (name: string) => /\bback-?up\b/i.test(name)
 
 /** Of gauges on the same river within 100 m of each other, one is kept: one with archive

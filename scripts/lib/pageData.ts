@@ -8,7 +8,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import type { Flood, LatestLine } from './collect.ts'
 import { COMBINATIONS } from './combinations.ts'
-import type { HeldReason } from './gauges.ts'
+import { LEFT_OUT, type HeldReason } from './gauges.ts'
 import { behaveLikeRivers } from './heldCheck.ts'
 import { dayOfYear, judge, levelsFor, metresOf, percentBelow, sinceYear, TABLE_STEP_DAYS, wordFor, type History, type Word } from './history.ts'
 import type { PageDaily, PageGauge, PageHours, PageJudgement, PageMeta } from '../../src/lib/pageTypes.ts'
@@ -132,7 +132,7 @@ export const HOURS_DAYS = 14
 
 export function pageData(dir = dataDir()): PageData {
   const read = <T>(f: string): T => JSON.parse(readFileSync(join(dir, f), 'utf8')) as T
-  const gauges = read<{ gauges: GaugeLine[] }>('gauges.json').gauges
+  const gauges = read<{ gauges: GaugeLine[] }>('gauges.json').gauges.filter((g) => !(g.ref in LEFT_OUT))
   const latest = read<{ made: string; gauges: Record<string, LatestLine>; floods?: Flood[] }>('latest.json')
   const quiet = existsSync(join(dir, 'quiet.json')) ? read<{ gauges: Record<string, string> }>('quiet.json').gauges : {}
   // The "Near …" lines (scripts/build-places.ts); a gauge with none shows no line.

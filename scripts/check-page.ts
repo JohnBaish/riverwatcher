@@ -283,6 +283,7 @@ if (existsSync(new URL('gauges.json', dataDir))) {
   }
   eq('every area: no "undefined", "null" or "NaN"', badArea, 0)
   eq('47 counties with gauges, nine regions', [p.meta.counties.length, p.meta.regions.length], [47, 9])
+  eq('Salterns is left out', p.gauges.some((x) => x.ref === 'E11610'), false)
   eq('England counts every gauge with a region', areaGauges(p.gauges, 'england').length, p.gauges.filter((x) => x.region && !x.quiet).length)
   // The curated combinations (SPEC §8.5), when the council file is there.
   if (p.meta.combinations.length) {

@@ -11,7 +11,8 @@ export function AboutFigures() {
       </p>
       <p>
         Heights are above each gauge's own zero, not the depth of the river, so the figures for different gauges can't be
-        compared with each other.
+        compared with each other. Some gauges measure from Ordnance Survey's national zero, close to average sea level,
+        so their figures can be below zero.
       </p>
       <p>
         The dashed line on the charts is the top of the Environment Agency's normal range for that gauge. It's a fixed

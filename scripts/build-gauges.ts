@@ -18,7 +18,7 @@ import { readLines } from './lib/shapefile.ts'
 import { readAreas, areaOf } from './lib/areas.ts'
 import {
   ARCHIVE_NEAR_M, metres, namesAgree,
-  DRAIN_NAME, DRAINED_COUNTIES, dropNearDuplicates, hasDownstream, heldReason, isDrain, navName, isBackup, isLake, navigationHeads, riverKey, riverMeasure, riverName, shownName,
+  DRAIN_NAME, DRAINED_COUNTIES, dropNearDuplicates, hasDownstream, heldReason, isDrain, navName, isBackup, LEFT_OUT, isLake, navigationHeads, riverKey, riverMeasure, riverName, shownName,
   type HeldReason, type Station,
 } from './lib/gauges.ts'
 
@@ -162,7 +162,7 @@ const reporting = built.length
 
 // Backups go first (SPEC §3.2).
 const backups = built.filter((g) => isBackup(g.label))
-built = built.filter((g) => !isBackup(g.label))
+built = built.filter((g) => !isBackup(g.label) && !(g.ref in LEFT_OUT))
 
 // Places along the rivers; a gauge with no river name takes Open Rivers' name for its stretch.
 for (const g of built) {
