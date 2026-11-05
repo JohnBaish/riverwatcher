@@ -91,6 +91,13 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-05 — a second curated combination (notes only, straight to `main`)
+
+John: "S Hants, Dorset, IoW" (his choice of Claude's names, option A): Eastleigh, Fareham,
+Gosport, Havant, New Forest, Winchester, Portsmouth, Southampton, Dorset, Bournemouth,
+Christchurch and Poole, and the Isle of Wight (SPEC §8.5). An "Oxfordshire" combination of all
+five districts was dropped, as it would repeat the county view. Nothing built.
+
 ### 2026-11-05 — curated combinations: the first one chosen (notes only, straight to `main`)
 
 John: a "Curated combinations" list below "All of England" on the chooser, and a sentence for
