@@ -280,8 +280,7 @@ its word; each arm checked with the dataviz validator in light and dark.
    folded labels, the chooser's England line, flood warnings placed by their nearest gauge (ten
    listed in a region or England, then "And N more in force here"), and "on the Isle of Wight".
 
-5. **Curated combinations** (Agreed, John, November 5th 2026; built on branch
-   `curated-combinations`): a
+5. **Curated combinations** (Agreed and live, John, November 5th 2026): a
    fourth list of choices below "All of England", headed "Curated combinations", each a named
    group of council areas shown as an area view. The first, "Berks, N Hants, S Oxon": Bracknell
    Forest, Reading, Slough, West Berkshire, Windsor and Maidenhead, Wokingham, Basingstoke and

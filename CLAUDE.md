@@ -94,6 +94,12 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-05 — curated combinations merged to `main`
+
+John said merge. `curated-combinations` fast-forwarded into `main` (checks 125 + 159, `tsc -b`
+and build clean first). Branch tidied: "Delete merged branches" trial run 42059460172, then the
+real run; `git ls-remote --heads origin` shows only `main`.
+
 ### 2026-11-05 — "in this combined area" in a combination's sentences (branch `curated-combinations`, not merged)
 
 John: the summary says "Most rivers in this combined area are …", not the combination's name.
