@@ -354,7 +354,7 @@ cron-job.org access key has an expiry date to note in `PLAN.md`.
 2. **Downstream gauges** at locks, once Riverwatcher has its own history for them.
 3. **Tidal stations** for coastal postcodes; **groundwater**.
 4. **Full postcodes** rather than districts.
-5. **Wales and Scotland** (Natural Resources Wales and SEPA, as explored for Hindcaster).
+5. **Wales and Scotland** (Natural Resources Wales and SEPA, as explored for Hindcaster). What is known so far, Northern Ireland included: `design/uk-nations-2026-11-05.md`.
 
 ## 13. Questions for John (all answered October 30th)
 

@@ -94,6 +94,12 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-05 — what we know about Wales, Scotland and Northern Ireland (notes only, straight to `main`)
+
+At John's request: `design/uk-nations-2026-11-05.md`, a summary of the investigation done for
+Hindcaster (NRW, SEPA, OS geography, Northern Ireland) and what Riverwatcher would need. SPEC
+§12.5 points to it; added to the tracker as an idea.
+
 ### 2026-11-05 — "Curated combinations" renamed "Combined areas" (branch `combined-areas`, merged)
 
 John chose Claude's suggestion: the chooser's card "Combined areas", its list "A combined area" /
