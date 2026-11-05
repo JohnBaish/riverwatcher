@@ -91,7 +91,7 @@ Scope (decided by John):
 
 ## Log
 
-### 2026-11-05 — tapping a river's band opens its first gauge (branch `river-head-tap`, not merged)
+### 2026-11-05 — tapping a river's band opens its first gauge (branch `river-head-tap`, merged)
 
 **John:** tapping the river's band (the count, the name, "Upstream to downstream") should open the gauge below, as tapping
 the gauge does. **What (`GroupCard` in `PostcodeView.tsx`, `global.css`):** the band is a button ("Show Mapledurham
@@ -101,6 +101,9 @@ row, to the top, so the river's name stays in sight. Postcode views only (area v
 checks 125 + 148, `tsc -b`, lint, build; RG4, SL1 and NE30 at 1200px and 390px with touch, light and dark: the last band's
 first gauge opens with its details under it, one set of details only, still open after a second tap, Enter on the first
 band works on a computer, the band 18px from the top afterwards, no errors, no sideways scroll.
+**Merged** to `main` at John's word ("Please merge and tidy"; fast-forward; checks 125 + 148, `tsc -b` and build clean
+first; Vercel's deployment of `2589915` completed). Branch tidied: trial run 41985915222, real run 41985945028;
+`git ls-remote --heads origin` shows only `main`.
 
 ### 2026-11-04 — the collector tries saving three times (data repo `c78ee0b`)
 
