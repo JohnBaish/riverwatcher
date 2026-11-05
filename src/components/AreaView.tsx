@@ -120,7 +120,7 @@ function Area({ kind, name, os, refs }: { kind: AreaKind; name: string; os?: str
         {({ gauges: all, hours }) => {
           const gauges = areaGauges(all, kind, os, refs)
           const floods = areaFloods(meta.floods, all, (g) => inArea(g, kind, os, refs))
-          // A county or a curated combination lists every gauge; a region or England, the ten
+          // A county or a combined area lists every gauge; a region or England, the ten
           // highest and lowest.
           const wide = kind === 'region' || kind === 'england'
           const top = ends(gauges, TOP, meta.date)
@@ -214,7 +214,7 @@ export function AreaView({ kind, slug }: { kind: AreaKind; slug?: string }) {
   }, [kind, a, combo])
   if (kind === 'england') return <Area kind="england" name="England" />
   if (kind === 'combination') {
-    if (!combo) return <NotFound text="There's no curated combination with that name in Riverwatcher's list." />
+    if (!combo) return <NotFound text="There's no combined area with that name in Riverwatcher's list." />
     return <Area key={combo.slug} kind="combination" name={combo.name} refs={combo.refs} />
   }
   if (!a) return <NotFound text={`There's no ${kind} with that name in Riverwatcher's list.`} />

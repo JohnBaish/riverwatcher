@@ -1,7 +1,7 @@
 // Where the page is (as Hindcaster's): the chooser, or one view. Each has its own address after
 // "#" (HOUSE-STYLE §6: the phone's Back gesture stays inside the tool), so a view can be
 // bookmarked or shared: #postcode/RG4, #county/berkshire, #region/south-east-england,
-// #england; #combination/berks-n-hants-s-oxon (a curated combination, SPEC §8.5); #choose
+// #england; #combination/berks-n-hants-s-oxon (a combined area, SPEC §8.5); #choose
 // is the chooser. Everything after "#" stays in the browser: it is
 // never sent to the server, so a typed postcode isn't either.
 //

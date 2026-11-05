@@ -47,7 +47,7 @@ export function AboutFigures() {
         at its lowest since 1967 comes before one at its lowest since 2022.
       </p>
       <p>
-        Curated combinations have been created specifically for individual groups of users. Email workshop@baish.net if
+        Combined areas have been created specifically for individual groups of users. Email workshop@baish.net if
         you would like one (subject to capacity).
       </p>
     </section>

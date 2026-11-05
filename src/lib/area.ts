@@ -19,7 +19,7 @@ export function areaGauges(gauges: PageGauge[], kind: AreaKind, os?: string, ref
   return gauges.filter((g) => !g.quiet && inArea(g, kind, os, refs))
 }
 
-/** Whether a gauge is in an area. A curated combination (SPEC §8.5) is its list of gauges,
+/** Whether a gauge is in an area. A combined area (SPEC §8.5) is its list of gauges,
  *  worked out at build time from their council areas. */
 export function inArea(g: PageGauge, kind: AreaKind, os?: string, refs?: string[]): boolean {
   if (kind === 'england') return g.region !== null
@@ -108,7 +108,7 @@ export function listLabel(n: number, way: 'high' | 'low'): string {
  *  nothing ("Berkshire"). Headings keep the bare name (as Hindcaster's). */
 const THE = new Set(['West Midlands', 'Isle of Wight', 'East Riding of Yorkshire', 'East Midlands', 'East of England', 'West Midlands region'])
 export const inProse = (name: string) => (THE.has(name) ? `the ${name}` : name)
-/** A curated combination in a sentence (John, November 5th): its name lists counties, so
+/** A combined area in a sentence (John, November 5th): its name lists counties, so
  *  "in this combined area" reads better. */
 export const IN_COMBINATION = 'in this combined area'
 /** "in Berkshire", "on the Isle of Wight". */

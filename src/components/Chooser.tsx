@@ -1,5 +1,5 @@
 // The chooser, as Hindcaster's (SPEC §8.1): a postcode, a county or region, all of England, or
-// a curated combination (SPEC §8.5).
+// a combined area (SPEC §8.5).
 // What's typed is worked out in the browser and never sent anywhere.
 
 import { useRef, useState, type FormEvent, type KeyboardEvent } from 'react'
@@ -88,8 +88,8 @@ export function Chooser() {
         </div>
         {meta.combinations.length > 0 && (
           <div className="card choose-areas">
-            <h3>Curated combinations</h3>
-            <AreaList id="combination" kind="combination" label="A combination" prompt="Choose a combination" items={meta.combinations} />
+            <h3>Combined areas</h3>
+            <AreaList id="combination" kind="combination" label="A combined area" prompt="Choose a combined area" items={meta.combinations} />
           </div>
         )}
       </div>

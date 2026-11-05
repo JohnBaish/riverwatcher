@@ -282,8 +282,8 @@ its word; each arm checked with the dataviz validator in light and dark.
    opened with a tap); in a region, England or a curated combination, the flood warnings are too;
    severe flood warnings and the postcode view's are never folded, and "on the Isle of Wight".
 
-5. **Curated combinations** (Agreed and live, John, November 5th 2026): a
-   fourth list of choices below "All of England", headed "Curated combinations", each a named
+5. **Combined areas** (Agreed and live, John, November 5th 2026): a
+   fourth list of choices below "All of England", headed "Combined areas" (renamed from "Curated combinations" by John, November 5th), each a named
    group of council areas shown as an area view. The first, "Berks, N Hants, S Oxon": Bracknell
    Forest, Reading, Slough, West Berkshire, Windsor and Maidenhead, Wokingham, Basingstoke and
    Deane, and South Oxfordshire. The second, "S Hants, Dorset, IoW": Eastleigh, Fareham,
@@ -291,7 +291,7 @@ its word; each arm checked with the dataviz validator in light and dark.
    Christchurch and Poole, and the Isle of Wight. (An "Oxfordshire" combination was dropped: it
    would match the county view exactly.) Needs each gauge's council area (district or unitary) added to
    the gauge list from OS Boundary-Line, with the district names checked there. "About these
-   figures" to add: "Curated combinations have been created specifically for individual groups of
+   figures" to add: "Combined areas have been created specifically for individual groups of
    users. Email workshop@baish.net if you would like one (subject to capacity)." The idea may be
    reused in Refueller and Hindcaster later.
    Built: the councils are listed in `scripts/lib/combinations.ts`; each gauge's council is in

@@ -92,7 +92,7 @@ function FloodCard({ f }: { f: Flood }) {
 
 /** Which flood cards are folded away, to be opened with a tap (John, November 5th): none in a
  *  postcode view; the flood alerts in a county; the flood warnings and the flood alerts in a
- *  region, England or a curated combination. Severe flood warnings are never folded. */
+ *  region, England or a combined area. Severe flood warnings are never folded. */
 export type FloodFold = 'none' | 'alerts' | 'both'
 
 /** The flood warnings given (SPEC §7.2); nothing when there are none. */

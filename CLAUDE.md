@@ -94,6 +94,15 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-05 — "Curated combinations" renamed "Combined areas" (branch `combined-areas`, not merged)
+
+John chose Claude's suggestion: the chooser's card "Combined areas", its list "A combined area" /
+"Choose a combined area", "About these figures" ("Combined areas have been created specifically for
+individual groups of users. …") and the not-found message. Addresses unchanged (`#combination/…`),
+so saved choices still work; the code's own names (`combination`) unchanged. Checks 125 + 160,
+`tsc -b`, lint, build; Chromium at 1200px and 390px with touch: the card, the sentence and the
+message, no errors, no sideways scrolling.
+
 ### 2026-11-05 — flood alerts and warnings folded away in area views (branch `flood-folds`, merged)
 
 John (after mock-ups of one alert and two warnings near RG4, seven and five in Berkshire, ten and
