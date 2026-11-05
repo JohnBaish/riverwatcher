@@ -91,6 +91,17 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-05 — tapping a river's band opens its first gauge (branch `river-head-tap`, not merged)
+
+**John:** tapping the river's band (the count, the name, "Upstream to downstream") should open the gauge below, as tapping
+the gauge does. **What (`GroupCard` in `PostcodeView.tsx`, `global.css`):** the band is a button ("Show Mapledurham
+Lock" for screen readers; Enter and space work) that opens the first gauge listed, the most upstream; tapping it again
+leaves it open; the river's name underlines when a mouse is over it; opened this way, the page scrolls the band, not the
+row, to the top, so the river's name stays in sight. Postcode views only (area views have no river bands). **Verified:**
+checks 125 + 148, `tsc -b`, lint, build; RG4, SL1 and NE30 at 1200px and 390px with touch, light and dark: the last band's
+first gauge opens with its details under it, one set of details only, still open after a second tap, Enter on the first
+band works on a computer, the band 18px from the top afterwards, no errors, no sideways scroll.
+
 ### 2026-11-04 — the collector tries saving three times (data repo `c78ee0b`)
 
 Two gaps this morning, both GitHub's own server: at 10.10 UTC cron-job.org's call got "502 Bad Gateway",

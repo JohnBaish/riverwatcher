@@ -258,6 +258,9 @@ details summary { cursor: pointer; font-weight: 600; margin-bottom: var(--space-
 .river-head h4 { font-size: 26px; line-height: 1.15; }
 .river-head .note { display: block; margin-top: 4px; }
 .river-count { font-size: 12px; margin-bottom: 2px; }
+.river-head { cursor: pointer; -webkit-tap-highlight-color: transparent; scroll-margin-top: var(--space-4); }
+.river-head:focus-visible { outline: 2px solid var(--color-accent); outline-offset: -4px; }
+@media (hover: hover) { .river-head:hover h4 { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 2px; } }
 .river-head + .b-rows > div:first-child > .b-row { border-top: 0; }
 .river-head .note { margin: 0; }
 .r-table { table-layout: fixed; width: 100%; }

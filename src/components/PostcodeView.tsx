@@ -1,7 +1,7 @@
 // The postcode view (SPEC §7; the agreed design, option B revised): flood warnings, the
 // summary river by river, the nearest gauges grouped by river, and the chosen one in detail.
 
-import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import meta from 'virtual:riverwatcher/meta'
 import { capital, clock, longDate, metres, milesBetween, milesText, placeLine, weekday } from '../lib/format.ts'
 import { useParts, type Loaded } from '../lib/load.ts'
@@ -102,6 +102,12 @@ export function FloodList({ floods: near, more = 0 }: { floods: Flood[]; more?: 
 function GroupCard({ gr, code, nearest, selected, onSelect, narrow, spark, detail }: { gr: Group; code: string; nearest: Item; selected: string; onSelect: (ref: string) => void; narrow: boolean; spark: (g: PageGauge) => Point[]; detail: ReactNode }) {
   const notes = [gr.items.length > 1 ? 'Upstream to downstream' : null, gr.joins, gr.extra ? `Added: the nearest gauge to ${code} not held by a lock or weir.` : null].filter(Boolean) as string[]
   const near = (it: Item) => (it === nearest ? <span className="nearest">Nearest</span> : null)
+  // Opened from the band, the band stays in sight at the top, rather than scrolling past it to the row.
+  const head = useRef<HTMLDivElement>(null)
+  const openFirst = () => {
+    onSelect(gr.items[0].g.ref)
+    requestAnimationFrame(() => head.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
+  }
   const rows = gr.items.map((it, k) => {
     const between = k > 0 ? joinsBetween(gr, gr.items[k - 1], it) : []
     const g = it.g
@@ -140,8 +146,11 @@ function GroupCard({ gr, code, nearest, selected, onSelect, narrow, spark, detai
   })
   return (
     <div className="card river-group">
-      {/* A band across the top, so each river reads as the start of a section (John, November 3rd, option C). */}
-      <div className="river-head">
+      {/* A band across the top, so each river reads as the start of a section (John, November 3rd, option C).
+          Tapping it opens the first gauge below it, the most upstream (John, November 5th). */}
+      <div className="river-head" ref={head} role="button" tabIndex={0} aria-label={`Show ${gr.items[0].g.name}`}
+        onClick={openFirst}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openFirst() } }}>
         <div className="card-kicker river-count">{capital(numberWord(gr.items.length))} nearby gauge{gr.items.length === 1 ? '' : 's'}</div>
         <h4>{gr.unnamed ? 'Unnamed watercourse' : gr.name}</h4>{notes.map((n) => <span className="note" key={n}>{n}</span>)}</div>
       {narrow ? <div className="b-rows">{rows}</div> : (
