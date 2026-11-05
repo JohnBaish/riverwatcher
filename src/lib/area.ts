@@ -108,6 +108,9 @@ export function listLabel(n: number, way: 'high' | 'low'): string {
  *  nothing ("Berkshire"). Headings keep the bare name (as Hindcaster's). */
 const THE = new Set(['West Midlands', 'Isle of Wight', 'East Riding of Yorkshire', 'East Midlands', 'East of England', 'West Midlands region'])
 export const inProse = (name: string) => (THE.has(name) ? `the ${name}` : name)
+/** A curated combination in a sentence (John, November 5th): its name lists counties, so
+ *  "in this combined area" reads better. */
+export const IN_COMBINATION = 'in this combined area'
 /** "in Berkshire", "on the Isle of Wight". */
 export const inPlace = (name: string) => (name === 'Isle of Wight' ? 'on the Isle of Wight' : `in ${inProse(name)}`)
 
@@ -141,8 +144,7 @@ const opening = (n: number) => capital(numberWord(n))
 /** The area summary (SPEC §8.2, drafted for John): "Most rivers in Berkshire are normal for
  *  late October. Seven of the 43 gauges with long records are high or very high, and 15 are
  *  low or very low. 18 are held steady by locks or weirs, so they're only counted when high." */
-export function areaSummary(name: string, gauges: PageGauge[], c: Ctx): string[] {
-  const where = inPlace(name)
+export function areaSummary(name: string, gauges: PageGauge[], c: Ctx, where = inPlace(name)): string[] {
   const toy = timeOfYear(c.date)
   const k = counts(gauges)
   const out: string[] = []

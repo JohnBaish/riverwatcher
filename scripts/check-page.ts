@@ -235,6 +235,8 @@ const fl = (lat: number, long: number) => ({ id: 'f', area: 'X', severity: 'Floo
 eq('combination: its address both ways', [parseHash('#combination/berks-n-hants-s-oxon'), hashOf({ kind: 'combination', slug: 'berks-n-hants-s-oxon' })],
   [{ kind: 'combination', slug: 'berks-n-hants-s-oxon' }, '#combination/berks-n-hants-s-oxon'])
 eq('combination: its gauges, across counties, leaving out quiet ones', areaGauges(area, 'combination', undefined, ['A', 'W', 'Q']).map((x) => x.ref), ['A', 'W'])
+eq('combination: the summary says "this combined area"', areaSummary('S Hants, Dorset, IoW', [ag('a', hj('low', 20)), ag('b', hj('low', 15)), ag('c', hj('normal', 50))], c, 'in this combined area')[0],
+  'Most rivers in this combined area are low for late October.')
 eq('combination: none without its list', areaGauges(area, 'combination').length, 0)
 eq("council names without OS's bookkeeping", ['Reading (B)', 'South Oxfordshire District', 'Basingstoke and Deane District (B)', 'Isle of Wight', 'City of Portsmouth (B)'].map(councilName),
   ['Reading', 'South Oxfordshire', 'Basingstoke and Deane', 'Isle of Wight', 'City of Portsmouth'])

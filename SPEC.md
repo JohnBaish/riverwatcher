@@ -298,7 +298,8 @@ its word; each arm checked with the dataviz validator in light and dark.
    is `#combination/<slug>`; a combination is shown like a county (every gauge folded away),
    with each gauge's county on its line; its full list is "All 144 gauges in this combined area,
    with the highest for the time of year first" (John; and "with the" added in every view's full
-   list). A council named there that no gauge is in stops the
+   list); every sentence in a combination says "in this combined area", the heading keeps its
+   name (John). A council named there that no gauge is in stops the
    build.
 
 ## 9. "About these figures" (Agreed, John, November 2nd 2026)

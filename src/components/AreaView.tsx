@@ -5,7 +5,7 @@
 
 import { useEffect, useState, type ReactNode } from 'react'
 import meta from 'virtual:riverwatcher/meta'
-import { areaFloods, areaGauges, areaSummary, byRank, ends, inArea, inPlace, listLabel, rankLine, TEN, type AreaKind } from '../lib/area.ts'
+import { areaFloods, areaGauges, areaSummary, byRank, ends, IN_COMBINATION, inArea, inPlace, listLabel, rankLine, TEN, type AreaKind } from '../lib/area.ts'
 import { capital, longDate, metres, placeLine } from '../lib/format.ts'
 import { useParts } from '../lib/load.ts'
 import type { AreaChoice, PageGauge } from '../lib/pageTypes.ts'
@@ -105,7 +105,8 @@ function Area({ kind, name, os, refs }: { kind: AreaKind; name: string; os?: str
   const narrow = useIsNarrow(720)
   const loaded = useParts(['gauges', 'hours'])
   const [selected, setSelected] = useState<Choice | null>(null)
-  const where = inPlace(name)
+  // A combination's name lists counties, so sentences say "in this combined area" (John).
+  const where = kind === 'combination' ? IN_COMBINATION : inPlace(name)
   return (
     <>
       <div className="card strip">
@@ -155,7 +156,7 @@ function Area({ kind, name, os, refs }: { kind: AreaKind; name: string; os?: str
               <FloodList floods={shownFloods} more={floods.length - shownFloods.length} />
               <section className="source">
                 <div className="section-head"><h3>Summary</h3></div>
-                <div className="card roundup"><p>{areaSummary(name, gauges, ctx).join(' ')}</p></div>
+                <div className="card roundup"><p>{areaSummary(name, gauges, ctx, where).join(' ')}</p></div>
               </section>
               {gauges.length > 0 && (
                 <section className="source">
@@ -169,7 +170,7 @@ function Area({ kind, name, os, refs }: { kind: AreaKind; name: string; os?: str
                   {belowEnds && fullDetail}
                   {!wide && (
                     <details className="all-gauges">
-                      <summary>All {countOf(gauges.length, 'gauge')} {kind === 'combination' ? 'in this combined area' : where}, with the highest for the time of year first</summary>
+                      <summary>All {countOf(gauges.length, 'gauge')} {where}, with the highest for the time of year first</summary>
                       {rows(ranked, 'all')}
                     </details>
                   )}

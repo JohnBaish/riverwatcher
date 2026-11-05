@@ -94,6 +94,15 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-05 — "in this combined area" in a combination's sentences (branch `curated-combinations`, not merged)
+
+John: the summary says "Most rivers in this combined area are …", not the combination's name.
+Every sentence in a combination view now says "in this combined area" (`IN_COMBINATION` in
+`area.ts`): the summary, the line under the date ("River levels in this combined area, with
+historical comparisons"), the "No river gauge … is high" lines and the full list; the heading keeps
+the name. Checks 125 + 159; Chromium at 1200px and 390px with touch: both combinations and
+Berkshire (unchanged), no errors, no sideways scrolling.
+
 ### 2026-11-05 — "with the highest for the time of year first" (branch `curated-combinations`, not merged)
 
 John: a combination's full list reads "All 144 gauges in this combined area, with the highest for
