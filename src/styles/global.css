@@ -368,3 +368,15 @@ details.flood-fold > .flood-fold-list { display: grid; gap: var(--space-3); marg
   .footer-notice { margin-top: var(--space-6); break-inside: avoid; }
   .r-table { font-size: 12px; }
 }
+
+/* "Copy chart" on a computer, "Share chart" on a touch screen (John, November 9th 2026, as in Refueller), under the key. */
+.chart-share { display: flex; justify-content: flex-end; margin-top: var(--space-2); }
+.share-wrap { display: inline-flex; flex-direction: column; align-items: center; }
+.share-btn { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 4px 14px; border-radius: 999px; border: 1px solid var(--color-divider); background: transparent; color: var(--color-accent-700); font: 600 14px var(--font-body); cursor: pointer; }
+.share-btn:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.share-btn:disabled { opacity: .5; cursor: default; }
+.share-status { min-height: 18px; margin-top: 2px; font-size: 13px; line-height: 18px; color: var(--color-neutral-700); }
+.share-status:empty { visibility: hidden; }
+@media (max-width: 720px) { .chart-share { justify-content: flex-start; } }
+@media (pointer: coarse) { .share-btn { min-height: 44px; } }
+@media print { .chart-share { display: none !important; } }

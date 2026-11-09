@@ -94,6 +94,19 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-09 — "Copy chart" / "Share chart", and tapping away from a chart (branch `claude/amazing-albattani-t8s1nk`, not merged)
+
+**John:** bring Refueller's chart sharing and tap-away to Riverwatcher, with a heading. **What:** `src/components/ShareButton.tsx`
+and `src/lib/tapAway.ts` copied from Refueller; `src/lib/shareImage.ts` draws a gauge's chart as a picture in the light colours
+(zones, range lines, level, latest dot, key), headed "RIVERWATCHER", the gauge's name, "River Thames · Held steady by a lock or
+weir" and "The level over the last two weeks, to 1.10pm on Monday November 9th." (drafts, for John), with the EA credit line.
+The button sits under the key (`.chart-share`): "Copy chart" with a mouse, "Share chart" on a touch screen (44px), hidden in
+print. `Chart.tsx`: a tap or click outside the chart removes its date line and label. **Verified:** `tsc -b`, lint, checks
+125 + 160, build; Chromium at 1200px, 390px and 844×390 with touch, light and dark (RG4): "Copied" and the picture read back
+from the clipboard (light colours in dark mode); on touch screens saved (headless browsers can't share); the tip shows on a tap,
+stays after a tap inside, goes after a tap outside; no errors, no sideways scroll. **Couldn't check:** a real phone's share
+sheet, Safari's clipboard.
+
 ### 2026-11-09 — house style and fresh look re-copied (notes only, straight to `main`)
 
 From clockwheel `49cbf9e`: §6 adds "A phone held sideways" (a short screen is `max-height: 500px`; keep the top small; no chart, map or pop-up taller than the screen; draggable things shorter than it; 16px boxes), §10 and §11 check at 844×390 with touch too, and the fresh-look review now does every pass sideways as well (its `SKILL.md` and report template, re-copied); also the November 5th §2 section on reviewing dark mode colours. No app code changed.

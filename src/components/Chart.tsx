@@ -7,6 +7,7 @@ import type { CSSProperties } from 'react'
 import { useRef, useState, type PointerEvent } from 'react'
 import { clock, metres, shortDate } from '../lib/format.ts'
 import type { PageGauge } from '../lib/pageTypes.ts'
+import { useTapAway } from '../lib/tapAway.ts'
 import { CHART_LEFT, chartWidth, heights, type Band, type Point, type Weeks } from '../lib/series.ts'
 
 function niceTicks(lo: number, hi: number, n: number): number[] {
@@ -23,6 +24,9 @@ type Props = { g: PageGauge; weeks: Weeks; made: string; pts: Point[]; bands: [n
 export function Chart({ g, weeks, made, pts, bands, latest, narrow }: Props) {
   const [hover, setHover] = useState<Point | null>(null)
   const svg = useRef<SVGSVGElement>(null)
+  const wrapRef = useRef<HTMLDivElement>(null)
+  // The date line and its label go again with a tap or click anywhere outside the chart (John, November 9th 2026).
+  useTapAway(hover !== null, wrapRef, setHover)
   const W = chartWidth(narrow), H = narrow ? 220 : 230
   const all = latest ? [...pts, latest] : pts
   if (!all.length) return <p className="muted">No readings to chart.</p>
@@ -82,7 +86,7 @@ export function Chart({ g, weeks, made, pts, bands, latest, narrow }: Props) {
   const label = `${g.name}: the level over the last ${weeks === 52 ? 'year' : `${weeks} weeks`}`
 
   return (
-    <div className="chart-wrap" style={{ '--ar': W / H } as CSSProperties}>
+    <div ref={wrapRef} className="chart-wrap" style={{ '--ar': W / H } as CSSProperties}>
       <svg ref={svg} className="chart" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={label}>
         {ticks.map((v) => (
           <g key={v}>

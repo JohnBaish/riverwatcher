@@ -14,6 +14,8 @@ import {
   changeFigure, isSteady, type Ctx, type Group, type Item,
 } from '../lib/view.ts'
 import { Chart, Key } from './Chart.tsx'
+import { ShareButton } from './ShareButton.tsx'
+import { deliver, imageName, makeImage } from '../lib/shareImage.ts'
 import { saveChoice } from '../lib/route.ts'
 import { countOf, numberWord } from '../lib/words.ts'
 import type { Flood } from '../../scripts/lib/collect.ts'
@@ -196,7 +198,26 @@ function ChartBlock({ part, g, weeks, narrow }: { part: 'hours' | 'hours42' | 'd
   const p = loaded.value[part]
   const pts = points(g, weeks, meta.made, p)
   const bands = bandDays(g, weeks, meta.made, p)
-  return <><Chart g={g} weeks={weeks} made={meta.made} pts={pts} bands={bands} latest={latestPoint(g)} narrow={narrow} /><Key g={g} narrow={narrow} hasBands={bands.length > 0} topLine={topLineShown(g, pts, latestPoint(g), bands.length > 0)} /></>
+  const latest = latestPoint(g)
+  // "Copy chart" / "Share chart" (John, November 9th 2026, as in Refueller): the picture's heading is the gauge's name, with
+  // its river and judgement, and the period, beneath (drafted for John).
+  const share = () => {
+    const about = chip(g, ctx).text.replace(/\.$/, '')
+    const period = weeks === 52 ? 'year' : `${numberWord(weeks)} weeks`
+    const made = new Date(meta.made)
+    const canvas = makeImage({
+      g, weeks, made: meta.made, pts, bands, latest, heading: g.name,
+      sub: [g.river ? `${g.river} · ${about}` : about, `The level over the last ${period}, to ${clock(made)} on ${longDate(made)}.`],
+    })
+    return deliver(canvas, imageName(Date.parse(meta.made)), `${g.name}: river level`)
+  }
+  return (
+    <>
+      <Chart g={g} weeks={weeks} made={meta.made} pts={pts} bands={bands} latest={latest} narrow={narrow} />
+      <Key g={g} narrow={narrow} hasBands={bands.length > 0} topLine={topLineShown(g, pts, latest, bands.length > 0)} />
+      {pts.length + (latest ? 1 : 0) > 0 && <div className="chart-share" data-noprint><ShareButton what="chart" make={share} /></div>}
+    </>
+  )
 }
 
 /** The chosen gauge in detail. `sub` is the line under its name (river and distance, or
