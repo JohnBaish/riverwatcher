@@ -16,7 +16,7 @@ Read these first, in this order:
    John's answers. Then `design/content-answers-2026-10-30.md`: the main page's
    content, as agreed so far.
 3. `HOUSE-STYLE.md`: the shared look and ways of working. Copied from
-   clockwheel on 2026-10-30 (commit `674122d`; last re-copied 2026-11-01 at `5086657`), with `SEO-HANDOVER.md`,
+   clockwheel on 2026-10-30 (commit `674122d`; last re-copied 2026-11-09 at `49cbf9e`), with `SEO-HANDOVER.md`,
    `.claude/skills/fresh-look/` and `.gitignore`. Clockwheel holds the master
    copies; if they change, re-copy them and note it here.
 4. The tracker: `projects/riverwatcher.md` in `JohnBaish/baish.net-directory`.
@@ -93,6 +93,10 @@ Scope (decided by John):
 - Flood warnings in the first version, if easy (they look it: finding 11).
 
 ## Log
+
+### 2026-11-09 — house style and fresh look re-copied (notes only, straight to `main`)
+
+From clockwheel `49cbf9e`: §6 adds "A phone held sideways" (a short screen is `max-height: 500px`; keep the top small; no chart, map or pop-up taller than the screen; draggable things shorter than it; 16px boxes), §10 and §11 check at 844×390 with touch too, and the fresh-look review now does every pass sideways as well (its `SKILL.md` and report template, re-copied); also the November 5th §2 section on reviewing dark mode colours. No app code changed.
 
 ### 2026-11-09 — the chart fits a phone held sideways (branch `claude/bold-rubin-n8utv4`, merged)
 
