@@ -243,6 +243,11 @@ details summary { cursor: pointer; font-weight: 600; margin-bottom: var(--space-
 .chart .cross { stroke: var(--color-neutral-700); stroke-width: 1; }
 .chart .hdot { fill: var(--color-text); stroke: var(--color-surface); stroke-width: 2; }
 .chart-wrap { position: relative; }
+/* A phone held sideways (less than 500px tall; 2026-11-09): the chart is never taller than the screen. It narrows,
+   keeping its shape (--ar, its width over height, is set on it), so the tip still lands in the right place. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .chart-wrap { max-width: calc((100svh - 40px) * var(--ar, 2)); margin-inline: auto; }
+}
 .tip { position: absolute; pointer-events: none; background: var(--color-text); color: var(--color-bg); font-size: 12px; padding: 4px 8px; border-radius: 8px; white-space: nowrap; transform: translate(-50%, -110%); }
 .legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--color-neutral-700); margin-top: 4px; }
 .legend i { display: inline-block; width: 18px; height: 10px; border-radius: 3px; vertical-align: -1px; margin-right: 5px; }

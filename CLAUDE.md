@@ -94,6 +94,15 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-09 — the chart fits a phone held sideways (branch `claude/bold-rubin-n8utv4`, merged)
+
+From a check of every site on a sideways iPhone (John: make the fixes and merge each without asking): on a smaller iPhone held sideways
+(667×375, or 667×320 with Safari's bar) a gauge's chart was 348px tall, taller than the screen. On a screen held sideways and less than
+500px tall, `.chart-wrap` is narrowed so the chart's height fits (`--ar`, set in `Chart.tsx`); the wrapper narrows, not just the
+drawing, so the tip still lands under the finger. Now 458×280 at 667×320 and 548×335 at 667×375; unchanged at 844×390, 390×844 and
+1200px. **Verified:** build, checks (160), lint; RG4's first gauge in Chromium at those sizes: the tip's centre within 1px of the
+pointer, no errors.
+
 ### 2026-11-05 — what we know about Wales, Scotland and Northern Ireland (notes only, straight to `main`)
 
 At John's request: `design/uk-nations-2026-11-05.md`, a summary of the investigation done for

@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 // A gauge's chart (SPEC §7.6; the agreed design, option B revised): the level over the chosen
 // period, on the five judgement zones for each day (only the high ones at a held gauge), with
 // a tooltip on hover or touch. Its height always covers the gauge's normal range over the
@@ -81,7 +82,7 @@ export function Chart({ g, weeks, made, pts, bands, latest, narrow }: Props) {
   const label = `${g.name}: the level over the last ${weeks === 52 ? 'year' : `${weeks} weeks`}`
 
   return (
-    <div className="chart-wrap">
+    <div className="chart-wrap" style={{ '--ar': W / H } as CSSProperties}>
       <svg ref={svg} className="chart" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={label}>
         {ticks.map((v) => (
           <g key={v}>
