@@ -1,0 +1,4 @@
+/* Option 2: coloured headings only, in a soft water blue */
+:root[data-theme="dark"] h2, :root[data-theme="dark"] h3, :root[data-theme="dark"] h4,
+:root[data-theme="dark"] .gname-chosen { color: #8fc3d6; }
+:root[data-theme="dark"] .nav h1, :root[data-theme="dark"] .nav a { color: #8fc3d6; }

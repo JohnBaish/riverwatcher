@@ -94,6 +94,17 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-13 — dark mode colour review: mock-ups 1, 2, 5 and 7 (design only, straight to `main`)
+
+John asked to review Riverwatcher's dark colours (house style §2, "Reviewing dark mode colours"). Mock-ups made by
+adding CSS in the browser only to the built site (nothing in the app changed), dark mode, with RG4 at 1200px, RG4 at 390px with touch,
+and Berkshire's lists at 390px with touch: **now**; **1** a dark blue-green ground (`#1d2a2b`, cards `#273839`); **2** headings in
+a soft water blue (`#8fc3d6`); **5** each gauge edged in its high-or-low colour, 7px for "very" and 4px otherwise (edges lightened
+to at least 3.6:1 on the cards), with river bands in dark water blue (`#22333f`); **7** clearer layers (page a step darker,
+`#24211e`; open detail panels a step lighter, `#403b35`). 1 and 2 are alternatives; 5 and 7 can go with either. Pictures and CSS in
+`design/previews/dark-review-2026-11-13/` (`shot.cjs` remakes them against `vite preview` on port 4610). Text contrast checked:
+all at least 4.5:1. No errors, no sideways scroll. Waiting for John's choice.
+
 ### 2026-11-09 — "Copy chart" / "Share chart", and tapping away from a chart (branch `claude/amazing-albattani-t8s1nk`, not merged)
 
 **John:** bring Refueller's chart sharing and tap-away to Riverwatcher, with a heading. **What:** `src/components/ShareButton.tsx`

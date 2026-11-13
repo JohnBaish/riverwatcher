@@ -1,0 +1,7 @@
+/* Option 1: a dark blue-green ground (water), everything else unchanged */
+:root[data-theme="dark"] {
+  --color-bg: #1d2a2b; --color-surface: #273839;
+  --color-neutral-100: #314344; --color-neutral-200: #3a4c4d; --color-neutral-300: #4a5c5c; --color-neutral-400: #5b6c6b;
+  --color-neutral-700: #a6b4b0;
+  --j-normal: #5b6c6b;
+}

@@ -1,0 +1,6 @@
+/* Option 7: clearer layers - page a step darker, open panels a step lighter than cards */
+:root[data-theme="dark"] { --color-bg: #24211e; --alert-bg: #5a3419; }
+:root[data-theme="dark"] .b-detail-inline, :root[data-theme="dark"] .b-detail { background: #403b35; }
+:root[data-theme="dark"] .b-detail .card-kicker { color: var(--color-accent-700); }
+:root[data-theme="dark"] .river-head { background: color-mix(in srgb, var(--color-text) 9%, transparent); }
+:root[data-theme="dark"] .card { box-shadow: 0 0 0 1px color-mix(in srgb, #e8dfcf 8%, transparent), 0 4px 14px #0009; }
