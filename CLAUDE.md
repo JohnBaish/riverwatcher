@@ -1057,3 +1057,8 @@ repo. Copied in the house style files and the research notes (word for word, as
 **Couldn't be checked:** gauges just over the Welsh or Scottish borders; how
 often the EA corrects its provisional figures; the history of more than two
 gauges; anything in a browser at phone width (nothing to show yet).
+
+### 2026-11-14 — house style re-copied (notes only, straight to `main`)
+
+From clockwheel: §2 now records the darker dark page (`#24211e`), the card shadow, raised panels
+`#403b35` with `#ea9862` accents, and coloured state edges. No app code changed.
