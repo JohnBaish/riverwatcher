@@ -1,0 +1,19 @@
+/* Option 7: clearer layers - page a step darker, open panels a step lighter than cards */
+:root[data-theme="dark"] { --color-bg: #24211e; --alert-bg: #5a3419; }
+:root[data-theme="dark"] .b-detail-inline, :root[data-theme="dark"] .b-detail { background: #403b35; }
+:root[data-theme="dark"] .b-detail .card-kicker { color: var(--color-accent-700); }
+:root[data-theme="dark"] .river-head { background: color-mix(in srgb, var(--color-text) 9%, transparent); }
+:root[data-theme="dark"] .card { box-shadow: 0 0 0 1px color-mix(in srgb, #e8dfcf 8%, transparent), 0 4px 14px #0009; }
+/* keep the chosen gauge's orange edge down the side of its open details */
+:root[data-theme="dark"] .b-detail-inline { box-shadow: inset 3px 0 0 var(--color-accent), 0 4px 14px #0009; }
+/* Option 5: each gauge edged in its high-or-low colour (thicker for "very"); river bands in dark water blue */
+:root[data-theme="dark"] { --e-vlow: #eaa070; --e-low: #c4773f; --e-high: #6a98c6; --e-vhigh: #93bde3; }
+:root[data-theme="dark"] .river-head { background: #22333f; }
+:root[data-theme="dark"] .r-table tbody tr:not([aria-selected="true"]):has(.jchip.very-low) td:first-child { box-shadow: inset 7px 0 0 var(--e-vlow); }
+:root[data-theme="dark"] .r-table tbody tr:not([aria-selected="true"]):has(.jchip.low) td:first-child { box-shadow: inset 4px 0 0 var(--e-low); }
+:root[data-theme="dark"] .r-table tbody tr:not([aria-selected="true"]):has(.jchip.high) td:first-child { box-shadow: inset 4px 0 0 var(--e-high); }
+:root[data-theme="dark"] .r-table tbody tr:not([aria-selected="true"]):has(.jchip.very-high) td:first-child { box-shadow: inset 7px 0 0 var(--e-vhigh); }
+:root[data-theme="dark"] :is(.b-row, .end-item):not([aria-pressed="true"]):has(.jchip.very-low) { border-left-color: transparent; box-shadow: inset 7px 0 0 var(--e-vlow); }
+:root[data-theme="dark"] :is(.b-row, .end-item):not([aria-pressed="true"]):has(.jchip.low) { border-left-color: transparent; box-shadow: inset 4px 0 0 var(--e-low); }
+:root[data-theme="dark"] :is(.b-row, .end-item):not([aria-pressed="true"]):has(.jchip.high) { border-left-color: transparent; box-shadow: inset 4px 0 0 var(--e-high); }
+:root[data-theme="dark"] :is(.b-row, .end-item):not([aria-pressed="true"]):has(.jchip.very-high) { border-left-color: transparent; box-shadow: inset 7px 0 0 var(--e-vhigh); }

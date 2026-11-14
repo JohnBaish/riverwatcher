@@ -4,3 +4,5 @@
 :root[data-theme="dark"] .b-detail .card-kicker { color: var(--color-accent-700); }
 :root[data-theme="dark"] .river-head { background: color-mix(in srgb, var(--color-text) 9%, transparent); }
 :root[data-theme="dark"] .card { box-shadow: 0 0 0 1px color-mix(in srgb, #e8dfcf 8%, transparent), 0 4px 14px #0009; }
+/* keep the chosen gauge's orange edge down the side of its open details */
+:root[data-theme="dark"] .b-detail-inline { box-shadow: inset 3px 0 0 var(--color-accent), 0 4px 14px #0009; }

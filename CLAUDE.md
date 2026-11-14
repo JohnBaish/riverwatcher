@@ -94,6 +94,13 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-14 — dark mode review: options 5 and 7 together (design only, straight to `main`)
+
+John asked to see 5 and 7 together: `opt57.css` (7 then 5) and `opt57.png`, made as before from this morning's
+6.10am figures, with `now-2026-11-14.png` beside it for the same figures. Fixed in 7: its card shadow had replaced the orange edge down the
+side of an opened gauge's details; that edge is now kept (`opt7.png` remade). No errors, no sideways scroll.
+Waiting for John's choice.
+
 ### 2026-11-13 — dark mode colour review: mock-ups 1, 2, 5 and 7 (design only, straight to `main`)
 
 John asked to review Riverwatcher's dark colours (house style §2, "Reviewing dark mode colours"). Mock-ups made by
