@@ -94,6 +94,18 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-14 — dark mode colours: options 5 and 7 built and live (branch `dark-colours`, merged)
+
+**John:** build 5 and 7 and make them live without asking again, with Claude's defaults (no edge on held or unjudged gauges;
+the edge kept clear of the name). **What (`global.css`, one block at the end, dark mode on screen only):** the page `#24211e`
+(was `#2a2723`); cards lifted with a shadow; an opened gauge's details on `#403b35`, keeping its orange edge; flood alerts on
+`#5a3419`; links and accents in those panels `#ea9862` (4.7:1 or more); river bands `#22333f`; each judged gauge edged in a
+lighter version of its colour, 7px for "very", 4px otherwise, in the computer table, phone rows and the "most unusual" lists;
+rows given 8px more room on the left so the edge doesn't touch the name. Light mode, printing and copied charts unchanged.
+**Verified:** `tsc -b`, lint, checks 114 + 137, build; Chromium, RG4, Berkshire, England and the chooser at 1200px, 390px and
+844×390 with touch, light and dark: light background unchanged, dark `#24211e`, no errors, no sideways scroll; an opened gauge's
+panel lines up with its row (a first try had pushed it 17px right; fixed). **Couldn't check:** a real phone or Mac.
+
 ### 2026-11-14 — dark mode review: options 5 and 7 together (design only, straight to `main`)
 
 John asked to see 5 and 7 together: `opt57.css` (7 then 5) and `opt57.png`, made as before from this morning's

@@ -380,3 +380,36 @@ details.flood-fold > .flood-fold-list { display: grid; gap: var(--space-3); marg
 @media (max-width: 720px) { .chart-share { justify-content: flex-start; } }
 @media (pointer: coarse) { .share-btn { min-height: 44px; } }
 @media print { .chart-share { display: none !important; } }
+
+/* Dark mode colour review (John, November 13th to 14th 2026: options 5 and 7, house style §2).
+   7, clearer layers: the page a step darker than before, cards lifted with a shadow, and an
+   opened gauge's details a step lighter than the card. 5, colour by state: each gauge edged in
+   its high-or-low colour (thicker for "very"; held and unjudged gauges get none), and the
+   river bands in a dark water blue. Edge colours are lighter versions of the judgement colours,
+   at least 3.6:1 against the card. Dark mode on screen only: light mode, printing and copied
+   charts are unchanged. */
+@media screen {
+  :root[data-theme="dark"] {
+    --color-bg: #24211e;
+    --alert-bg: #5a3419;
+    --e-vlow: #eaa070; --e-low: #c4773f; --e-high: #6a98c6; --e-vhigh: #93bde3;
+  }
+  :root[data-theme="dark"] .card { box-shadow: 0 0 0 1px color-mix(in srgb, #e8dfcf 8%, transparent), 0 4px 14px #0009; }
+  /* links and accents a touch lighter on the lighter panels, to keep 4.5:1 */
+  :root[data-theme="dark"] :is(.b-detail, .alert) { --color-accent: #ea9862; }
+  :root[data-theme="dark"] .b-detail { background: #403b35; }
+  :root[data-theme="dark"] .b-detail-inline { background: #403b35; box-shadow: inset 3px 0 0 var(--color-accent), 0 4px 14px #0009; }
+  :root[data-theme="dark"] .b-detail .card-kicker { color: var(--color-accent-700); }
+  :root[data-theme="dark"] .river-head { background: #22333f; }
+  /* room for the edge, so it doesn't touch the gauge's name */
+  :root[data-theme="dark"] :is(.b-row, .end-item) { padding-left: 16px; }
+  :root[data-theme="dark"] .r-table tbody tr:not(.detail-row):not(.joins) td:first-child { padding-left: calc(var(--space-2) + 8px); }
+  :root[data-theme="dark"] .r-table tbody tr:not([aria-selected="true"]):has(.jchip.very-low) td:first-child { box-shadow: inset 7px 0 0 var(--e-vlow); }
+  :root[data-theme="dark"] .r-table tbody tr:not([aria-selected="true"]):has(.jchip.low) td:first-child { box-shadow: inset 4px 0 0 var(--e-low); }
+  :root[data-theme="dark"] .r-table tbody tr:not([aria-selected="true"]):has(.jchip.high) td:first-child { box-shadow: inset 4px 0 0 var(--e-high); }
+  :root[data-theme="dark"] .r-table tbody tr:not([aria-selected="true"]):has(.jchip.very-high) td:first-child { box-shadow: inset 7px 0 0 var(--e-vhigh); }
+  :root[data-theme="dark"] :is(.b-row, .end-item):not([aria-pressed="true"]):has(.jchip.very-low) { box-shadow: inset 7px 0 0 var(--e-vlow); }
+  :root[data-theme="dark"] :is(.b-row, .end-item):not([aria-pressed="true"]):has(.jchip.low) { box-shadow: inset 4px 0 0 var(--e-low); }
+  :root[data-theme="dark"] :is(.b-row, .end-item):not([aria-pressed="true"]):has(.jchip.high) { box-shadow: inset 4px 0 0 var(--e-high); }
+  :root[data-theme="dark"] :is(.b-row, .end-item):not([aria-pressed="true"]):has(.jchip.very-high) { box-shadow: inset 7px 0 0 var(--e-vhigh); }
+}
