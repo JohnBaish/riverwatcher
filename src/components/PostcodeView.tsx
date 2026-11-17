@@ -15,7 +15,7 @@ import {
 } from '../lib/view.ts'
 import { Chart, Key } from './Chart.tsx'
 import { ShareButton } from './ShareButton.tsx'
-import { deliver, imageName, makeImage } from '../lib/shareImage.ts'
+import { deliver, shareWords, imageName, makeImage } from '../lib/shareImage.ts'
 import { saveChoice } from '../lib/route.ts'
 import { countOf, numberWord } from '../lib/words.ts'
 import type { Flood } from '../../scripts/lib/collect.ts'
@@ -209,7 +209,10 @@ function ChartBlock({ part, g, weeks, narrow }: { part: 'hours' | 'hours42' | 'd
       g, weeks, made: meta.made, pts, bands, latest, heading: g.name,
       sub: [g.river ? `${g.river} · ${about}` : about, `The level over the last ${period}, to ${clock(made)} on ${longDate(made)}.`],
     })
-    return deliver(canvas, imageName(Date.parse(meta.made)), `${g.name}: river level`)
+    // The words sent with it (John, November 17th 2026): "The River Thames at Caversham Lock over the last two weeks, from Riverwatcher."
+    const river = !g.river || /^unnamed/i.test(g.river) ? '' : `${/^river /i.test(g.river) ? 'The ' : ''}${g.river} at `
+    const text = `${river}${g.name} over the last ${period}, from Riverwatcher.`
+    return deliver(canvas, imageName(Date.parse(meta.made)), shareWords(g.name, text.charAt(0).toUpperCase() + text.slice(1)))
   }
   return (
     <>

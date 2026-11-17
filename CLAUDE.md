@@ -94,6 +94,17 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-17 — words with a shared picture (branch `claude/happy-turing-3so1yn`, not merged)
+
+**John** (after testing shares on iPhone and Android, in Lightreader's thread): every Share button sends a sentence, a link
+to the same view (its address after "#", sent separately) and a title ("Riverwatcher: Caversham Lock"). His wording: "The
+River Thames at Caversham Lock over the last two weeks, from Riverwatcher." ("The" only before a name starting "River":
+"Beverley Brook at Arabella Drive …"; no river for an unnamed watercourse; the period as chosen). `ShareWords`,
+`shareWords()` and `deliver(…, words)` in `src/lib/shareImage.ts`; the sentence in `PostcodeView.tsx`. The link opens the
+view (postcode, county …), not the gauge, which the address doesn't hold. **Checked:** tsc, lint, checks (160), build;
+in Chromium as an iPhone 13, the share sheet replaced by a recorder: gauges near RG4 and SW1A at two weeks and a year
+give the words and links above; no errors.
+
 ### 2026-11-14 — dark mode colours: options 5 and 7 built and live (branch `dark-colours`, merged)
 
 **John:** build 5 and 7 and make them live without asking again, with Claude's defaults (no edge on held or unjudged gauges;
