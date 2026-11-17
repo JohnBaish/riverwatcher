@@ -16,7 +16,7 @@ Read these first, in this order:
    John's answers. Then `design/content-answers-2026-10-30.md`: the main page's
    content, as agreed so far.
 3. `HOUSE-STYLE.md`: the shared look and ways of working. Copied from
-   clockwheel on 2026-10-30 (commit `674122d`; last re-copied 2026-11-09 at `49cbf9e`), with `SEO-HANDOVER.md`,
+   clockwheel on 2026-10-30 (commit `674122d`; last re-copied 2026-11-09 at `49cbf9e`; `HOUSE-STYLE.md` again 2026-11-17 at `ba9c802`), with `SEO-HANDOVER.md`,
    `.claude/skills/fresh-look/` and `.gitignore`. Clockwheel holds the master
    copies; if they change, re-copy them and note it here.
 4. The tracker: `projects/riverwatcher.md` in `JohnBaish/baish.net-directory`.
@@ -94,7 +94,7 @@ Scope (decided by John):
 
 ## Log
 
-### 2026-11-17 — words with a shared picture (branch `claude/happy-turing-3so1yn`, not merged)
+### 2026-11-17 — words with a shared picture (branch `claude/happy-turing-3so1yn`, merged)
 
 **John** (after testing shares on iPhone and Android, in Lightreader's thread): every Share button sends a sentence, a link
 to the same view (its address after "#", sent separately) and a title ("Riverwatcher: Caversham Lock"). His wording: "The
@@ -103,7 +103,8 @@ River Thames at Caversham Lock over the last two weeks, from Riverwatcher." ("Th
 `shareWords()` and `deliver(…, words)` in `src/lib/shareImage.ts`; the sentence in `PostcodeView.tsx`. The link opens the
 view (postcode, county …), not the gauge, which the address doesn't hold. **Checked:** tsc, lint, checks (160), build;
 in Chromium as an iPhone 13, the share sheet replaced by a recorder: gauges near RG4 and SW1A at two weeks and a year
-give the words and links above; no errors.
+give the words and links above; no errors. **Live** at John's word;
+`HOUSE-STYLE.md` re-copied (new §17, sharing a picture).
 
 ### 2026-11-14 — dark mode colours: options 5 and 7 built and live (branch `dark-colours`, merged)
 
