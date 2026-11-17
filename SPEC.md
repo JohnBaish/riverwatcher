@@ -207,6 +207,11 @@ with the switch).
    warning's flood area; John, October 30th): severity, area, time issued, a
    link to GOV.UK, and "Riverwatcher isn't a flood warning service. For warnings, see GOV.UK's
    Check for flooding or call Floodline on 0345 988 1188."
+   If the EA's flood list can't be fetched (John, November 17th 2026), the collector still saves
+   the levels and keeps the last flood list with its time; above the warnings, in every view and
+   even when none are near, the page says "Flood warnings as at 5.10pm. The Environment Agency's
+   list hasn't been available since. Check GOV.UK for the latest." (more than 30 minutes behind
+   the levels; the weekday too if an earlier day).
 3. **Summary**, river by river (real figures, 4.15pm on October 30th): "Near RG4: the Thames is very high for late October at Sonning
    Lock, and held steady by locks and weirs elsewhere. The Kennet is held steady by a lock or weir
    here, and isn't high for late October. The Loddon at Twyford is high for late October." A

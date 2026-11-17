@@ -19,7 +19,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync
 import { dirname, join } from 'node:path'
 import { FM, getJson, getText, lastPart, parseCsv, sleep } from './lib/ea.ts'
 import { hourlyAverages, usualOfReadings } from './lib/days.ts'
-import { addSamples, fetchDayRows, flatOrStuck, floodsInForce, isSilent, latestLine, mm, todayHours, readingsByMeasure, type LatestLine, type State } from './lib/collect.ts'
+import { addSamples, fetchDayRows, flatOrStuck, floodsInForce, isSilent, latestLine, mm, todayHours, readingsByMeasure, type Flood, type LatestLine, type State, floodsOrLast } from './lib/collect.ts'
 
 const dataDir = process.argv[2] ?? '../riverwatcher-data/data'
 const stateFile = process.argv[3] ?? join(dataDir, '..', 'state', 'recent.json')
@@ -64,16 +64,26 @@ writeFileSync(stateFile, JSON.stringify(state))
 // ---- 2. flood warnings ----
 const areasFile = join(dataDir, 'flood-areas.json')
 const areas = readJson<Record<string, [number, number]>>(areasFile, {})
-const floodItems = (await getJson<{ items: Parameters<typeof floodsInForce>[0] }>(`${FM}/id/floods`))?.items ?? []
+// If the EA's flood list can't be fetched (it gave HTTP 503 for hours on November 17th 2026),
+// the levels are still saved, with the last flood list kept and its time (floodsOrLast).
+const prevLatest = readJson<{ made?: string; floods?: Flood[]; floodsAt?: string } | null>(join(dataDir, 'latest.json'), null)
+let floodItems: Parameters<typeof floodsInForce>[0] | null = null
+try {
+  floodItems = (await getJson<{ items: Parameters<typeof floodsInForce>[0] }>(`${FM}/id/floods`))?.items ?? []
+} catch (e) {
+  console.log(`::warning::The flood warnings couldn't be fetched (${(e as Error).message}); the last list is kept.`)
+  log.floodsFailed = (e as Error).message
+}
 let newAreas = 0
-for (const f of floodItems) {
+for (const f of floodItems ?? []) {
   if (!f.floodAreaID || areas[f.floodAreaID] || (f.severityLevel ?? 9) > 3) continue
-  const a = await getJson<{ items: { lat?: number; long?: number } }>(`${FM}/id/floodAreas/${f.floodAreaID}`)
+  // A flood area that can't be looked up is tried again next run.
+  const a = await getJson<{ items: { lat?: number; long?: number } }>(`${FM}/id/floodAreas/${f.floodAreaID}`).catch(() => null)
   if (typeof a?.items?.lat === 'number' && typeof a.items.long === 'number') { areas[f.floodAreaID] = [a.items.lat, a.items.long]; newAreas++ }
   await sleep(300)
 }
 if (newAreas) writeFileSync(areasFile, JSON.stringify(areas) + '\n')
-const floods = floodsInForce(floodItems, areas)
+const { floods, floodsAt } = floodsOrLast(floodItems ? floodsInForce(floodItems, areas) : null, prevLatest, now)
 
 // ---- 3. latest.json ----
 const lines: Record<string, LatestLine> = {}
@@ -84,11 +94,12 @@ for (const g of gauges) {
   if (isSilent(latest.get(g.ref)?.time, now)) silent++
 }
 writeFileSync(join(dataDir, 'latest.json'), JSON.stringify({
-  note: 'Each gauge\'s latest reading (Riverwatcher, scripts/collect.ts): [level mm, minutes between the reading and made, average of the last 24 hours mm, change in 24 hours mm]. Levels in whole millimetres above the gauge\'s own zero. floods: warnings in force (level 1 severe, 2 warning, 3 alert).',
+  note: 'Each gauge\'s latest reading (Riverwatcher, scripts/collect.ts): [level mm, minutes between the reading and made, average of the last 24 hours mm, change in 24 hours mm]. Levels in whole millimetres above the gauge\'s own zero. floods: warnings in force (level 1 severe, 2 warning, 3 alert); floodsAt: when that list was fetched, earlier than made if the EA\'s list couldn\'t be fetched since.',
   made: now.toISOString(),
   credit: 'This uses Environment Agency flood and river level data from the real-time data API (Beta).',
   gauges: lines,
   floods,
+  floodsAt,
 }) + '\n')
 Object.assign(log, { readings: latest.size, gauges: Object.keys(lines).length, silent, floods: floods.length, newAreas })
 

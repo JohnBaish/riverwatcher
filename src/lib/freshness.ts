@@ -25,3 +25,15 @@ export function staleText(made: string, now: Date): string | null {
   if (now.getTime() - t.getTime() <= STALE_HOURS * 3600e3) return null
   return `These figures were collected at ${clock(t)} on ${longDate(t)}, and Riverwatcher hasn't been able to update them since. Please check again later.`
 }
+
+/** The flood list counts as older than the levels when it was fetched more than this many
+ *  minutes before them (a normal run fetches both within a minute or two). */
+export const FLOODS_BEHIND_MINUTES = 30
+
+/** When the EA's flood list couldn't be fetched (John, November 17th 2026): the line above the
+ *  flood warnings, saying how old they are (the weekday if from an earlier day than the levels);
+ *  null when the list is as new as the levels. */
+export function floodsOldText(floodsAt: string, made: string): string | null {
+  if (Date.parse(made) - Date.parse(floodsAt) <= FLOODS_BEHIND_MINUTES * 60e3) return null
+  return `Flood warnings as at ${updatedText(floodsAt, new Date(made))}. The Environment Agency’s list hasn’t been available since.`
+}

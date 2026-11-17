@@ -345,6 +345,7 @@ details summary { cursor: pointer; font-weight: 600; margin-bottom: var(--space-
 /* 5.2: figures more than three hours old. */
 .stale { background: var(--alert-bg); border: 1.5px solid var(--alert-edge); padding: var(--space-3) var(--space-6); margin: var(--space-6) 0 0; }
 .stale p { margin: 0; }
+.stale.floods-old { margin: 0; }
 /* 5.4: 44px to tap on a phone, as elsewhere (HOUSE-STYLE §6). */
 @media (max-width: 720px) {
   .choose .input, .choose .btn, .strip .btn, .not-found .btn, .load-failed .btn { min-height: 44px; }

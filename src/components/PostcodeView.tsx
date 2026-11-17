@@ -6,6 +6,7 @@ import meta from 'virtual:riverwatcher/meta'
 import { capital, clock, longDate, metres, milesBetween, milesText, placeLine, weekday } from '../lib/format.ts'
 import { useParts, type Loaded } from '../lib/load.ts'
 import { district } from '../lib/postcode.ts'
+import { floodsOldText } from '../lib/freshness.ts'
 import type { PageGauge } from '../lib/pageTypes.ts'
 import { useIsNarrow } from '../lib/responsive.ts'
 import { bandDays, hourly, PERIODS, points, topLineShown, type Point, type Weeks } from '../lib/series.ts'
@@ -97,9 +98,11 @@ function FloodCard({ f }: { f: Flood }) {
  *  region, England or a combined area. Severe flood warnings are never folded. */
 export type FloodFold = 'none' | 'alerts' | 'both'
 
-/** The flood warnings given (SPEC §7.2); nothing when there are none. */
+/** The flood warnings given (SPEC §7.2); nothing when there are none, unless the EA's list
+ *  couldn't be fetched lately, when a line says how old the list is (even with none in it). */
 export function FloodList({ floods: near, fold = 'none' }: { floods: Flood[]; fold?: FloodFold }) {
-  if (!near.length) return null
+  const old = floodsOldText(meta.floodsAt, meta.made)
+  if (!near.length && !old) return null
   const severe = near.filter((f) => f.level === 1)
   const warnings = near.filter((f) => f.level === 2)
   const alerts = near.filter((f) => f.level === 3)
@@ -115,6 +118,7 @@ export function FloodList({ floods: near, fold = 'none' }: { floods: Flood[]; fo
   }
   return (
     <section className="warnings">
+      {old && <div className="stale floods-old"><p>{old} Check <a href="https://check-for-flooding.service.gov.uk/" target="_blank" rel="noopener noreferrer">GOV.UK</a> for the latest.</p></div>}
       {group(severe, false, 1, 'severe flood warning')}
       {group(warnings, fold === 'both', 2, 'flood warning')}
       {group(alerts, fold !== 'none', 3, 'flood alert')}

@@ -13,6 +13,9 @@ export type PageMeta = {
   /** The UK date the figures are for (YYYY-MM-DD). */
   date: string
   floods: Flood[]
+  /** When the flood list was fetched: the same as `made`, or earlier when the EA's list
+   *  couldn't be fetched since (John, November 17th 2026). */
+  floodsAt: string
   /** The chooser's lists (stage 4): every county with a gauge, alphabetical, and the nine
    *  regions north to south. `os` is the name in gauges.json; `name` the one shown. */
   counties: AreaChoice[]

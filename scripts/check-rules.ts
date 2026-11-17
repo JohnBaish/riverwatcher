@@ -16,7 +16,7 @@ import {
 } from './lib/history.ts'
 import { englishName, normRiver } from './lib/rivers.ts'
 import { daysFromReadings, hourlyAverages, usualOfReadings } from './lib/days.ts'
-import { fetchDayRows, todayHours, addSamples, flatOrStuck, floodsInForce, isSilent, latestLine, readingsByMeasure } from './lib/collect.ts'
+import { fetchDayRows, todayHours, addSamples, flatOrStuck, floodsInForce, floodsOrLast, isSilent, latestLine, readingsByMeasure } from './lib/collect.ts'
 
 let passed = 0
 const failures: string[] = []
@@ -252,6 +252,11 @@ eq('the last 24 hours\' average', average24([['2026-10-29T10:00:00Z', 9], ['2026
     { floodAreaID: 'y', severityLevel: 4, severity: 'Warning no longer in force', description: 'Old' },
     { floodAreaID: 'z', severityLevel: 2, severity: 'Flood warning', description: 'Keswick' },
   ], { z: [54.6, -3.1] }).map((f) => [f.area, f.level, f.lat]), [['Keswick', 2, 54.6], ['River Eden', 3, null]])
+  const fl = (area: string) => ({ id: area, level: 3, severity: 'Flood alert', area, raised: null, changed: null, lat: null, long: null })
+  eq('flood list fetched: saved, timed now', floodsOrLast([fl('A')], { made: '2026-11-17T17:10:00Z', floods: [fl('B')] }, now), { floods: [fl('A')], floodsAt: now.toISOString() })
+  eq('flood list down: the last one kept, with its time', floodsOrLast(null, { made: '2026-11-17T19:10:00Z', floods: [fl('B')], floodsAt: '2026-11-17T17:10:00Z' }, now), { floods: [fl('B')], floodsAt: '2026-11-17T17:10:00Z' })
+  eq('flood list down, saved before floodsAt existed: its made time', floodsOrLast(null, { made: '2026-11-17T17:10:00Z', floods: [] }, now), { floods: [], floodsAt: '2026-11-17T17:10:00Z' })
+  eq('flood list down, nothing saved before', floodsOrLast(null, null, now), { floods: [], floodsAt: null })
   const week = (f: (i: number) => number) => Array.from({ length: 24 * 28 }, (_, i) => f(i))
   eq('flat: no change of more than 2 cm in four weeks', flatOrStuck(week((i) => 500 + (i % 3) * 5)), 'flat')
   eq('stuck: the same figure nearly every hour', flatOrStuck(week((i) => (i % 20 === 0 ? 900 : 500))), 'stuck')

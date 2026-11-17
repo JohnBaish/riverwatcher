@@ -16,7 +16,7 @@ import { areaFloods, areaGauges, areaSummary, byRank, ends, inProse, listLabel, 
 import { hashOf, parseHash } from '../src/lib/route.ts'
 import { COMBINATIONS } from './lib/combinations.ts'
 import { councilName } from './lib/councils.ts'
-import { staleText, updatedText } from '../src/lib/freshness.ts'
+import { floodsOldText, staleText, updatedText } from '../src/lib/freshness.ts'
 import { deltas, historyFits, liveBand, ukDate, yearBefore } from './lib/pageData.ts'
 import type { History } from './lib/history.ts'
 
@@ -76,6 +76,9 @@ eq("Kings Road Bridge: the archive at 0.1 m, the gauge at 68.9 m", historyFits(h
 eq('updated today: the time', updatedText('2026-11-02T15:54:00Z', new Date('2026-11-02T17:00:00Z')), '3.54pm')
 eq('updated yesterday: the weekday', updatedText('2026-11-01T15:54:00Z', new Date('2026-11-02T09:00:00Z')), 'Sunday 3.54pm')
 eq('updated long ago: the date', updatedText('2026-10-20T15:54:00Z', new Date('2026-11-02T09:00:00Z')), 'October 20th, 4.54pm')
+eq('flood list as new as the levels: no line', floodsOldText('2026-11-17T17:10:00Z', '2026-11-17T17:11:00Z'), null)
+eq('flood list older than the levels: the line', floodsOldText('2026-11-17T17:10:00Z', '2026-11-17T19:10:00Z'), 'Flood warnings as at 5.10pm. The Environment Agency’s list hasn’t been available since.')
+eq('flood list from an earlier day: with the weekday', floodsOldText('2026-11-16T17:10:00Z', '2026-11-17T09:10:00Z'), 'Flood warnings as at Monday 5.10pm. The Environment Agency’s list hasn’t been available since.')
 eq('fresh: no warning', staleText('2026-11-02T15:54:00Z', new Date('2026-11-02T18:54:00Z')), null)
 eq('stale after three hours', staleText('2026-11-02T15:54:00Z', new Date('2026-11-02T18:55:00Z')), "These figures were collected at 3.54pm on Monday November 2nd, and Riverwatcher hasn't been able to update them since. Please check again later.")
 

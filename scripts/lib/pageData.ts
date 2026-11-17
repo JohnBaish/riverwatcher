@@ -133,7 +133,7 @@ export const HOURS_DAYS = 14
 export function pageData(dir = dataDir()): PageData {
   const read = <T>(f: string): T => JSON.parse(readFileSync(join(dir, f), 'utf8')) as T
   const gauges = read<{ gauges: GaugeLine[] }>('gauges.json').gauges.filter((g) => !(g.ref in LEFT_OUT))
-  const latest = read<{ made: string; gauges: Record<string, LatestLine>; floods?: Flood[] }>('latest.json')
+  const latest = read<{ made: string; gauges: Record<string, LatestLine>; floods?: Flood[]; floodsAt?: string | null }>('latest.json')
   const quiet = existsSync(join(dir, 'quiet.json')) ? read<{ gauges: Record<string, string> }>('quiet.json').gauges : {}
   // The "Near …" lines (scripts/build-places.ts); a gauge with none shows no line.
   type PlaceLine = { name: string; far: { miles: number; dir: string } | null }
@@ -244,7 +244,7 @@ export function pageData(dir = dataDir()): PageData {
 
   return {
     meta: {
-      made: latest.made, date, floods: latest.floods ?? [],
+      made: latest.made, date, floods: latest.floods ?? [], floodsAt: latest.floodsAt ?? latest.made,
       counties: [...new Set(gauges.map((g) => g.county).filter((c): c is string => !!c))]
         .map((os) => ({ name: shownCounty(os), slug: slugOf(shownCounty(os)), os })).sort((a, b) => a.name.localeCompare(b.name)),
       regions: [...new Set(gauges.map((g) => g.region).filter((r): r is string => !!r))]

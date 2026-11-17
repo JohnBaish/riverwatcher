@@ -77,6 +77,15 @@ export function floodsInForce(items: { floodAreaID?: string; severityLevel?: num
     .sort((a, b) => a.level - b.level || a.area.localeCompare(b.area))
 }
 
+/** The flood warnings to save (John, November 17th 2026): the EA's list, or, when it couldn't
+ *  be fetched (HTTP 503 for hours that evening), the last saved list kept as it was, with the
+ *  time it was fetched (`floodsAt`), so the page can say the warnings are older than the levels.
+ *  A list saved before `floodsAt` existed was fetched when its `made` was. */
+export function floodsOrLast(fetched: Flood[] | null, prev: { made?: string; floods?: Flood[]; floodsAt?: string } | null, now: Date): { floods: Flood[]; floodsAt: string | null } {
+  if (fetched) return { floods: fetched, floodsAt: now.toISOString() }
+  return { floods: prev?.floods ?? [], floodsAt: prev?.floodsAt ?? prev?.made ?? null }
+}
+
 /** Flat or stuck (SPEC §3.7; John, October 31st): over the last four weeks of hourly
  *  averages, no change of more than 2 cm, or the same figure more than 90% of the time.
  *  `hours` is the gauge's hourly averages in mm, oldest first (nulls left out). Needs at

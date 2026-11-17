@@ -94,6 +94,27 @@ Scope (decided by John):
 
 ## Log
 
+### 2026-11-17 — the levels keep updating when the EA's flood list is down (straight to `main`, at John's word)
+
+**What happened:** the 6.10pm Collect run (run 44144952018) failed: the EA's flood-warnings list
+(`/id/floods`) gave "HTTP 503" four times, so the collector stopped before saving anything and the
+page stayed at 5.10pm. The latest readings and flood areas were working; the list itself was back
+by 6.22pm. **John:** do the "better version" and merge straight to `main`. **What:**
+`floodsOrLast` in `scripts/lib/collect.ts`: if the list can't be fetched, the run warns (yellow,
+not a failure), keeps the last saved list and its time, and saves the levels as usual;
+`latest.json` gains `floodsAt` (when the flood list was fetched); a new flood area that can't be
+looked up is skipped and tried next run. The page (`floodsOldText` in `src/lib/freshness.ts`,
+`FloodList`): when the list is more than 30 minutes behind the levels, a line above the warnings,
+in every view and even with none near: "Flood warnings as at 5.10pm. The Environment Agency’s
+list hasn’t been available since. Check GOV.UK for the latest." (GOV.UK linked to Check for
+flooding; Claude's draft wording, approved by John). SPEC §7. **Verified:** `tsc -b`, lint (no
+warnings), checks 129 + 163 (new: the list kept, its time, the line); the real collector run here
+on a copy of the data: with the EA working, `floodsAt` equals `made`; with `/id/floods` faked as
+503 twice, exit 0, the warning, 24 warnings kept and `floodsAt` held at 5.10pm across both runs.
+The page built from that copy: YO11, RG4 (no warnings near) and England at 1200px and 390px with
+touch, light and dark: the line and link shown, no errors, no sideways scroll; built from today's
+real data, no line. **Couldn't check:** a real EA outage end to end in GitHub Actions.
+
 ### 2026-11-17 — words with a shared picture (branch `claude/happy-turing-3so1yn`, merged)
 
 **John** (after testing shares on iPhone and Android, in Lightreader's thread): every Share button sends a sentence, a link
